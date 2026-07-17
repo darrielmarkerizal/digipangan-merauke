@@ -1,0 +1,9 @@
+{
+    "Region": true,
+    "Farmer": true,
+    "Product": true,
+    "Post": true,
+    "User": true,
+    "Home": true,
+    "Dashboard": true
+}
