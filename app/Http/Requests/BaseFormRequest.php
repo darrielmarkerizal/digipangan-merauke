@@ -19,7 +19,7 @@ abstract class BaseFormRequest extends FormRequest
             throw new HttpResponseException(response()->json([
                 'success' => false,
                 'message' => 'The given data was invalid.',
-                'errors'  => $validator->errors(),
+                'errors' => $validator->errors(),
             ], 422));
         }
 

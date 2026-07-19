@@ -7,10 +7,15 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\QueryBuilder\QueryBuilder;
 
 abstract class BaseRepository implements BaseRepositoryInterface
 {
     protected Model $model;
+
+    protected int $defaultPerPage = 15;
+
+    protected int $maxPerPage = 100;
 
     public function __construct(Model $model)
     {
@@ -20,6 +25,44 @@ abstract class BaseRepository implements BaseRepositoryInterface
     public function query(): Builder
     {
         return $this->model->newQuery();
+    }
+
+    protected function allowedFilters(): array
+    {
+        return [];
+    }
+
+    protected function allowedSorts(): array
+    {
+        return [];
+    }
+
+    protected function allowedIncludes(): array
+    {
+        return [];
+    }
+
+    protected function defaultSort(): string
+    {
+        return '-created_at';
+    }
+
+    public function filtered(): QueryBuilder
+    {
+        return QueryBuilder::for($this->query())
+            ->allowedFilters(...$this->allowedFilters())
+            ->allowedSorts(...$this->allowedSorts())
+            ->allowedIncludes(...$this->allowedIncludes())
+            ->defaultSort($this->defaultSort());
+    }
+
+    public function paginateFiltered(?int $perPage = null): LengthAwarePaginator
+    {
+        $perPage = $perPage ?? (int) request()->integer('per_page', $this->defaultPerPage);
+
+        return $this->filtered()
+            ->paginate(max(min($perPage, $this->maxPerPage), 1))
+            ->appends(request()->query());
     }
 
     public function all(array $with = []): Collection

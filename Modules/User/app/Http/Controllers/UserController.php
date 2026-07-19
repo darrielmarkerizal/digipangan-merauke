@@ -2,55 +2,71 @@
 
 namespace Modules\User\Http\Controllers;
 
+use App\Enums\Permission;
 use App\Http\Controllers\Controller;
+use App\Traits\ApiResponse;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Modules\User\Http\Requests\StoreUserRequest;
+use Modules\User\Http\Requests\UpdateUserRequest;
+use Modules\User\Http\Resources\UserResource;
+use Modules\User\Services\UserService;
 
-class UserController extends Controller
+class UserController extends Controller implements HasMiddleware
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    use ApiResponse;
+
+    public function __construct(private readonly UserService $userService) {}
+
+    public static function middleware(): array
     {
-        return view('user::index');
+        return ['permission:'.Permission::ManageUsers->value];
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function index(): JsonResponse
     {
-        return view('user::create');
+        $paginator = $this->userService->paginateFiltered();
+
+        return $this->paginatedResponse(
+            $paginator->setCollection(UserResource::collection($paginator->getCollection())->collection)
+        );
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request) {}
-
-    /**
-     * Show the specified resource.
-     */
-    public function show($id)
+    public function show(int $user): JsonResponse
     {
-        return view('user::show');
+        return $this->successResponse(
+            new UserResource($this->userService->findOrFail($user, ['roles']))
+        );
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit($id)
+    public function store(StoreUserRequest $request): JsonResponse
     {
-        return view('user::edit');
+        return $this->successResponse(
+            new UserResource($this->userService->create($request->validated())),
+            'Pengguna dibuat.',
+            201
+        );
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, $id) {}
+    public function update(UpdateUserRequest $request, int $user): JsonResponse
+    {
+        $model = $this->userService->findOrFail($user);
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy($id) {}
+        return $this->successResponse(
+            new UserResource($this->userService->update($model, $request->validated())),
+            'Pengguna diperbarui.'
+        );
+    }
+
+    public function destroy(Request $request, int $user): JsonResponse
+    {
+        $model = $this->userService->findOrFail($user);
+
+        abort_if($model->is($request->user()), 422, 'Tidak dapat menghapus akun sendiri.');
+
+        $this->userService->delete($model);
+
+        return $this->successResponse(null, 'Pengguna dihapus.');
+    }
 }
