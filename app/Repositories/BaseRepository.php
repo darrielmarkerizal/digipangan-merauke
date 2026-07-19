@@ -3,10 +3,12 @@
 namespace App\Repositories;
 
 use App\Repositories\Contracts\BaseRepositoryInterface;
+use App\Support\Filters\UniversalSearch;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 abstract class BaseRepository implements BaseRepositoryInterface
@@ -32,6 +34,22 @@ abstract class BaseRepository implements BaseRepositoryInterface
         return [];
     }
 
+    protected function searchable(): array
+    {
+        return [];
+    }
+
+    protected function resolvedFilters(): array
+    {
+        $filters = $this->allowedFilters();
+
+        if ($this->searchable() !== []) {
+            $filters[] = AllowedFilter::custom('search', new UniversalSearch($this->searchable()));
+        }
+
+        return $filters;
+    }
+
     protected function allowedSorts(): array
     {
         return [];
@@ -47,10 +65,30 @@ abstract class BaseRepository implements BaseRepositoryInterface
         return '-created_at';
     }
 
+    protected function promoteSearchParameter(): void
+    {
+        $request = request();
+
+        if ($this->searchable() === [] || ! $request->filled('search')) {
+            return;
+        }
+
+        $filter = (array) $request->input('filter', []);
+
+        if (array_key_exists('search', $filter)) {
+            return;
+        }
+
+        $filter['search'] = $request->input('search');
+        $request->merge(['filter' => $filter]);
+    }
+
     public function filtered(): QueryBuilder
     {
+        $this->promoteSearchParameter();
+
         return QueryBuilder::for($this->query())
-            ->allowedFilters(...$this->allowedFilters())
+            ->allowedFilters(...$this->resolvedFilters())
             ->allowedSorts(...$this->allowedSorts())
             ->allowedIncludes(...$this->allowedIncludes())
             ->defaultSort($this->defaultSort());
