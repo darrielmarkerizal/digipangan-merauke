@@ -1,8 +1,9 @@
 <?php
 
 return [
-    'whatsapp_admin' => env('DIGIPANGAN_WHATSAPP_ADMIN', '6281234567890'),
-    'contact_email'  => env('DIGIPANGAN_CONTACT_EMAIL', 'admin@digipangan-merauke.id'),
-    'media_disk'     => env('DIGIPANGAN_MEDIA_DISK', 'public'),
-    'pagination'     => (int) env('DIGIPANGAN_PAGE_SIZE', 15),
+    'admin' => [
+        'name' => env('ADMIN_NAME', 'Administrator'),
+        'email' => env('ADMIN_EMAIL'),
+        'password' => env('ADMIN_PASSWORD'),
+    ],
 ];
