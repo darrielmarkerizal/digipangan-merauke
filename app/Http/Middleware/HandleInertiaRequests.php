@@ -31,16 +31,16 @@ class HandleInertiaRequests extends Middleware
 
             'flash' => [
                 'success' => fn () => $request->session()->get('success'),
-                'error'   => fn () => $request->session()->get('error'),
-                'info'    => fn () => $request->session()->get('info'),
+                'error' => fn () => $request->session()->get('error'),
+                'info' => fn () => $request->session()->get('info'),
             ],
 
             'app' => [
-                'name'            => config('app.name'),
-                'env'             => app()->environment(),
-                'locale'          => app()->getLocale(),
-                'whatsapp_admin'  => config('digipangan.whatsapp_admin'),
-                'contact_email'   => config('digipangan.contact_email'),
+                'name' => config('app.name'),
+                'env' => app()->environment(),
+                'locale' => app()->getLocale(),
+                'whatsapp_admin' => config('digipangan.whatsapp_admin'),
+                'contact_email' => config('digipangan.contact_email'),
             ],
 
             'query' => fn () => $request->query(),

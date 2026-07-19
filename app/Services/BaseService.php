@@ -27,6 +27,11 @@ abstract class BaseService
         return $this->repository->paginate($perPage, $with);
     }
 
+    public function paginateFiltered(?int $perPage = null): LengthAwarePaginator
+    {
+        return $this->repository->paginateFiltered($perPage);
+    }
+
     public function findOrFail(int|string $id, array $with = []): Model
     {
         return $this->repository->findOrFail($id, $with);

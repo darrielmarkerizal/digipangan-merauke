@@ -2,11 +2,14 @@
 
 namespace Modules\User\Database\Seeders;
 
+use App\Enums\Permission as PermissionEnum;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use RuntimeException;
+use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
+use Spatie\Permission\PermissionRegistrar;
 
 class UserDatabaseSeeder extends Seeder
 {
@@ -14,9 +17,17 @@ class UserDatabaseSeeder extends Seeder
 
     public function run(): void
     {
-        foreach (['super_admin', 'admin'] as $name) {
-            Role::firstOrCreate(['name' => $name, 'guard_name' => 'web']);
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
+
+        foreach (PermissionEnum::values() as $permission) {
+            Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'web']);
         }
+
+        $superAdmin = Role::firstOrCreate(['name' => 'super_admin', 'guard_name' => 'web']);
+        $admin = Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
+
+        $superAdmin->syncPermissions(PermissionEnum::values());
+        $admin->syncPermissions(PermissionEnum::forAdmin());
 
         $this->seedInitialAdmin();
     }
