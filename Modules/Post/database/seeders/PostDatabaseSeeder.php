@@ -3,14 +3,21 @@
 namespace Modules\Post\Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Modules\Post\Models\PostCategory;
 
 class PostDatabaseSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        // $this->call([]);
+        $categories = [
+            'Berita Panen',
+            'Kegiatan Kelompok Tani',
+            'Pelatihan',
+            'Informasi Harga Pasar',
+        ];
+
+        foreach ($categories as $name) {
+            PostCategory::firstOrCreate(['name' => $name]);
+        }
     }
 }
