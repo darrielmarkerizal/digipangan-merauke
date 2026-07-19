@@ -25,10 +25,12 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
                 'roles',
                 fn ($q) => $q->whereIn('name', (array) $value)
             )),
-            AllowedFilter::callback('search', fn ($query, $value) => $query->where(
-                fn ($q) => $q->where('name', 'like', "%{$value}%")->orWhere('email', 'like', "%{$value}%")
-            )),
         ];
+    }
+
+    protected function searchable(): array
+    {
+        return ['name', 'email', 'roles.name'];
     }
 
     protected function allowedSorts(): array
