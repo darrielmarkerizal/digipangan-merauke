@@ -5,6 +5,11 @@ namespace Modules\Farmer\Providers;
 use Nwidart\Modules\Support\ModuleServiceProvider;
 use Illuminate\Console\Scheduling\Schedule;
 
+use Modules\Farmer\Repositories\Contracts\FarmerGroupRepositoryInterface;
+use Modules\Farmer\Repositories\FarmerGroupRepository;
+use Modules\Farmer\Repositories\Contracts\CommodityRepositoryInterface;
+use Modules\Farmer\Repositories\CommodityRepository;
+
 class FarmerServiceProvider extends ModuleServiceProvider
 {
     /**
@@ -42,5 +47,12 @@ class FarmerServiceProvider extends ModuleServiceProvider
     // protected function configureSchedules(Schedule $schedule): void
     // {
     //     $schedule->command('inspire')->hourly();
-    // }
+    // 
+    public function register(): void
+    {
+        parent::register();
+
+        $this->app->bind(\Modules\Farmer\Repositories\Contracts\FarmerGroupRepositoryInterface::class, \Modules\Farmer\Repositories\FarmerGroupRepository::class);
+        $this->app->bind(\Modules\Farmer\Repositories\Contracts\CommodityRepositoryInterface::class, \Modules\Farmer\Repositories\CommodityRepository::class);
+    }
 }

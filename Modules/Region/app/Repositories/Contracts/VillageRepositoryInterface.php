@@ -1,0 +1,9 @@
+<?php
+
+namespace Modules\Region\Repositories\Contracts;
+
+use App\Repositories\Contracts\BaseRepositoryInterface;
+
+interface VillageRepositoryInterface extends BaseRepositoryInterface
+{
+}

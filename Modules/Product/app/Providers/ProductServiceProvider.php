@@ -5,6 +5,11 @@ namespace Modules\Product\Providers;
 use Nwidart\Modules\Support\ModuleServiceProvider;
 use Illuminate\Console\Scheduling\Schedule;
 
+use Modules\Product\Repositories\Contracts\UnitRepositoryInterface;
+use Modules\Product\Repositories\UnitRepository;
+use Modules\Product\Repositories\Contracts\ProductCategoryRepositoryInterface;
+use Modules\Product\Repositories\ProductCategoryRepository;
+
 class ProductServiceProvider extends ModuleServiceProvider
 {
     /**
@@ -42,5 +47,12 @@ class ProductServiceProvider extends ModuleServiceProvider
     // protected function configureSchedules(Schedule $schedule): void
     // {
     //     $schedule->command('inspire')->hourly();
-    // }
+    // 
+    public function register(): void
+    {
+        parent::register();
+
+        $this->app->bind(\Modules\Product\Repositories\Contracts\UnitRepositoryInterface::class, \Modules\Product\Repositories\UnitRepository::class);
+        $this->app->bind(\Modules\Product\Repositories\Contracts\ProductCategoryRepositoryInterface::class, \Modules\Product\Repositories\ProductCategoryRepository::class);
+    }
 }
