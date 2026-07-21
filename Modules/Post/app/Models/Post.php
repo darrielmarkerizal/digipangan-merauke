@@ -13,6 +13,7 @@ use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
 use Spatie\Image\Enums\Fit;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Modules\Media\Traits\InteractsWithTemporaryMedia as TemporaryMediaTrait;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
@@ -27,7 +28,7 @@ use Spatie\Sluggable\SlugOptions;
 ])]
 class Post extends Model implements AuditableContract, HasMedia
 {
-    use Auditable, HasSlug, InteractsWithMedia, SoftDeletes;
+    use Auditable, HasSlug, InteractsWithMedia, TemporaryMediaTrait, SoftDeletes;
 
     public const STATUS_DRAFT = 'draft';
 

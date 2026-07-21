@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Modules\Media\Traits\InteractsWithTemporaryMedia as TemporaryMediaTrait;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
@@ -14,7 +15,7 @@ use Spatie\Sluggable\SlugOptions;
 #[Fillable(['name', 'website_url', 'description', 'sort_order', 'is_active'])]
 class Partner extends Model implements HasMedia
 {
-    use HasSlug, InteractsWithMedia, SoftDeletes;
+    use HasSlug, InteractsWithMedia, TemporaryMediaTrait, SoftDeletes;
 
     protected function casts(): array
     {
