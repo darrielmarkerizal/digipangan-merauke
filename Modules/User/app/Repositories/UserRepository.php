@@ -43,10 +43,7 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
         return ['roles', 'media'];
     }
 
-    public function replaceAvatar(User $user, UploadedFile $file): void
-    {
-        $user->addMedia($file)->toMediaCollection('avatar');
-    }
+
 
     public function clearAvatar(User $user): void
     {

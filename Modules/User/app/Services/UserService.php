@@ -5,7 +5,7 @@ namespace Modules\User\Services;
 use App\Models\User;
 use App\Services\BaseService;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Http\UploadedFile;
+
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Modules\User\Repositories\Contracts\UserRepositoryInterface;
@@ -65,8 +65,8 @@ class UserService extends BaseService
             $this->repository->syncRoles($user, $data['roles']);
         }
 
-        if (isset($data['avatar']) && $data['avatar'] instanceof UploadedFile) {
-            $this->repository->replaceAvatar($user, $data['avatar']);
+        if (isset($data['avatar_uuid'])) {
+            $user->addMediaFromTemporaryUpload($data['avatar_uuid'], 'avatar');
         }
     }
 }

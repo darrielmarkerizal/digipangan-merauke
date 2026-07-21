@@ -16,6 +16,7 @@ use Spatie\Image\Enums\Fit;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use Modules\Media\Traits\InteractsWithTemporaryMedia as TemporaryMediaTrait;
 use Spatie\Permission\Traits\HasRoles;
 
 #[Fillable(['name', 'email', 'password', 'is_active'])]
@@ -23,7 +24,7 @@ use Spatie\Permission\Traits\HasRoles;
 class User extends Authenticatable implements HasMedia
 {
     /** @use HasFactory<UserFactory> */
-    use HasApiTokens, HasFactory, HasRoles, InteractsWithMedia, Notifiable, SoftDeletes;
+    use HasApiTokens, HasFactory, HasRoles, InteractsWithMedia, TemporaryMediaTrait, Notifiable, SoftDeletes;
 
     /**
      * Get the attributes that should be cast.

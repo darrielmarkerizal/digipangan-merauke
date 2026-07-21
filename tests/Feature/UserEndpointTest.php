@@ -129,6 +129,11 @@ describe('membuat dan mengubah pengguna', function () {
 
     it('membuat pengguna beserta peran dan avatar', function () {
         Storage::fake('public');
+        Storage::fake('local');
+
+        $upload = $this->postJson(route('api.media.upload'), [
+            'file' => UploadedFile::fake()->image('foto.jpg', 300, 300)
+        ]);
 
         $this->postJson(route('api.user.store'), [
             'name' => 'Petugas Baru',
@@ -136,7 +141,7 @@ describe('membuat dan mengubah pengguna', function () {
             'password' => 'rahasia123',
             'password_confirmation' => 'rahasia123',
             'roles' => ['admin'],
-            'avatar' => UploadedFile::fake()->image('foto.jpg', 300, 300),
+            'avatar_uuid' => $upload->json('folder'),
         ])
             ->assertStatus(201)
             ->assertJsonPath('data.name', 'Petugas Baru')

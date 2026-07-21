@@ -4,7 +4,7 @@ namespace Modules\User\Services;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Http\UploadedFile;
+
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -23,6 +23,7 @@ class AuthService
             ]);
         }
 
+        /** @var User $user */
         $user = $this->users->findOrFail(Auth::id(), ['roles']);
 
         if (! $user->is_active) {
@@ -52,7 +53,10 @@ class AuthService
 
     public function profile(int|string $id): User
     {
-        return $this->users->findOrFail($id, ['roles']);
+        /** @var User $user */
+        $user = $this->users->findOrFail($id, ['roles']);
+
+        return $user;
     }
 
     public function updateProfile(User $user, array $data): User
@@ -71,15 +75,18 @@ class AuthService
                 $this->users->update($user, $attributes);
             }
 
-            if (isset($data['avatar']) && $data['avatar'] instanceof UploadedFile) {
-                $this->users->replaceAvatar($user, $data['avatar']);
+            if (isset($data['avatar_uuid'])) {
+                $user->addMediaFromTemporaryUpload($data['avatar_uuid'], 'avatar');
             }
 
             if (! empty($data['remove_avatar'])) {
                 $this->users->clearAvatar($user);
             }
 
-            return $this->users->findOrFail($user->id, ['roles']);
+            /** @var User $updatedUser */
+            $updatedUser = $this->users->findOrFail($user->id, ['roles']);
+
+            return $updatedUser;
         });
     }
 }

@@ -28,7 +28,9 @@ it('can upload temporary media', function () {
         'filename' => $filename,
     ]);
 
-    Storage::disk('local')->assertExists('temp/' . $folder . '/' . $filename);
+    /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
+    $disk = Storage::disk('local');
+    $disk->assertExists('temp/' . $folder . '/' . $filename);
 });
 
 it('can delete temporary media', function () {
@@ -50,7 +52,9 @@ it('can delete temporary media', function () {
         'folder' => $folder,
     ]);
 
-    Storage::disk('local')->assertMissing('temp/' . $folder . '/' . $file->getClientOriginalName());
+    /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
+    $disk = Storage::disk('local');
+    $disk->assertMissing('temp/' . $folder . '/' . $file->getClientOriginalName());
 });
 
 it('can attach temporary media to a model using the trait', function () {
@@ -77,5 +81,7 @@ it('can attach temporary media to a model using the trait', function () {
     $this->assertDatabaseMissing('temporary_files', [
         'folder' => $folder,
     ]);
-    Storage::disk('local')->assertMissing('temp/' . $folder . '/' . $filename);
+    /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
+    $disk = Storage::disk('local');
+    $disk->assertMissing('temp/' . $folder . '/' . $filename);
 });

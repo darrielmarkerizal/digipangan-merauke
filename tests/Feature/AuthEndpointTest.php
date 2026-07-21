@@ -100,12 +100,17 @@ describe('profil', function () {
 
     it('memperbarui nama dan avatar', function () {
         Storage::fake('public');
+        Storage::fake('local');
         $user = makeUser();
+
+        $upload = $this->postJson(route('api.media.upload'), [
+            'file' => UploadedFile::fake()->image('avatar.jpg', 600, 600)
+        ]);
 
         $this->actingAs($user)
             ->putJson(route('api.auth.profile.update'), [
                 'name' => 'Nama Baru',
-                'avatar' => UploadedFile::fake()->image('avatar.jpg', 600, 600),
+                'avatar_uuid' => $upload->json('folder'),
             ])
             ->assertOk()
             ->assertJsonPath('data.name', 'Nama Baru');
@@ -114,24 +119,27 @@ describe('profil', function () {
             ->and($user->fresh()->avatarUrl())->not->toBeNull();
     });
 
-    it('menolak berkas avatar yang bukan gambar', function () {
-        Storage::fake('public');
-
+    it('menolak UUID avatar yang tidak valid', function () {
         $this->actingAs(makeUser())
             ->putJson(route('api.auth.profile.update'), [
-                'avatar' => UploadedFile::fake()->create('dokumen.pdf', 100, 'application/pdf'),
+                'avatar_uuid' => 'bukan-uuid-yang-valid',
             ])
             ->assertStatus(422)
-            ->assertJsonValidationErrors('avatar');
+            ->assertJsonValidationErrors('avatar_uuid');
     });
 
     it('hanya menyimpan satu avatar meski diunggah berkali-kali', function () {
         Storage::fake('public');
+        Storage::fake('local');
         $user = makeUser();
 
         foreach (['satu.jpg', 'dua.jpg'] as $name) {
+            $upload = $this->postJson(route('api.media.upload'), [
+                'file' => UploadedFile::fake()->image($name, 400, 400)
+            ]);
+
             $this->actingAs($user)->putJson(route('api.auth.profile.update'), [
-                'avatar' => UploadedFile::fake()->image($name, 400, 400),
+                'avatar_uuid' => $upload->json('folder'),
             ])->assertOk();
         }
 

@@ -16,7 +16,7 @@ class StoreUserRequest extends BaseFormRequest
             'is_active' => ['sometimes', 'boolean'],
             'roles' => ['sometimes', 'array'],
             'roles.*' => ['string', Rule::exists('roles', 'name')],
-            'avatar' => ['sometimes', 'file', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+            'avatar_uuid' => ['sometimes', 'string', 'uuid'],
         ];
     }
 }
