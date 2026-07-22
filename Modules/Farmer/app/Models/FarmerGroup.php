@@ -24,11 +24,6 @@ class FarmerGroup extends Model
             ->saveSlugsTo('slug');
     }
 
-    public function getRouteKeyName(): string
-    {
-        return 'slug';
-    }
-
     public function region(): BelongsTo
     {
         return $this->belongsTo(Region::class);

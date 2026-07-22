@@ -1,8 +1,12 @@
 <?php
 
 use App\Models\User;
+use Modules\Farmer\Models\Farmer;
+use Modules\Product\Models\Product;
+use Modules\Product\Models\ProductCategory;
 use Modules\Product\Models\Unit;
-use Illuminate\Support\Facades\Hash;
+use Modules\Region\Models\Region;
+use Modules\User\Database\Seeders\UserDatabaseSeeder;
 
 function actor_unit(string $role = 'super_admin'): User
 {
@@ -10,10 +14,28 @@ function actor_unit(string $role = 'super_admin'): User
         'is_active' => true,
     ]);
     $user->assignRole($role);
+
     return $user;
 }
 
-use Modules\User\Database\Seeders\UserDatabaseSeeder;
+function unit_referencing_product(Unit $unit): Product
+{
+    $region = Region::create(['name' => 'Ulilin '.uniqid()]);
+    $farmer = Farmer::create([
+        'region_id' => $region->id,
+        'name' => 'Petani '.uniqid(),
+        'phone' => '+6281234567890',
+    ]);
+
+    return Product::create([
+        'product_category_id' => ProductCategory::create(['name' => 'Kategori '.uniqid()])->id,
+        'unit_id' => $unit->id,
+        'farmer_id' => $farmer->id,
+        'region_id' => $region->id,
+        'name' => 'Produk '.uniqid(),
+        'price' => 10000,
+    ]);
+}
 
 beforeEach(function () {
     app(UserDatabaseSeeder::class)->run();
@@ -27,5 +49,72 @@ describe('Unit CRUD', function () {
 
     it('mengizinkan admin mengakses daftar', function () {
         $this->actingAs(actor_unit('admin'))->getJson(route('api.unit.index'))->assertOk();
+    });
+
+    it('membuat satuan baru', function () {
+        $this->actingAs(actor_unit())
+            ->postJson(route('api.unit.store'), ['name' => 'Kilogram', 'symbol' => 'kg'])
+            ->assertCreated()
+            ->assertJsonPath('data.name', 'Kilogram');
+
+        $this->assertDatabaseHas('units', ['name' => 'Kilogram', 'symbol' => 'kg']);
+    });
+
+    it('menolak nama duplikat dengan 422', function () {
+        Unit::create(['name' => 'Kilogram', 'symbol' => 'kg']);
+
+        $this->actingAs(actor_unit())
+            ->postJson(route('api.unit.store'), ['name' => 'Kilogram', 'symbol' => 'kilo'])
+            ->assertStatus(422)
+            ->assertJsonValidationErrors('name');
+    });
+
+    it('menolak simbol duplikat dengan 422', function () {
+        Unit::create(['name' => 'Kilogram', 'symbol' => 'kg']);
+
+        $this->actingAs(actor_unit())
+            ->postJson(route('api.unit.store'), ['name' => 'Kiloan', 'symbol' => 'kg'])
+            ->assertStatus(422)
+            ->assertJsonValidationErrors('symbol');
+    });
+
+    it('memperbarui satuan', function () {
+        $unit = Unit::create(['name' => 'Ikat', 'symbol' => 'ikat']);
+
+        $this->actingAs(actor_unit())
+            ->putJson(route('api.unit.update', $unit->id), ['name' => 'Ikatan', 'symbol' => 'ikat'])
+            ->assertOk()
+            ->assertJsonPath('data.name', 'Ikatan');
+    });
+
+    it('menolak update ke nama satuan lain dengan 422', function () {
+        Unit::create(['name' => 'Kilogram', 'symbol' => 'kg']);
+        $target = Unit::create(['name' => 'Ikat', 'symbol' => 'ikat']);
+
+        $this->actingAs(actor_unit())
+            ->putJson(route('api.unit.update', $target->id), ['name' => 'Kilogram', 'symbol' => 'ikat'])
+            ->assertStatus(422)
+            ->assertJsonValidationErrors('name');
+    });
+
+    it('menghapus satuan yang tidak direferensikan', function () {
+        $unit = Unit::create(['name' => 'Karung', 'symbol' => 'karung']);
+
+        $this->actingAs(actor_unit())
+            ->deleteJson(route('api.unit.destroy', $unit->id))
+            ->assertOk();
+
+        $this->assertDatabaseMissing('units', ['id' => $unit->id]);
+    });
+
+    it('menolak menghapus satuan yang masih dipakai produk dengan 409', function () {
+        $unit = Unit::create(['name' => 'Kilogram', 'symbol' => 'kg']);
+        unit_referencing_product($unit);
+
+        $this->actingAs(actor_unit())
+            ->deleteJson(route('api.unit.destroy', $unit->id))
+            ->assertStatus(409);
+
+        $this->assertDatabaseHas('units', ['id' => $unit->id]);
     });
 });

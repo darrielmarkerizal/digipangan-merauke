@@ -17,12 +17,17 @@ class PostCategoryRepository extends BaseRepository implements PostCategoryRepos
     protected function allowedFilters(): array
     {
         return [
-            AllowedFilter::partial("name"),
+            AllowedFilter::partial('name'),
         ];
+    }
+
+    protected function searchable(): array
+    {
+        return ['name'];
     }
 
     protected function allowedSorts(): array
     {
-        return ["name", "created_at"];
+        return ['name', 'created_at'];
     }
 }

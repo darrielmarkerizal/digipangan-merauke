@@ -3,14 +3,16 @@
 namespace Modules\Post\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdatePostCategoryRequest extends FormRequest
 {
     public function rules(): array
     {
+        $id = $this->route('post_category');
+
         return [
-            // For update, we make fields optional if not provided, but still validate if provided
-            'name' => 'required|string|max:50'
+            'name' => ['required', 'string', 'max:50', Rule::unique('post_categories', 'name')->ignore($id)],
         ];
     }
 

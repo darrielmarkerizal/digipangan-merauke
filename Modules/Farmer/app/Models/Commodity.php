@@ -22,11 +22,6 @@ class Commodity extends Model
             ->saveSlugsTo('slug');
     }
 
-    public function getRouteKeyName(): string
-    {
-        return 'slug';
-    }
-
     public function farmers(): BelongsToMany
     {
         return $this->belongsToMany(Farmer::class, 'farmer_commodity');

@@ -17,12 +17,22 @@ class ProductCategoryRepository extends BaseRepository implements ProductCategor
     protected function allowedFilters(): array
     {
         return [
-            AllowedFilter::partial("name"),
+            AllowedFilter::partial('name'),
         ];
+    }
+
+    protected function searchable(): array
+    {
+        return ['name'];
     }
 
     protected function allowedSorts(): array
     {
-        return ["name", "created_at"];
+        return ['name', 'sort_order', 'created_at'];
+    }
+
+    protected function defaultSort(): string
+    {
+        return 'sort_order';
     }
 }

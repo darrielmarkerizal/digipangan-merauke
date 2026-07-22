@@ -17,12 +17,24 @@ class FarmerGroupRepository extends BaseRepository implements FarmerGroupReposit
     protected function allowedFilters(): array
     {
         return [
-            AllowedFilter::partial("name"),
+            AllowedFilter::partial('name'),
+            AllowedFilter::exact('region_id'),
+            AllowedFilter::exact('village_id'),
         ];
+    }
+
+    protected function searchable(): array
+    {
+        return ['name'];
+    }
+
+    protected function allowedIncludes(): array
+    {
+        return ['region', 'village'];
     }
 
     protected function allowedSorts(): array
     {
-        return ["name", "created_at"];
+        return ['name', 'created_at'];
     }
 }

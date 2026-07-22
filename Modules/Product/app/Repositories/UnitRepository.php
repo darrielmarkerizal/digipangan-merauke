@@ -17,12 +17,18 @@ class UnitRepository extends BaseRepository implements UnitRepositoryInterface
     protected function allowedFilters(): array
     {
         return [
-            AllowedFilter::partial("name"),
+            AllowedFilter::partial('name'),
+            AllowedFilter::exact('is_active'),
         ];
+    }
+
+    protected function searchable(): array
+    {
+        return ['name', 'symbol'];
     }
 
     protected function allowedSorts(): array
     {
-        return ["name", "created_at"];
+        return ['name', 'created_at'];
     }
 }

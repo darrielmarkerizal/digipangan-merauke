@@ -17,12 +17,24 @@ class VillageRepository extends BaseRepository implements VillageRepositoryInter
     protected function allowedFilters(): array
     {
         return [
-            AllowedFilter::partial("name"),
+            AllowedFilter::partial('name'),
+            AllowedFilter::exact('region_id'),
+            AllowedFilter::exact('is_active'),
         ];
+    }
+
+    protected function searchable(): array
+    {
+        return ['name'];
+    }
+
+    protected function allowedIncludes(): array
+    {
+        return ['region'];
     }
 
     protected function allowedSorts(): array
     {
-        return ["name", "created_at"];
+        return ['name', 'created_at'];
     }
 }

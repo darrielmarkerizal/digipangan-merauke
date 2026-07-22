@@ -3,14 +3,18 @@
 namespace Modules\Product\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateUnitRequest extends FormRequest
 {
     public function rules(): array
     {
+        $id = $this->route('unit');
+
         return [
-            // For update, we make fields optional if not provided, but still validate if provided
-            'name' => 'required|string|max:30', 'symbol' => 'required|string|max:10', 'is_active' => 'boolean'
+            'name' => ['required', 'string', 'max:30', Rule::unique('units', 'name')->ignore($id)],
+            'symbol' => ['required', 'string', 'max:10', Rule::unique('units', 'symbol')->ignore($id)],
+            'is_active' => ['boolean'],
         ];
     }
 

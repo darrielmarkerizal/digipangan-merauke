@@ -27,11 +27,6 @@ class ProductCategory extends Model
             ->saveSlugsTo('slug');
     }
 
-    public function getRouteKeyName(): string
-    {
-        return 'slug';
-    }
-
     public function products(): HasMany
     {
         return $this->hasMany(Product::class);
