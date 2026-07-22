@@ -22,5 +22,11 @@ class DatabaseSeeder extends Seeder
             PostDatabaseSeeder::class,
             PageDatabaseSeeder::class,
         ]);
+
+        // Data contoh (petani, produk, berita) hanya di luar produksi agar
+        // lingkungan produksi tetap bersih dari data demo.
+        if (! app()->isProduction()) {
+            $this->call(DemoDataSeeder::class);
+        }
     }
 }

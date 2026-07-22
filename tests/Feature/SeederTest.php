@@ -2,9 +2,14 @@
 
 use Database\Seeders\DatabaseSeeder;
 use Modules\Farmer\Models\Commodity;
+use Modules\Farmer\Models\Farmer;
+use Modules\Farmer\Models\FarmerGroup;
+use Modules\Page\Models\Faq;
 use Modules\Page\Models\Partner;
 use Modules\Page\Models\SiteSetting;
+use Modules\Post\Models\Post;
 use Modules\Post\Models\PostCategory;
+use Modules\Product\Models\Product;
 use Modules\Product\Models\ProductCategory;
 use Modules\Product\Models\Unit;
 use Modules\Region\Models\Region;
@@ -27,12 +32,21 @@ describe('wilayah dan kampung', function () {
             ->and(Village::count())->toBe(34);
     });
 
-    it('hanya mengisi statistik BPS untuk Ulilin', function () {
+    it('mengisi luas seluruh distrik namun populasi hanya untuk Ulilin yang terverifikasi', function () {
+        expect(Region::whereNotNull('area_km2')->count())->toBe(3)
+            ->and(Region::whereNotNull('population')->count())->toBe(1);
+
         $ulilin = Region::where('name', 'Ulilin')->first();
 
         expect((float) $ulilin->area_km2)->toBe(3633.08)
-            ->and($ulilin->population)->toBe(10791)
-            ->and(Region::whereNotNull('population')->count())->toBe(1);
+            ->and($ulilin->population)->toBe(10791);
+    });
+
+    it('mengisi gambaran wilayah dan potensi pertanian tiap distrik', function () {
+        Region::all()->each(function (Region $region) {
+            expect($region->description)->not->toBeNull()
+                ->and($region->agricultural_potential)->not->toBeNull();
+        });
     });
 
     it('membuat slug unik untuk seluruh kampung', function () {
@@ -74,9 +88,23 @@ describe('halaman tentang dan peran', function () {
             ->toBe(['Universitas Gadjah Mada', 'Kementerian Transmigrasi RI']);
     });
 
-    it('menyiapkan lima key pengaturan tanpa mengarang isinya', function () {
+    it('mengisi latar belakang dan tujuan Tentang dari narasi program', function () {
         expect(SiteSetting::count())->toBe(5)
-            ->and(SiteSetting::whereNotNull('value')->count())->toBe(0);
+            ->and(SiteSetting::where('key', 'about_background')->value('value'))->not->toBeNull()
+            ->and(SiteSetting::where('key', 'about_purpose')->value('value'))->not->toBeNull();
+    });
+
+    it('membiarkan kontak admin kosong untuk diisi pemilik program', function () {
+        expect(
+            SiteSetting::whereIn('key', ['admin_contact_name', 'admin_contact_phone', 'admin_contact_email'])
+                ->whereNotNull('value')
+                ->count()
+        )->toBe(0);
+    });
+
+    it('mengisi lima entri pusat bantuan (FAQ)', function () {
+        expect(Faq::count())->toBe(5)
+            ->and(Faq::where('is_active', true)->count())->toBe(5);
     });
 
     it('mengisi peran super_admin dan admin', function () {
@@ -84,12 +112,44 @@ describe('halaman tentang dan peran', function () {
     });
 });
 
+describe('data contoh (demo)', function () {
+    it('menambah petani contoh termasuk Bapak Muhamad Riam dengan komoditasnya', function () {
+        $riam = Farmer::where('name', 'Bapak Muhamad Riam')->first();
+
+        expect($riam)->not->toBeNull()
+            ->and($riam->region->name)->toBe('Elikobel')
+            ->and($riam->commodities->pluck('name')->all())
+            ->toContain('Cabai Rawit', 'Tomat', 'Kopi', 'Ubi Kayu');
+
+        expect(FarmerGroup::where('name', 'Kelompok Tani Elikobel')->exists())->toBeTrue();
+    });
+
+    it('menambah produk contoh dengan wilayah terisi otomatis dari petani', function () {
+        $product = Product::where('name', 'Cabai Rawit Segar Elikobel')->first();
+
+        expect($product)->not->toBeNull()
+            ->and($product->region->name)->toBe('Elikobel')
+            ->and($product->is_featured)->toBeTrue()
+            ->and(Product::count())->toBeGreaterThanOrEqual(8);
+    });
+
+    it('menambah berita contoh yang berstatus terbit', function () {
+        expect(Post::where('status', Post::STATUS_PUBLISHED)->count())->toBeGreaterThanOrEqual(4);
+    });
+});
+
 it('aman dijalankan dua kali', function () {
+    $farmers = Farmer::count();
+    $products = Product::count();
+
     $this->seed(DatabaseSeeder::class);
 
     expect(Region::count())->toBe(3)
         ->and(Village::count())->toBe(34)
         ->and(Commodity::count())->toBe(18)
         ->and(Unit::count())->toBe(8)
-        ->and(Partner::count())->toBe(2);
+        ->and(Partner::count())->toBe(2)
+        ->and(Faq::count())->toBe(5)
+        ->and(Farmer::count())->toBe($farmers)
+        ->and(Product::count())->toBe($products);
 });
