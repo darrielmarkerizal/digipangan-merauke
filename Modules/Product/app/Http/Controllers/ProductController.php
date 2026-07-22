@@ -2,55 +2,67 @@
 
 namespace Modules\Product\Http\Controllers;
 
+use App\Enums\Permission;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Traits\ApiResponse;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Modules\Product\Http\Requests\StoreProductRequest;
+use Modules\Product\Http\Requests\UpdateProductRequest;
+use Modules\Product\Http\Resources\ProductResource;
+use Modules\Product\Services\ProductService;
 
-class ProductController extends Controller
+class ProductController extends Controller implements HasMiddleware
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    use ApiResponse;
+
+    public function __construct(private readonly ProductService $service) {}
+
+    public static function middleware(): array
     {
-        return view('product::index');
+        return ['permission:'.Permission::ManageProducts->value];
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function index(): JsonResponse
     {
-        return view('product::create');
+        $paginator = $this->service->paginateFiltered();
+
+        return $this->paginatedResponse(
+            $paginator->setCollection(ProductResource::collection($paginator->getCollection())->collection)
+        );
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request) {}
-
-    /**
-     * Show the specified resource.
-     */
-    public function show($id)
+    public function show(int $id): JsonResponse
     {
-        return view('product::show');
+        return $this->successResponse(
+            new ProductResource($this->service->findOrFail($id))
+        );
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit($id)
+    public function store(StoreProductRequest $request): JsonResponse
     {
-        return view('product::edit');
+        return $this->successResponse(
+            new ProductResource($this->service->create($request->validated())),
+            'Produk berhasil dibuat.',
+            201
+        );
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, $id) {}
+    public function update(UpdateProductRequest $request, int $id): JsonResponse
+    {
+        $model = $this->service->findOrFail($id);
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy($id) {}
+        return $this->successResponse(
+            new ProductResource($this->service->update($model, $request->validated())),
+            'Produk berhasil diperbarui.'
+        );
+    }
+
+    public function destroy(int $id): JsonResponse
+    {
+        $model = $this->service->findOrFail($id);
+        $this->service->delete($model);
+
+        return $this->successResponse(null, 'Produk berhasil dihapus.');
+    }
 }

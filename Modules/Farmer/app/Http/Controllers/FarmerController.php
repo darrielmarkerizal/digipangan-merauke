@@ -2,55 +2,67 @@
 
 namespace Modules\Farmer\Http\Controllers;
 
+use App\Enums\Permission;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Traits\ApiResponse;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Modules\Farmer\Http\Requests\StoreFarmerRequest;
+use Modules\Farmer\Http\Requests\UpdateFarmerRequest;
+use Modules\Farmer\Http\Resources\FarmerResource;
+use Modules\Farmer\Services\FarmerService;
 
-class FarmerController extends Controller
+class FarmerController extends Controller implements HasMiddleware
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    use ApiResponse;
+
+    public function __construct(private readonly FarmerService $service) {}
+
+    public static function middleware(): array
     {
-        return view('farmer::index');
+        return ['permission:'.Permission::ManageFarmers->value];
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function index(): JsonResponse
     {
-        return view('farmer::create');
+        $paginator = $this->service->paginateFiltered();
+
+        return $this->paginatedResponse(
+            $paginator->setCollection(FarmerResource::collection($paginator->getCollection())->collection)
+        );
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request) {}
-
-    /**
-     * Show the specified resource.
-     */
-    public function show($id)
+    public function show(int $id): JsonResponse
     {
-        return view('farmer::show');
+        return $this->successResponse(
+            new FarmerResource($this->service->findOrFail($id))
+        );
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit($id)
+    public function store(StoreFarmerRequest $request): JsonResponse
     {
-        return view('farmer::edit');
+        return $this->successResponse(
+            new FarmerResource($this->service->create($request->validated())),
+            'Petani berhasil dibuat.',
+            201
+        );
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, $id) {}
+    public function update(UpdateFarmerRequest $request, int $id): JsonResponse
+    {
+        $model = $this->service->findOrFail($id);
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy($id) {}
+        return $this->successResponse(
+            new FarmerResource($this->service->update($model, $request->validated())),
+            'Petani berhasil diperbarui.'
+        );
+    }
+
+    public function destroy(int $id): JsonResponse
+    {
+        $model = $this->service->findOrFail($id);
+        $this->service->delete($model);
+
+        return $this->successResponse(null, 'Petani berhasil dihapus.');
+    }
 }

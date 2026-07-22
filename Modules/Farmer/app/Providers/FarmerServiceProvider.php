@@ -54,5 +54,6 @@ class FarmerServiceProvider extends ModuleServiceProvider
 
         $this->app->bind(\Modules\Farmer\Repositories\Contracts\FarmerGroupRepositoryInterface::class, \Modules\Farmer\Repositories\FarmerGroupRepository::class);
         $this->app->bind(\Modules\Farmer\Repositories\Contracts\CommodityRepositoryInterface::class, \Modules\Farmer\Repositories\CommodityRepository::class);
+        $this->app->bind(\Modules\Farmer\Repositories\Contracts\FarmerRepositoryInterface::class, \Modules\Farmer\Repositories\FarmerRepository::class);
     }
 }

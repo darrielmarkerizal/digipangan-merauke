@@ -51,5 +51,6 @@ class PostServiceProvider extends ModuleServiceProvider
         parent::register();
 
         $this->app->bind(\Modules\Post\Repositories\Contracts\PostCategoryRepositoryInterface::class, \Modules\Post\Repositories\PostCategoryRepository::class);
+        $this->app->bind(\Modules\Post\Repositories\Contracts\PostRepositoryInterface::class, \Modules\Post\Repositories\PostRepository::class);
     }
 }

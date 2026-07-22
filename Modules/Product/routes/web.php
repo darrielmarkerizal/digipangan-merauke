@@ -1,8 +1,5 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Modules\Product\Http\Controllers\ProductController;
 
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::resource('products', ProductController::class)->names('product');
-});
+// Product CRUD is served as a JSON API in routes/api.php (see ProductController).

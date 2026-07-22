@@ -2,55 +2,67 @@
 
 namespace Modules\Region\Http\Controllers;
 
+use App\Enums\Permission;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Traits\ApiResponse;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Modules\Region\Http\Requests\StoreRegionRequest;
+use Modules\Region\Http\Requests\UpdateRegionRequest;
+use Modules\Region\Http\Resources\RegionResource;
+use Modules\Region\Services\RegionService;
 
-class RegionController extends Controller
+class RegionController extends Controller implements HasMiddleware
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    use ApiResponse;
+
+    public function __construct(private readonly RegionService $service) {}
+
+    public static function middleware(): array
     {
-        return view('region::index');
+        return ['permission:'.Permission::ManageRegions->value];
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function index(): JsonResponse
     {
-        return view('region::create');
+        $paginator = $this->service->paginateFiltered();
+
+        return $this->paginatedResponse(
+            $paginator->setCollection(RegionResource::collection($paginator->getCollection())->collection)
+        );
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request) {}
-
-    /**
-     * Show the specified resource.
-     */
-    public function show($id)
+    public function show(int $id): JsonResponse
     {
-        return view('region::show');
+        return $this->successResponse(
+            new RegionResource($this->service->findOrFail($id))
+        );
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit($id)
+    public function store(StoreRegionRequest $request): JsonResponse
     {
-        return view('region::edit');
+        return $this->successResponse(
+            new RegionResource($this->service->create($request->validated())),
+            'Wilayah berhasil dibuat.',
+            201
+        );
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, $id) {}
+    public function update(UpdateRegionRequest $request, int $id): JsonResponse
+    {
+        $model = $this->service->findOrFail($id);
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy($id) {}
+        return $this->successResponse(
+            new RegionResource($this->service->update($model, $request->validated())),
+            'Wilayah berhasil diperbarui.'
+        );
+    }
+
+    public function destroy(int $id): JsonResponse
+    {
+        $model = $this->service->findOrFail($id);
+        $this->service->delete($model);
+
+        return $this->successResponse(null, 'Wilayah berhasil dihapus.');
+    }
 }

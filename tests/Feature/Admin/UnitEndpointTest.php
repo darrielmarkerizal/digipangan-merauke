@@ -51,6 +51,12 @@ describe('Unit CRUD', function () {
         $this->actingAs(actor_unit('admin'))->getJson(route('api.unit.index'))->assertOk();
     });
 
+    it('menolak pengguna tanpa izin kelola master data dengan 403', function () {
+        $user = User::factory()->create(['is_active' => true]);
+
+        $this->actingAs($user)->getJson(route('api.unit.index'))->assertStatus(403);
+    });
+
     it('membuat satuan baru', function () {
         $this->actingAs(actor_unit())
             ->postJson(route('api.unit.store'), ['name' => 'Kilogram', 'symbol' => 'kg'])

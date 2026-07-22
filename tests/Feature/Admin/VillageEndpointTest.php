@@ -34,6 +34,12 @@ describe('Village CRUD', function () {
         $this->actingAs(actor_village('admin'))->getJson(route('api.village.index'))->assertOk();
     });
 
+    it('menolak pengguna tanpa izin kelola master data dengan 403', function () {
+        $user = User::factory()->create(['is_active' => true]);
+
+        $this->actingAs($user)->getJson(route('api.village.index'))->assertStatus(403);
+    });
+
     it('membuat desa baru', function () {
         $region = village_region();
 

@@ -54,5 +54,6 @@ class ProductServiceProvider extends ModuleServiceProvider
 
         $this->app->bind(\Modules\Product\Repositories\Contracts\UnitRepositoryInterface::class, \Modules\Product\Repositories\UnitRepository::class);
         $this->app->bind(\Modules\Product\Repositories\Contracts\ProductCategoryRepositoryInterface::class, \Modules\Product\Repositories\ProductCategoryRepository::class);
+        $this->app->bind(\Modules\Product\Repositories\Contracts\ProductRepositoryInterface::class, \Modules\Product\Repositories\ProductRepository::class);
     }
 }

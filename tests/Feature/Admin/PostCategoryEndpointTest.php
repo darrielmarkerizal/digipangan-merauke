@@ -39,6 +39,12 @@ describe('PostCategory CRUD', function () {
         $this->actingAs(actor_post_category('admin'))->getJson(route('api.post_category.index'))->assertOk();
     });
 
+    it('menolak pengguna tanpa izin kelola master data dengan 403', function () {
+        $user = User::factory()->create(['is_active' => true]);
+
+        $this->actingAs($user)->getJson(route('api.post_category.index'))->assertStatus(403);
+    });
+
     it('membuat kategori berita baru', function () {
         $this->actingAs(actor_post_category())
             ->postJson(route('api.post_category.store'), ['name' => 'Panen'])

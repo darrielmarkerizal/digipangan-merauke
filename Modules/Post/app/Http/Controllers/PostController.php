@@ -2,55 +2,67 @@
 
 namespace Modules\Post\Http\Controllers;
 
+use App\Enums\Permission;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Traits\ApiResponse;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Modules\Post\Http\Requests\StorePostRequest;
+use Modules\Post\Http\Requests\UpdatePostRequest;
+use Modules\Post\Http\Resources\PostResource;
+use Modules\Post\Services\PostService;
 
-class PostController extends Controller
+class PostController extends Controller implements HasMiddleware
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    use ApiResponse;
+
+    public function __construct(private readonly PostService $service) {}
+
+    public static function middleware(): array
     {
-        return view('post::index');
+        return ['permission:'.Permission::ManagePosts->value];
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function index(): JsonResponse
     {
-        return view('post::create');
+        $paginator = $this->service->paginateFiltered();
+
+        return $this->paginatedResponse(
+            $paginator->setCollection(PostResource::collection($paginator->getCollection())->collection)
+        );
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request) {}
-
-    /**
-     * Show the specified resource.
-     */
-    public function show($id)
+    public function show(int $id): JsonResponse
     {
-        return view('post::show');
+        return $this->successResponse(
+            new PostResource($this->service->findOrFail($id))
+        );
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit($id)
+    public function store(StorePostRequest $request): JsonResponse
     {
-        return view('post::edit');
+        return $this->successResponse(
+            new PostResource($this->service->create($request->validated())),
+            'Berita berhasil dibuat.',
+            201
+        );
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, $id) {}
+    public function update(UpdatePostRequest $request, int $id): JsonResponse
+    {
+        $model = $this->service->findOrFail($id);
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy($id) {}
+        return $this->successResponse(
+            new PostResource($this->service->update($model, $request->validated())),
+            'Berita berhasil diperbarui.'
+        );
+    }
+
+    public function destroy(int $id): JsonResponse
+    {
+        $model = $this->service->findOrFail($id);
+        $this->service->delete($model);
+
+        return $this->successResponse(null, 'Berita berhasil dihapus.');
+    }
 }

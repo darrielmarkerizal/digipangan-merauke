@@ -102,16 +102,16 @@ describe('profil', function () {
         Storage::fake('public');
         Storage::fake('local');
         $user = makeUser();
+        $this->actingAs($user);
 
         $upload = $this->postJson(route('api.media.upload'), [
-            'file' => UploadedFile::fake()->image('avatar.jpg', 600, 600)
+            'file' => UploadedFile::fake()->image('avatar.jpg', 600, 600),
         ]);
 
-        $this->actingAs($user)
-            ->putJson(route('api.auth.profile.update'), [
-                'name' => 'Nama Baru',
-                'avatar_uuid' => $upload->json('folder'),
-            ])
+        $this->putJson(route('api.auth.profile.update'), [
+            'name' => 'Nama Baru',
+            'avatar_uuid' => $upload->json('folder'),
+        ])
             ->assertOk()
             ->assertJsonPath('data.name', 'Nama Baru');
 
@@ -132,13 +132,14 @@ describe('profil', function () {
         Storage::fake('public');
         Storage::fake('local');
         $user = makeUser();
+        $this->actingAs($user);
 
         foreach (['satu.jpg', 'dua.jpg'] as $name) {
             $upload = $this->postJson(route('api.media.upload'), [
-                'file' => UploadedFile::fake()->image($name, 400, 400)
+                'file' => UploadedFile::fake()->image($name, 400, 400),
             ]);
 
-            $this->actingAs($user)->putJson(route('api.auth.profile.update'), [
+            $this->putJson(route('api.auth.profile.update'), [
                 'avatar_uuid' => $upload->json('folder'),
             ])->assertOk();
         }

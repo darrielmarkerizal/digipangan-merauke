@@ -51,6 +51,12 @@ describe('ProductCategory CRUD', function () {
         $this->actingAs(actor_product_category('admin'))->getJson(route('api.product_category.index'))->assertOk();
     });
 
+    it('menolak pengguna tanpa izin kelola master data dengan 403', function () {
+        $user = User::factory()->create(['is_active' => true]);
+
+        $this->actingAs($user)->getJson(route('api.product_category.index'))->assertStatus(403);
+    });
+
     it('membuat kategori baru', function () {
         $this->actingAs(actor_product_category())
             ->postJson(route('api.product_category.store'), ['name' => 'Sayuran', 'sort_order' => 1])

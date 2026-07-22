@@ -51,5 +51,6 @@ class RegionServiceProvider extends ModuleServiceProvider
         parent::register();
 
         $this->app->bind(\Modules\Region\Repositories\Contracts\VillageRepositoryInterface::class, \Modules\Region\Repositories\VillageRepository::class);
+        $this->app->bind(\Modules\Region\Repositories\Contracts\RegionRepositoryInterface::class, \Modules\Region\Repositories\RegionRepository::class);
     }
 }

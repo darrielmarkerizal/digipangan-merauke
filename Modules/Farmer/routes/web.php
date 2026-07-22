@@ -1,8 +1,5 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Modules\Farmer\Http\Controllers\FarmerController;
 
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::resource('farmers', FarmerController::class)->names('farmer');
-});
+// Farmer CRUD is served as a JSON API in routes/api.php (see FarmerController).

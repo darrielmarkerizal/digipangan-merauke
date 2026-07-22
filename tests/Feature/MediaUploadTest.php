@@ -1,6 +1,7 @@
 <?php
 
-use Modules\Media\Models\TemporaryFile;
+use App\Models\User;
+use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Modules\Page\Models\Partner;
@@ -10,7 +11,15 @@ beforeEach(function () {
     Storage::fake('public');
 });
 
+it('menolak unggahan dari tamu dengan 401', function () {
+    $this->postJson(route('api.media.upload'), [
+        'file' => UploadedFile::fake()->image('avatar.jpg'),
+    ])->assertStatus(401);
+});
+
 it('can upload temporary media', function () {
+    $this->actingAs(User::factory()->create(['is_active' => true]));
+
     $file = UploadedFile::fake()->image('avatar.jpg');
 
     $response = $this->postJson(route('api.media.upload'), [
@@ -28,12 +37,14 @@ it('can upload temporary media', function () {
         'filename' => $filename,
     ]);
 
-    /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
+    /** @var FilesystemAdapter $disk */
     $disk = Storage::disk('local');
-    $disk->assertExists('temp/' . $folder . '/' . $filename);
+    $disk->assertExists('temp/'.$folder.'/'.$filename);
 });
 
 it('can delete temporary media', function () {
+    $this->actingAs(User::factory()->create(['is_active' => true]));
+
     $file = UploadedFile::fake()->image('avatar.jpg');
 
     $uploadResponse = $this->postJson(route('api.media.upload'), [
@@ -52,12 +63,14 @@ it('can delete temporary media', function () {
         'folder' => $folder,
     ]);
 
-    /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
+    /** @var FilesystemAdapter $disk */
     $disk = Storage::disk('local');
-    $disk->assertMissing('temp/' . $folder . '/' . $file->getClientOriginalName());
+    $disk->assertMissing('temp/'.$folder.'/'.$file->getClientOriginalName());
 });
 
 it('can attach temporary media to a model using the trait', function () {
+    $this->actingAs(User::factory()->create(['is_active' => true]));
+
     $file = UploadedFile::fake()->image('logo.png');
 
     $uploadResponse = $this->postJson(route('api.media.upload'), [
@@ -81,7 +94,7 @@ it('can attach temporary media to a model using the trait', function () {
     $this->assertDatabaseMissing('temporary_files', [
         'folder' => $folder,
     ]);
-    /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
+    /** @var FilesystemAdapter $disk */
     $disk = Storage::disk('local');
-    $disk->assertMissing('temp/' . $folder . '/' . $filename);
+    $disk->assertMissing('temp/'.$folder.'/'.$filename);
 });

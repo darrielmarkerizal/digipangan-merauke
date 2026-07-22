@@ -43,6 +43,12 @@ describe('Commodity CRUD', function () {
         $this->actingAs(actor_commodity('admin'))->getJson(route('api.commodity.index'))->assertOk();
     });
 
+    it('menolak pengguna tanpa izin kelola master data dengan 403', function () {
+        $user = User::factory()->create(['is_active' => true]);
+
+        $this->actingAs($user)->getJson(route('api.commodity.index'))->assertStatus(403);
+    });
+
     it('membuat komoditas baru', function () {
         $this->actingAs(actor_commodity())
             ->postJson(route('api.commodity.store'), ['name' => 'Cabai Rawit'])

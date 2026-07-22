@@ -34,6 +34,12 @@ describe('FarmerGroup CRUD', function () {
         $this->actingAs(actor_farmer_group('admin'))->getJson(route('api.farmer_group.index'))->assertOk();
     });
 
+    it('menolak pengguna tanpa izin kelola master data dengan 403', function () {
+        $user = User::factory()->create(['is_active' => true]);
+
+        $this->actingAs($user)->getJson(route('api.farmer_group.index'))->assertStatus(403);
+    });
+
     it('membuat kelompok tani baru', function () {
         $region = farmer_group_region();
 
