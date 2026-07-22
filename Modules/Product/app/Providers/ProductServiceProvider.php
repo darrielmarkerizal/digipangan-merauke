@@ -2,13 +2,15 @@
 
 namespace Modules\Product\Providers;
 
-use Nwidart\Modules\Support\ModuleServiceProvider;
 use Illuminate\Console\Scheduling\Schedule;
-
-use Modules\Product\Repositories\Contracts\UnitRepositoryInterface;
-use Modules\Product\Repositories\UnitRepository;
+use Modules\Product\Console\PurgeProductInteractionsCommand;
 use Modules\Product\Repositories\Contracts\ProductCategoryRepositoryInterface;
+use Modules\Product\Repositories\Contracts\ProductRepositoryInterface;
+use Modules\Product\Repositories\Contracts\UnitRepositoryInterface;
 use Modules\Product\Repositories\ProductCategoryRepository;
+use Modules\Product\Repositories\ProductRepository;
+use Modules\Product\Repositories\UnitRepository;
+use Nwidart\Modules\Support\ModuleServiceProvider;
 
 class ProductServiceProvider extends ModuleServiceProvider
 {
@@ -27,7 +29,9 @@ class ProductServiceProvider extends ModuleServiceProvider
      *
      * @var string[]
      */
-    // protected array $commands = [];
+    protected array $commands = [
+        PurgeProductInteractionsCommand::class,
+    ];
 
     /**
      * Provider classes to register.
@@ -39,21 +43,17 @@ class ProductServiceProvider extends ModuleServiceProvider
         RouteServiceProvider::class,
     ];
 
-    /**
-     * Define module schedules.
-     * 
-     * @param $schedule
-     */
-    // protected function configureSchedules(Schedule $schedule): void
-    // {
-    //     $schedule->command('inspire')->hourly();
-    // 
     public function register(): void
     {
         parent::register();
 
-        $this->app->bind(\Modules\Product\Repositories\Contracts\UnitRepositoryInterface::class, \Modules\Product\Repositories\UnitRepository::class);
-        $this->app->bind(\Modules\Product\Repositories\Contracts\ProductCategoryRepositoryInterface::class, \Modules\Product\Repositories\ProductCategoryRepository::class);
-        $this->app->bind(\Modules\Product\Repositories\Contracts\ProductRepositoryInterface::class, \Modules\Product\Repositories\ProductRepository::class);
+        $this->app->bind(UnitRepositoryInterface::class, UnitRepository::class);
+        $this->app->bind(ProductCategoryRepositoryInterface::class, ProductCategoryRepository::class);
+        $this->app->bind(ProductRepositoryInterface::class, ProductRepository::class);
+    }
+
+    protected function configureSchedules(Schedule $schedule): void
+    {
+        $schedule->command('interactions:purge')->daily();
     }
 }
