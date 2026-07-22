@@ -2,9 +2,9 @@
 
 namespace App\Repositories\Contracts;
 
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Spatie\QueryBuilder\QueryBuilder;
 
 interface BaseRepositoryInterface
@@ -16,6 +16,12 @@ interface BaseRepositoryInterface
     public function filtered(): QueryBuilder;
 
     public function paginateFiltered(?int $perPage = null): LengthAwarePaginator;
+
+    public function publicFiltered(): QueryBuilder;
+
+    public function publicPaginateFiltered(?int $perPage = null): LengthAwarePaginator;
+
+    public function publicFindBySlug(string $slug, array $with = []): ?Model;
 
     public function find(int|string $id, array $with = []): ?Model;
 

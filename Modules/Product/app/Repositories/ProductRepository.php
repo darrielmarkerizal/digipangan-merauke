@@ -20,6 +20,11 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
         return parent::query()->with(['media', 'category', 'unit', 'farmer', 'region']);
     }
 
+    protected function visibilityScope(Builder $query): Builder
+    {
+        return $query->where('is_active', true);
+    }
+
     protected function allowedFilters(): array
     {
         return [
@@ -32,6 +37,9 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
             AllowedFilter::exact('is_region_featured'),
             AllowedFilter::exact('is_active'),
             AllowedFilter::exact('stock_available'),
+            AllowedFilter::callback('category', fn (Builder $query, $value) => $query->whereHas(
+                'category', fn (Builder $categoryQuery) => $categoryQuery->where('slug', $value)
+            )),
         ];
     }
 

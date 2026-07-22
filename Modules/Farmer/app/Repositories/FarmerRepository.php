@@ -20,6 +20,11 @@ class FarmerRepository extends BaseRepository implements FarmerRepositoryInterfa
         return parent::query()->with(['media', 'region', 'village', 'farmerGroup', 'commodities']);
     }
 
+    protected function visibilityScope(Builder $query): Builder
+    {
+        return $query->where('is_active', true);
+    }
+
     protected function allowedFilters(): array
     {
         return [

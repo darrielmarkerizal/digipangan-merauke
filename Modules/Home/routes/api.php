@@ -1,8 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Modules\Home\Http\Controllers\HomeController;
+use Modules\Home\Http\Controllers\Public\HomeController;
 
-Route::middleware(['auth:sanctum'])->prefix('v1')->group(function () {
-    Route::apiResource('homes', HomeController::class)->names('home');
+// Public home feed (guest, read-only): featured products, latest products, region cards.
+Route::middleware(['throttle:120,1'])->prefix('v1/public')->name('public.')->group(function () {
+    Route::get('home', [HomeController::class, 'index'])->name('home.index');
 });

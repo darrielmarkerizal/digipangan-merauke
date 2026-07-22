@@ -20,6 +20,11 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface
         return parent::query()->with(['media', 'category', 'author']);
     }
 
+    protected function visibilityScope(Builder $query): Builder
+    {
+        return $query->published();
+    }
+
     protected function allowedFilters(): array
     {
         return [
@@ -27,6 +32,9 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface
             AllowedFilter::exact('post_category_id'),
             AllowedFilter::exact('status'),
             AllowedFilter::exact('author_id'),
+            AllowedFilter::callback('category', fn (Builder $query, $value) => $query->whereHas(
+                'category', fn (Builder $categoryQuery) => $categoryQuery->where('slug', $value)
+            )),
         ];
     }
 

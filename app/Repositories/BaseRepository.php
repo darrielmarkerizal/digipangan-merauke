@@ -4,10 +4,10 @@ namespace App\Repositories;
 
 use App\Repositories\Contracts\BaseRepositoryInterface;
 use App\Support\Filters\UniversalSearch;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -85,22 +85,56 @@ abstract class BaseRepository implements BaseRepositoryInterface
 
     public function filtered(): QueryBuilder
     {
+        return $this->buildFiltered($this->query());
+    }
+
+    public function publicFiltered(): QueryBuilder
+    {
+        return $this->buildFiltered($this->visibilityScope($this->query()));
+    }
+
+    protected function buildFiltered(Builder $base): QueryBuilder
+    {
         $this->promoteSearchParameter();
 
-        return QueryBuilder::for($this->query())
+        return QueryBuilder::for($base)
             ->allowedFilters(...$this->resolvedFilters())
             ->allowedSorts(...$this->allowedSorts())
             ->allowedIncludes(...$this->allowedIncludes())
             ->defaultSort($this->defaultSort());
     }
 
+    /**
+     * Visibility constraint for public (guest) reads. No-op by default; entity
+     * repositories override it to expose only active/published records.
+     */
+    protected function visibilityScope(Builder $query): Builder
+    {
+        return $query;
+    }
+
     public function paginateFiltered(?int $perPage = null): LengthAwarePaginator
+    {
+        return $this->paginateQuery($this->filtered(), $perPage);
+    }
+
+    public function publicPaginateFiltered(?int $perPage = null): LengthAwarePaginator
+    {
+        return $this->paginateQuery($this->publicFiltered(), $perPage);
+    }
+
+    private function paginateQuery(QueryBuilder $query, ?int $perPage): LengthAwarePaginator
     {
         $perPage = $perPage ?? (int) request()->integer('per_page', $this->defaultPerPage);
 
-        return $this->filtered()
+        return $query
             ->paginate(max(min($perPage, $this->maxPerPage), 1))
             ->appends(request()->query());
+    }
+
+    public function publicFindBySlug(string $slug, array $with = []): ?Model
+    {
+        return $this->visibilityScope($this->query())->with($with)->where('slug', $slug)->first();
     }
 
     public function all(array $with = []): Collection

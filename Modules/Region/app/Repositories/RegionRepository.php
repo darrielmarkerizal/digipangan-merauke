@@ -19,7 +19,16 @@ class RegionRepository extends BaseRepository implements RegionRepositoryInterfa
     {
         return parent::query()
             ->with(['media'])
-            ->withCount(['villages', 'farmerGroups']);
+            ->withCount([
+                'villages',
+                'farmerGroups',
+                'products as active_products_count' => fn (Builder $query) => $query->where('is_active', true),
+            ]);
+    }
+
+    protected function visibilityScope(Builder $query): Builder
+    {
+        return $query->where('is_active', true);
     }
 
     protected function allowedFilters(): array
