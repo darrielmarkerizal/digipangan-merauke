@@ -2,8 +2,10 @@
 
 namespace Modules\Region\Http\Resources\Public;
 
+use App\Support\PublicUrl;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Str;
 use Modules\Product\Http\Resources\Public\PublicProductResource;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
@@ -35,6 +37,13 @@ class PublicRegionDetailResource extends JsonResource
                 'regionFeaturedProducts',
                 fn () => PublicProductResource::collection($this->regionFeaturedProducts)
             ),
+            'seo' => [
+                'title' => 'Wilayah '.$this->name.' — DigiPangan Merauke',
+                'description' => Str::limit(strip_tags((string) $this->description), 160)
+                    ?: 'Profil kawasan transmigrasi '.$this->name.' di Kabupaten Merauke.',
+                'canonical' => PublicUrl::region($this->slug),
+                'og_image' => $cover?->getUrl('card'),
+            ],
         ];
     }
 }

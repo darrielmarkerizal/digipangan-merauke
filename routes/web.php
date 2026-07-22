@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\SitemapController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -10,4 +11,4 @@ Route::get('/', function () {
     ]);
 });
 
-
+Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');

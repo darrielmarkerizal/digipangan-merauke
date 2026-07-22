@@ -2,6 +2,7 @@
 
 namespace Modules\Farmer\Http\Resources\Public;
 
+use App\Support\PublicUrl;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Modules\Product\Http\Resources\Public\PublicProductResource;
@@ -37,6 +38,14 @@ class PublicFarmerResource extends JsonResource
                 'slug' => $commodity->slug,
             ])->all()),
             'products' => $this->whenLoaded('products', fn () => PublicProductResource::collection($this->products)),
+            'seo' => [
+                'title' => $this->name.' — DigiPangan Merauke',
+                'description' => 'Profil petani '.$this->name
+                    .($this->relationLoaded('region') && $this->region ? ' dari '.$this->region->name : '')
+                    .' beserta produk yang dijual.',
+                'canonical' => PublicUrl::farmer($this->slug),
+                'og_image' => $photo?->getUrl('card'),
+            ],
         ];
     }
 }

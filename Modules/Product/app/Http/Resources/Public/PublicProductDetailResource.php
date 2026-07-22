@@ -2,14 +2,21 @@
 
 namespace Modules\Product\Http\Resources\Public;
 
+use App\Support\PublicUrl;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Str;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class PublicProductDetailResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
+        $media = $this->getMedia('photos');
+        $ogImage = $media->first()?->getUrl('card');
+        $description = Str::limit(strip_tags((string) $this->description), 160)
+            ?: 'Produk lokal kawasan transmigrasi Merauke.';
+
         return [
             'name' => $this->name,
             'slug' => $this->slug,
@@ -34,11 +41,37 @@ class PublicProductDetailResource extends JsonResource
                 'slug' => $this->farmer->slug,
                 'phone' => $this->farmer->phone,
             ]),
-            'photos' => $this->getMedia('photos')->map(fn (Media $media) => [
-                'original' => $media->getUrl(),
-                'thumb' => $media->getUrl('thumb'),
-                'card' => $media->getUrl('card'),
+            'photos' => $media->map(fn (Media $item) => [
+                'original' => $item->getUrl(),
+                'thumb' => $item->getUrl('thumb'),
+                'card' => $item->getUrl('card'),
             ])->all(),
+            'seo' => [
+                'title' => $this->name.' — DigiPangan Merauke',
+                'description' => $description,
+                'canonical' => PublicUrl::product($this->slug),
+                'og_image' => $ogImage,
+                'structured_data' => array_filter([
+                    '@context' => 'https://schema.org',
+                    '@type' => 'Product',
+                    'name' => $this->name,
+                    'description' => $description,
+                    'image' => $ogImage,
+                    'offers' => [
+                        '@type' => 'Offer',
+                        'price' => (string) $this->price,
+                        'priceCurrency' => 'IDR',
+                        'availability' => $this->stock_available
+                            ? 'https://schema.org/InStock'
+                            : 'https://schema.org/OutOfStock',
+                        'url' => PublicUrl::product($this->slug),
+                    ],
+                    'brand' => $this->relationLoaded('farmer') && $this->farmer ? [
+                        '@type' => 'Organization',
+                        'name' => $this->farmer->name,
+                    ] : null,
+                ], fn ($value) => $value !== null),
+            ],
         ];
     }
 }
