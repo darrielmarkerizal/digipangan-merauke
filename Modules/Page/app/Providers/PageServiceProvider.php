@@ -2,8 +2,12 @@
 
 namespace Modules\Page\Providers;
 
-use Nwidart\Modules\Support\ModuleServiceProvider;
 use Illuminate\Console\Scheduling\Schedule;
+use Modules\Page\Repositories\Contracts\FaqRepositoryInterface;
+use Modules\Page\Repositories\Contracts\PartnerRepositoryInterface;
+use Modules\Page\Repositories\FaqRepository;
+use Modules\Page\Repositories\PartnerRepository;
+use Nwidart\Modules\Support\ModuleServiceProvider;
 
 class PageServiceProvider extends ModuleServiceProvider
 {
@@ -36,11 +40,19 @@ class PageServiceProvider extends ModuleServiceProvider
 
     /**
      * Define module schedules.
-     * 
-     * @param $schedule
+     *
+     * @param  $schedule
      */
     // protected function configureSchedules(Schedule $schedule): void
     // {
     //     $schedule->command('inspire')->hourly();
     // }
+
+    public function register(): void
+    {
+        parent::register();
+
+        $this->app->bind(PartnerRepositoryInterface::class, PartnerRepository::class);
+        $this->app->bind(FaqRepositoryInterface::class, FaqRepository::class);
+    }
 }

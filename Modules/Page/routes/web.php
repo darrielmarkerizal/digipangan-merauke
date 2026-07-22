@@ -1,8 +1,5 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Modules\Page\Http\Controllers\PageController;
 
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::resource('pages', PageController::class)->names('page');
-});
+// Page module (Partners, FAQs, Site Settings) is served as a JSON API in routes/api.php.
