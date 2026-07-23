@@ -2,8 +2,94 @@
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
+@source '../views/**/*.blade.php';
+@source './**/*.vue';
 
-@theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+@theme static {
+    --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
+
+    --color-brand: #047857;
+    --color-brand-strong: #065f46;
+    --color-brand-weak: #ecfdf5;
+    --color-on-brand: #ffffff;
+
+    --color-accent: #b45309;
+    --color-accent-fill: #f59e0b;
+    --color-accent-weak: #fffbeb;
+
+    --color-bg: #f7fbf9;
+    --color-card: #ffffff;
+    --color-muted: #eef4f1;
+    --color-fg: #14281f;
+    --color-fg-muted: #556158;
+    --color-border: #dce7e1;
+
+    --color-success: #15803d;
+    --color-success-weak: #e7f6ec;
+    --color-warning: #b45309;
+    --color-warning-weak: #fdf0e1;
+    --color-danger: #b91c1c;
+    --color-danger-weak: #fdeaea;
+    --color-info: #0e7490;
+    --color-info-weak: #e5f2f5;
+    --color-ring: #047857;
+
+    --radius-control: 0.625rem;
+    --radius-card: 0.875rem;
+
+    --shadow-soft: 0 1px 2px rgba(20, 40, 31, 0.06), 0 4px 12px rgba(20, 40, 31, 0.05);
+
+    --ease-in: cubic-bezier(0.4, 0, 1, 1);
+    --ease-out: cubic-bezier(0, 0, 0.2, 1);
+    --default-transition-duration: 200ms;
+    --default-transition-timing-function: var(--ease-out);
+}
+
+@layer base {
+    html {
+        -webkit-text-size-adjust: 100%;
+        text-size-adjust: 100%;
+    }
+
+    body {
+        background-color: var(--color-bg);
+        color: var(--color-fg);
+        font-family: var(--font-sans);
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        line-height: 1.25;
+        text-wrap: balance;
+    }
+
+    :focus-visible {
+        outline: 2px solid var(--color-ring);
+        outline-offset: 2px;
+    }
+
+    *,
+    ::before,
+    ::after {
+        border-color: var(--color-border);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        *,
+        ::before,
+        ::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+            scroll-behavior: auto !important;
+        }
+    }
 }

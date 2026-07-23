@@ -12,3 +12,7 @@ Route::get('/', function () {
 });
 
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
+
+if (! app()->isProduction()) {
+    Route::get('/ui', fn () => Inertia::render('Ui/Index'))->name('ui.showcase');
+}

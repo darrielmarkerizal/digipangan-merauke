@@ -1,3 +1,4 @@
+import { fileURLToPath, URL } from 'node:url';
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
 import { bunny } from 'laravel-vite-plugin/fonts';
@@ -6,7 +7,7 @@ import vue from '@vitejs/plugin-vue';
 import collectModuleAssetsPaths from './vite-module-loader.js';
 
 const modulesPaths = await collectModuleAssetsPaths(
-    ['resources/css/app.css', 'resources/js/app.js'],
+    ['resources/css/app.css', 'resources/js/app.ts'],
     'Modules',
 );
 
@@ -16,14 +17,19 @@ export default defineConfig({
             input: modulesPaths,
             refresh: true,
             fonts: [
-                bunny('Instrument Sans', {
-                    weights: [400, 500, 600],
+                bunny('Plus Jakarta Sans', {
+                    weights: [400, 500, 600, 700],
                 }),
             ],
         }),
         tailwindcss(),
         vue(),
     ],
+    resolve: {
+        alias: {
+            '@': fileURLToPath(new URL('./resources/js', import.meta.url)),
+        },
+    },
     server: {
         watch: {
             ignored: ['**/storage/framework/views/**'],
