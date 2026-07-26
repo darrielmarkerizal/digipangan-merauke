@@ -11,13 +11,25 @@ declare module '@inertiajs/core' {
         id: number
         name: string
         email: string
-        permissions?: string[]
+        phone: string | null
+        avatar_url: string | null
       } | null
+      roles: string[]
+      permissions: string[]
     }
     flash: {
       success: string | null
       error: string | null
+      info: string | null
     }
+    app: {
+      name: string
+      env: string
+      locale: string
+      whatsapp_admin: string | null
+      contact_email: string | null
+    }
+    query: Record<string, string>
   }
 }
 
