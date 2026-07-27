@@ -17,13 +17,10 @@ import {
   Shield,
   Settings,
   History,
-  LogOut,
 } from '@lucide/vue'
 import { Icon } from '@/Components/ui'
-import { useAuthGuard } from '@/Composables/useAuthGuard'
 
 const page = usePage()
-const { user, logout } = useAuthGuard()
 
 const navGroups = [
   {
@@ -140,7 +137,7 @@ const isActive = (href: string) => {
 
 <template>
   <aside
-    class="flex h-full w-64 flex-col justify-between border-r border-border/80 bg-white"
+    class="flex h-full w-64 flex-col border-r border-border/80 bg-white"
   >
     <div class="flex h-14 shrink-0 items-center justify-between border-b border-border/80 px-5">
       <Link href="/admin/dashboard" class="flex items-center gap-3">
@@ -160,7 +157,7 @@ const isActive = (href: string) => {
       </Link>
     </div>
 
-    <div class="flex-1 overflow-y-auto px-4 py-6 space-y-7">
+    <div class="flex-1 overflow-y-auto px-4 py-6 space-y-7 custom-scrollbar">
       <div v-for="group in navGroups" :key="group.title" class="space-y-1.5">
         <p
           class="px-3 text-[11px] font-mono font-bold uppercase tracking-widest text-fg-muted/60"
@@ -198,30 +195,6 @@ const isActive = (href: string) => {
             />
           </Link>
         </nav>
-      </div>
-    </div>
-
-    <div class="border-t border-border/80 p-3 bg-muted/20">
-      <div class="flex items-center justify-between rounded-xl bg-white p-2.5 border border-border/80 shadow-xs">
-        <div class="flex items-center gap-2.5 min-w-0">
-          <div
-            class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-brand/10 font-bold text-brand text-xs uppercase"
-          >
-            {{ user ? user.name.slice(0, 2) : 'SA' }}
-          </div>
-          <div class="min-w-0">
-            <p class="truncate text-xs font-bold text-fg">{{ user ? user.name : 'Super Admin' }}</p>
-            <p class="truncate text-[11px] text-fg-muted">{{ user ? user.email : 'admin@digipangan.id' }}</p>
-          </div>
-        </div>
-        <button
-          type="button"
-          class="flex size-8 shrink-0 items-center justify-center rounded-lg text-fg-muted transition-colors hover:bg-danger-weak hover:text-danger"
-          title="Keluar"
-          @click="logout"
-        >
-          <Icon :icon="LogOut" :size="16" />
-        </button>
       </div>
     </div>
   </aside>

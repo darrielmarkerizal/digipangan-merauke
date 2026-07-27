@@ -15,3 +15,6 @@ export { default as Select } from './Select.vue'
 export { default as Accordion } from './Accordion.vue'
 export { default as AccordionItem } from './AccordionItem.vue'
 export { default as AlertDialog } from './AlertDialog.vue'
+export { default as Breadcrumb, type BreadcrumbItem } from './Breadcrumb.vue'
+export { default as Pagination } from './Pagination.vue'
+

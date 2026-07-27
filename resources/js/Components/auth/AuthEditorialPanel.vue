@@ -1,69 +1,35 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3'
-import { Sprout, CheckCircle2, MapPin } from '@lucide/vue'
+import { Sprout, MapPin } from '@lucide/vue'
 import { Icon } from '@/Components/ui'
 
-const highlights = [
-  'Verifikasi kualitas & kepastian stok komoditas',
-  'Jaringan langsung Gapoktan & mitra petani daerah',
-  'Kolaborasi UGM & Kementerian Transmigrasi RI',
-]
-
-const grain =
-  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")"
 </script>
 
 <template>
   <aside
-    class="relative isolate hidden flex-col justify-between overflow-hidden bg-[#064e3b] p-10 text-white lg:flex lg:col-span-6 xl:p-14"
+    class="relative isolate hidden flex-col justify-between overflow-hidden bg-slate-900 p-10 text-white lg:flex lg:col-span-6 xl:p-14"
   >
+    <img
+      src="/images/logos/login-image.webp"
+      alt="DigiPangan Merauke"
+      class="absolute inset-0 -z-20 size-full object-cover"
+    />
     <div
-      class="pointer-events-none absolute inset-0 -z-10 opacity-20 mix-blend-multiply"
-      :style="{ backgroundImage: grain }"
+      class="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-b from-black/50 via-transparent to-black/40"
       aria-hidden="true"
     />
 
-    <div class="flex items-center justify-between">
+    <div class="flex items-center">
       <Link href="/" class="flex items-center gap-3">
         <span
           class="flex size-10 items-center justify-center rounded-xl bg-brand text-white shadow-sm"
         >
           <Icon :icon="Sprout" :size="20" />
         </span>
-        <span class="text-xl font-bold tracking-tight text-white">
+        <span class="text-xl font-bold tracking-tight text-white drop-shadow-md">
           DigiPangan<span class="font-medium text-emerald-200"> Merauke</span>
         </span>
       </Link>
-      <span
-        class="rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-medium tracking-wide text-emerald-200 backdrop-blur-sm"
-      >
-        Portal Mitra
-      </span>
-    </div>
-
-    <div class="my-auto max-w-lg space-y-6 py-12">
-      <h1 class="text-3xl font-bold leading-tight tracking-tight text-white xl:text-4xl">
-        Digitalisasi rantai pasok komoditas pertanian Merauke.
-      </h1>
-
-      <p class="text-base leading-relaxed text-emerald-100/90">
-        Menghubungkan langsung hasil panen dari tangan petani lokal kawasan transmigrasi Merauke di Papua Selatan dengan pasar nusantara melalui kepastian mutu dan transparansi harga.
-      </p>
-
-      <ul class="space-y-3 pt-2">
-        <li
-          v-for="item in highlights"
-          :key="item"
-          class="flex items-center gap-3 text-sm text-emerald-100"
-        >
-          <span
-            class="flex size-5 shrink-0 items-center justify-center rounded-full bg-emerald-400/20 text-emerald-300"
-          >
-            <Icon :icon="CheckCircle2" :size="14" />
-          </span>
-          <span>{{ item }}</span>
-        </li>
-      </ul>
     </div>
 
     <div

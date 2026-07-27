@@ -39,29 +39,44 @@ class ProductController extends Controller implements HasMiddleware
         );
     }
 
-    public function store(StoreProductRequest $request): JsonResponse
+    public function store(StoreProductRequest $request): JsonResponse|\Illuminate\Http\RedirectResponse
     {
+        $product = $this->service->create($request->validated());
+
+        if ($request->header('X-Inertia')) {
+            return redirect()->route('admin.product.index')->with('success', 'Produk berhasil dibuat.');
+        }
+
         return $this->successResponse(
-            new ProductResource($this->service->create($request->validated())),
+            new ProductResource($product),
             'Produk berhasil dibuat.',
             201
         );
     }
 
-    public function update(UpdateProductRequest $request, int $id): JsonResponse
+    public function update(UpdateProductRequest $request, int $id): JsonResponse|\Illuminate\Http\RedirectResponse
     {
         $model = $this->service->findOrFail($id);
+        $product = $this->service->update($model, $request->validated());
+
+        if ($request->header('X-Inertia')) {
+            return redirect()->route('admin.product.index')->with('success', 'Produk berhasil diperbarui.');
+        }
 
         return $this->successResponse(
-            new ProductResource($this->service->update($model, $request->validated())),
+            new ProductResource($product),
             'Produk berhasil diperbarui.'
         );
     }
 
-    public function destroy(int $id): JsonResponse
+    public function destroy(int $id): JsonResponse|\Illuminate\Http\RedirectResponse
     {
         $model = $this->service->findOrFail($id);
         $this->service->delete($model);
+
+        if (request()->header('X-Inertia')) {
+            return redirect()->back()->with('success', 'Produk berhasil dihapus.');
+        }
 
         return $this->successResponse(null, 'Produk berhasil dihapus.');
     }

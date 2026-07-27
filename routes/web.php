@@ -27,9 +27,43 @@ Route::post('/logout', function (\Illuminate\Http\Request $request) {
 })->name('logout');
 
 Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/', fn () => Inertia::render('Admin/Dashboard'))->name('dashboard');
     Route::get('/dashboard', fn () => Inertia::render('Admin/Dashboard'))->name('dashboard.index');
-    Route::get('/produk', fn () => Inertia::render('Admin/Product/Index'))->name('product.index');
+    Route::get('/produk', fn (\Modules\Product\Services\ProductService $service, \Modules\Product\Services\ProductCategoryService $catService, \Modules\Region\Services\RegionService $regionService) => \App\Support\InertiaQuery::render('Admin/Product/Index', $service->paginateFiltered(), \Modules\Product\Http\Resources\ProductResource::class, [
+        'categories' => $catService->list(),
+        'regions' => $regionService->list(),
+    ]))->name('product.index');
+
+    Route::get('/produk/tambah', fn (
+        \Modules\Product\Services\ProductCategoryService $catService,
+        \Modules\Product\Services\UnitService $unitService,
+        \Modules\Farmer\Services\FarmerService $farmerService,
+        \Modules\Region\Services\RegionService $regionService
+    ) => Inertia::render('Admin/Product/Create', [
+        'categories' => $catService->list(),
+        'units' => $unitService->list(),
+        'farmers' => $farmerService->list(),
+        'regions' => $regionService->list(),
+    ]))->name('product.create');
+
+    Route::post('/produk', [\Modules\Product\Http\Controllers\ProductController::class, 'store'])->name('product.store');
+
+    Route::get('/produk/{id}/edit', fn (
+        int $id,
+        \Modules\Product\Services\ProductService $service,
+        \Modules\Product\Services\ProductCategoryService $catService,
+        \Modules\Product\Services\UnitService $unitService,
+        \Modules\Farmer\Services\FarmerService $farmerService,
+        \Modules\Region\Services\RegionService $regionService
+    ) => Inertia::render('Admin/Product/Edit', [
+        'product' => (new \Modules\Product\Http\Resources\ProductResource($service->findOrFail($id)))->resolve(),
+        'categories' => $catService->list(),
+        'units' => $unitService->list(),
+        'farmers' => $farmerService->list(),
+        'regions' => $regionService->list(),
+    ]))->name('product.edit');
+
+    Route::put('/produk/{id}', [\Modules\Product\Http\Controllers\ProductController::class, 'update'])->name('product.update');
+    Route::delete('/produk/{id}', [\Modules\Product\Http\Controllers\ProductController::class, 'destroy'])->name('product.destroy');
     Route::get('/kategori', fn () => Inertia::render('Admin/Category/Index'))->name('category.index');
     Route::get('/satuan', fn () => Inertia::render('Admin/Unit/Index'))->name('unit.index');
     Route::get('/komoditas', fn () => Inertia::render('Admin/Commodity/Index'))->name('commodity.index');

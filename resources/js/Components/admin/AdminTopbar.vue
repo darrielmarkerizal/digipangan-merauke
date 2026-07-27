@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { Link } from '@inertiajs/vue3'
-import { Menu, ExternalLink } from '@lucide/vue'
-import { Icon } from '@/Components/ui'
+import { Menu } from '@lucide/vue'
+import { Icon, Breadcrumb } from '@/Components/ui'
+import AdminUserProfile from './AdminUserProfile.vue'
 
 defineProps<{
   title?: string
@@ -26,31 +26,16 @@ defineEmits<{
       >
         <Icon :icon="Menu" :size="18" />
       </button>
-
-      <div>
-        <div class="flex items-center gap-2">
-          <span class="text-xs font-semibold uppercase tracking-wider text-brand">
-            Portal Administrasi
-          </span>
-          <span class="text-xs text-border/80">•</span>
-          <span class="text-xs font-medium text-fg-muted">
-            DigiPangan Merauke
-          </span>
-        </div>
-        <h1 v-if="title" class="text-base font-bold tracking-tight text-fg">
-          {{ title }}
-        </h1>
-      </div>
+      <Breadcrumb
+        :items="[
+          { label: 'Admin', href: '/admin/dashboard' },
+          ...(title ? [{ label: title }] : [])
+        ]"
+      />
     </div>
 
     <div class="flex items-center gap-3">
-      <Link
-        href="/"
-        class="inline-flex items-center gap-2 rounded-xl border border-border/80 bg-white px-3.5 py-1.5 text-xs font-bold text-fg shadow-xs transition-colors hover:border-brand/40 hover:bg-bg"
-      >
-        <span>Situs Publik</span>
-        <Icon :icon="ExternalLink" :size="14" />
-      </Link>
+      <AdminUserProfile />
     </div>
   </header>
 </template>

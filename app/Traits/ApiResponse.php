@@ -7,11 +7,6 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 trait ApiResponse
 {
-    /**
-     * Send a success response.
-     *
-     * @param  mixed  $data
-     */
     protected function successResponse($data = null, string $message = 'Success', int $code = 200): JsonResponse
     {
         $response = [
@@ -23,11 +18,6 @@ trait ApiResponse
         return response()->json($response, $code);
     }
 
-    /**
-     * Send an error response.
-     *
-     * @param  mixed  $errors
-     */
     protected function errorResponse(string $message = 'Error', int $code = 400, $errors = null): JsonResponse
     {
         $response = [
@@ -42,22 +32,25 @@ trait ApiResponse
         return response()->json($response, $code);
     }
 
-    /**
-     * Send a success response with pagination data (Supports Spatie Query Builder).
-     */
-    protected function paginatedResponse(LengthAwarePaginator $paginator, string $message = 'Success', int $code = 200): JsonResponse
+    public static function formatPaginatedData(LengthAwarePaginator $paginator, ?string $resourceClass = null): array
     {
-        $response = [
-            'success' => true,
-            'message' => $message,
-            'data' => $paginator->items(),
+        $items = method_exists($paginator, 'getCollection')
+            ? $paginator->getCollection()
+            : collect($paginator->items());
+
+        $collection = $resourceClass
+            ? $resourceClass::collection($items)->resolve()
+            : $items;
+
+        return [
+            'data' => $collection,
             'meta' => [
                 'current_page' => $paginator->currentPage(),
+                'from' => $paginator->firstItem(),
                 'last_page' => $paginator->lastPage(),
                 'per_page' => $paginator->perPage(),
-                'total' => $paginator->total(),
-                'from' => $paginator->firstItem(),
                 'to' => $paginator->lastItem(),
+                'total' => $paginator->total(),
             ],
             'links' => [
                 'first' => $paginator->url(1),
@@ -66,6 +59,16 @@ trait ApiResponse
                 'next' => $paginator->nextPageUrl(),
             ],
         ];
+    }
+
+    protected function paginatedResponse(LengthAwarePaginator $paginator, string $message = 'Success', int $code = 200, ?string $resourceClass = null): JsonResponse
+    {
+        $paginatedData = self::formatPaginatedData($paginator, $resourceClass);
+
+        $response = array_merge([
+            'success' => true,
+            'message' => $message,
+        ], $paginatedData);
 
         return response()->json($response, $code);
     }

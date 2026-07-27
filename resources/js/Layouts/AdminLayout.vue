@@ -81,9 +81,6 @@ const closeSidebar = () => {
         <div class="w-full px-4 md:px-6 space-y-5">
           <header v-if="title || subtitle" class="flex flex-col justify-between gap-3 border-b border-border/80 pb-4 sm:flex-row sm:items-end">
             <div class="space-y-1">
-              <p class="text-xs font-mono font-bold uppercase tracking-widest text-brand">
-                Portal Administrasi
-              </p>
               <h1 class="text-xl font-extrabold tracking-tight text-fg sm:text-2xl">
                 {{ title }}
               </h1>
