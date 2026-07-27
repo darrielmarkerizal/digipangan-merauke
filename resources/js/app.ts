@@ -4,6 +4,7 @@ import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers'
 import { createPinia } from 'pinia'
 
 import '../css/app.css'
+import 'vue-sonner/style.css'
 
 createInertiaApp({
   title: (title) => `${title} - Digipangan`,

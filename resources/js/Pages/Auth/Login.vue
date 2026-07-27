@@ -3,6 +3,9 @@ import { Head } from "@inertiajs/vue3";
 import { Toaster } from "vue-sonner";
 import AuthEditorialPanel from "@/Components/auth/AuthEditorialPanel.vue";
 import AuthMainPanel from "@/Components/auth/AuthMainPanel.vue";
+import { useFlashToast } from "@/Composables/useFlashToast";
+
+useFlashToast();
 </script>
 
 <template>

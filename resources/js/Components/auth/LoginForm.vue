@@ -1,71 +1,54 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import axios from 'axios'
+import { useForm } from '@inertiajs/vue3'
 import { LogIn, Eye, EyeOff } from '@lucide/vue'
 import { Button, Field, Input, Icon } from '@/Components/ui'
 import { toast } from 'vue-sonner'
 
-const form = ref({
+const form = useForm({
   email: '',
   password: '',
   remember: false,
 })
-const errors = ref<Record<string, string>>({})
-const processing = ref(false)
 
 const showPassword = ref(false)
 
-const submit = async () => {
-  processing.value = true
-  errors.value = {}
-
-  try {
-    await axios.post('/api/v1/auth/login', form.value)
-
-    toast.success('Berhasil masuk', {
-      description: 'Selamat datang kembali di DigiPangan Merauke.',
-    })
-
-    setTimeout(() => {
-      window.location.href = '/'
-    }, 1000)
-  } catch (error: any) {
-    if (error.response?.status === 422) {
-      const responseErrors = error.response.data.errors || {}
-      for (const key in responseErrors) {
-        errors.value[key] = responseErrors[key][0]
-      }
-    }
-
-    toast.error('Gagal masuk', {
-      description: 'Periksa kembali email dan kata sandi Anda.',
-    })
-  } finally {
-    processing.value = false
-  }
+const submit = () => {
+  form.post('/login', {
+    onSuccess: () => {
+      toast.success('Berhasil masuk', {
+        description: 'Selamat datang di Portal Admin DigiPangan Merauke.',
+      })
+    },
+    onError: () => {
+      toast.error('Gagal masuk', {
+        description: 'Periksa kembali email dan kata sandi Anda.',
+      })
+    },
+  })
 }
 </script>
 
 <template>
   <form @submit.prevent="submit" class="space-y-5">
-    <Field label="Alamat Email" :error="errors.email" required>
+    <Field label="Alamat Email" :error="form.errors.email" required>
       <Input
         v-model="form.email"
         type="email"
         placeholder="nama@mitra-digipangan.id"
         autocomplete="username"
-        :disabled="processing"
+        :disabled="form.processing"
       />
     </Field>
 
-    <Field label="Kata Sandi" :error="errors.password" required>
+    <Field label="Kata Sandi" :error="form.errors.password" required>
       <div class="relative">
         <Input
           v-model="form.password"
           :type="showPassword ? 'text' : 'password'"
           placeholder="••••••••••••"
           autocomplete="current-password"
-          :disabled="processing"
+          :disabled="form.processing"
           class="pr-11"
         />
         <button
@@ -102,11 +85,11 @@ const submit = async () => {
     <Button
       type="submit"
       fullWidth
-      :loading="processing"
+      :loading="form.processing"
       class="mt-3 shadow-sm"
     >
-      <Icon v-if="!processing" :icon="LogIn" :size="18" />
-      <span>{{ processing ? 'Memverifikasi kredensial...' : 'Masuk ke Portal' }}</span>
+      <Icon v-if="!form.processing" :icon="LogIn" :size="18" />
+      <span>{{ form.processing ? 'Memverifikasi kredensial...' : 'Masuk ke Portal' }}</span>
     </Button>
   </form>
 </template>

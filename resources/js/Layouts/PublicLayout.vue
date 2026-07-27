@@ -11,8 +11,11 @@ import {
   Sprout,
 } from '@lucide/vue'
 import Icon from '@/Components/ui/Icon.vue'
+import { Toaster } from 'vue-sonner'
+import { useFlashToast } from '@/Composables/useFlashToast'
 
 const page = usePage()
+useFlashToast()
 
 const navItems = [
   { href: '/', label: 'Beranda', icon: House },
@@ -30,6 +33,7 @@ const isActive = (href: string) =>
 </script>
 
 <template>
+  <Toaster position="top-center" richColors />
   <div class="flex min-h-[100dvh] flex-col">
     <header class="fixed inset-x-0 top-0 z-40 px-4 pt-3">
       <div
