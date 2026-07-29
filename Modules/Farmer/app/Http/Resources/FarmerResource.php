@@ -36,6 +36,19 @@ class FarmerResource extends JsonResource
                 'name' => $commodity->name,
                 'slug' => $commodity->slug,
             ])->all()),
+            'products' => $this->whenLoaded('products', fn () => $this->products->map(fn ($product) => [
+                'id' => $product->id,
+                'name' => $product->name,
+                'slug' => $product->slug,
+                'price' => $product->price,
+                'stock_available' => $product->stock_available,
+                'is_active' => $product->is_active,
+                'unit' => $product->unit ? [
+                    'id' => $product->unit->id,
+                    'name' => $product->unit->name,
+                    'symbol' => $product->unit->symbol,
+                ] : null,
+            ])->all()),
             'photo' => $photo ? [
                 'id' => $photo->id,
                 'original' => $photo->getUrl(),

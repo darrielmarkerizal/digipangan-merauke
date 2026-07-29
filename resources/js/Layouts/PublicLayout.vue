@@ -112,13 +112,13 @@ const isActive = (href: string) =>
               <img
                 src="/images/logos/logo-ugm-horizontal.png"
                 alt="Universitas Gadjah Mada"
-                class="h-10 sm:h-11 w-auto object-contain"
+                class="h-9 sm:h-10 w-auto object-contain shrink-0"
               />
-              <div class="h-8 w-px bg-slate-200" />
+              <div class="h-10 w-px bg-slate-200" />
               <img
                 src="/images/logos/logotext-kementerian-transmigrasi.png"
                 alt="Kementerian Transmigrasi RI"
-                class="h-10 sm:h-11 w-auto object-contain"
+                class="h-14 sm:h-16 w-auto object-contain shrink-0"
               />
             </div>
             <p class="text-xs text-fg-muted">

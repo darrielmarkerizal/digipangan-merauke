@@ -8,17 +8,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 
-#[Fillable(['name', 'sort_order'])]
+#[Fillable(['name'])]
 class ProductCategory extends Model
 {
     use HasSlug;
-
-    protected function casts(): array
-    {
-        return [
-            'sort_order' => 'integer',
-        ];
-    }
 
     public function getSlugOptions(): SlugOptions
     {

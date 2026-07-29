@@ -11,7 +11,6 @@ class StoreProductCategoryRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:50', Rule::unique('product_categories', 'name')],
-            'sort_order' => ['integer', 'min:0'],
         ];
     }
 

@@ -13,7 +13,6 @@ class UpdateProductCategoryRequest extends FormRequest
 
         return [
             'name' => ['required', 'string', 'max:50', Rule::unique('product_categories', 'name')->ignore($id)],
-            'sort_order' => ['integer', 'min:0'],
         ];
     }
 

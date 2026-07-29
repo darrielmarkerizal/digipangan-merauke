@@ -28,11 +28,11 @@ class ProductCategoryRepository extends BaseRepository implements ProductCategor
 
     protected function allowedSorts(): array
     {
-        return ['name', 'sort_order', 'created_at'];
+        return ['name', 'created_at'];
     }
 
     protected function defaultSort(): string
     {
-        return 'sort_order';
+        return 'name';
     }
 }

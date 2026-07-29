@@ -1,10 +1,3 @@
-const rupiahFormatter = new Intl.NumberFormat('id-ID', {
-  style: 'currency',
-  currency: 'IDR',
-  minimumFractionDigits: 0,
-  maximumFractionDigits: 0,
-})
-
 const angkaFormatter = new Intl.NumberFormat('id-ID')
 
 const tanggalFormatter = new Intl.DateTimeFormat('id-ID', {
@@ -13,12 +6,22 @@ const tanggalFormatter = new Intl.DateTimeFormat('id-ID', {
   year: 'numeric',
 })
 
-export function formatRupiah(value: number): string {
-  return rupiahFormatter.format(value).replace(/\s+/g, ' ').trim()
+export function formatRupiah(
+  value: number | string | null | undefined,
+  withPrefix: boolean = true
+): string {
+  if (value === null || value === undefined || value === '') return ''
+  const num = typeof value === 'number' ? value : parseFloat(String(value))
+  if (Number.isNaN(num)) return ''
+  const formatted = angkaFormatter.format(Math.floor(num))
+  return withPrefix ? `Rp ${formatted}` : formatted
 }
 
-export function formatAngka(value: number): string {
-  return angkaFormatter.format(value)
+export function formatAngka(value: number | string | null | undefined): string {
+  if (value === null || value === undefined || value === '') return ''
+  const num = typeof value === 'number' ? value : parseFloat(String(value))
+  if (Number.isNaN(num)) return ''
+  return angkaFormatter.format(num)
 }
 
 export function formatTanggal(value: Date | string): string {

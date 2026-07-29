@@ -33,7 +33,7 @@ import { Icon } from '@/Components/ui'
     </div>
 
     <div
-      class="rounded-2xl bg-white p-6 shadow-xl transition-all hover:shadow-2xl"
+      class="self-end rounded-2xl bg-white p-6 shadow-xl transition-all hover:shadow-2xl max-w-max"
     >
       <span class="text-xs font-bold uppercase tracking-wider text-emerald-700">
         Kolaborasi Strategis
@@ -43,13 +43,13 @@ import { Icon } from '@/Components/ui'
         <img
           src="/images/logos/logo-ugm-horizontal.png"
           alt="Universitas Gadjah Mada"
-          class="h-10 xl:h-11 w-auto object-contain"
+          class="h-9 xl:h-10 w-auto object-contain shrink-0"
         />
-        <div class="h-8 w-px bg-slate-200" />
+        <div class="h-10 w-px bg-slate-200" />
         <img
           src="/images/logos/logotext-kementerian-transmigrasi.png"
           alt="Kementerian Transmigrasi RI"
-          class="h-10 xl:h-11 w-auto object-contain"
+          class="h-14 xl:h-16 w-auto object-contain shrink-0"
         />
       </div>
 

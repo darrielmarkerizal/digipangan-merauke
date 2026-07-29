@@ -20,6 +20,8 @@ const buttonVariants = tv({
             ghost: "text-brand hover:bg-brand-weak",
             whatsapp: "bg-brand text-on-brand hover:bg-brand-strong",
             danger: "bg-danger text-white hover:bg-danger/90",
+            "danger-outline": "border border-danger/30 bg-danger-weak/40 text-danger hover:bg-danger hover:text-white hover:border-danger",
+            "danger-secondary": "border border-red-200 bg-red-50 text-red-700 hover:bg-red-600 hover:text-white",
         },
         size: {
             sm: "min-h-9 gap-1.5 px-3 text-sm",

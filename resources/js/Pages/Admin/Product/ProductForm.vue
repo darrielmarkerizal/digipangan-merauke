@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { Link, useForm } from '@inertiajs/vue3'
+import axios from 'axios'
 import {
   ArrowLeft,
   Save,
@@ -23,6 +24,7 @@ import {
   Textarea,
   Icon,
 } from '@/Components/ui'
+import { formatRupiah } from '@/lib/format'
 
 export interface ProductFormData {
   id?: number | string
@@ -49,6 +51,9 @@ export interface ProductFormData {
 export interface GalleryImage {
   id: string
   url: string
+  file?: File
+  isExisting?: boolean
+  mediaId?: number | string
 }
 
 const props = defineProps<{
@@ -75,27 +80,28 @@ const form = useForm({
   is_active: props.initialData?.is_active ?? true,
 })
 
-const formatRupiah = (val: string | number) => {
-  if (!val && val !== 0) return ''
-  const numStr = String(val).replace(/\D/g, '')
-  if (!numStr) return ''
-  return new Intl.NumberFormat('id-ID').format(Number(numStr))
-}
-
 const displayPrice = computed({
-  get: () => formatRupiah(form.price),
+  get: () => formatRupiah(form.price, false),
   set: (val: string) => {
-    form.price = val.replace(/\D/g, '')
+    const digits = val.replace(/\D/g, '')
+    form.price = digits ? Number(digits) : ''
   },
 })
 
 const galleryImages = ref<GalleryImage[]>(
   props.initialData?.photos && props.initialData.photos.length > 0
-    ? props.initialData.photos.map((p) => ({ id: String(p.id), url: p.original || p.thumb }))
+    ? props.initialData.photos.map((p) => ({
+        id: String(p.id),
+        url: p.original || p.thumb,
+        isExisting: true,
+        mediaId: p.id,
+      }))
     : props.initialData?.image_url
-    ? [{ id: '1', url: props.initialData.image_url }]
+    ? [{ id: '1', url: props.initialData.image_url, isExisting: false }]
     : []
 )
+
+const isSubmitting = ref(false)
 
 const handleMultipleImageUpload = (e: Event) => {
   const target = e.target as HTMLInputElement
@@ -105,9 +111,11 @@ const handleMultipleImageUpload = (e: Event) => {
       galleryImages.value.push({
         id: Math.random().toString(36).substring(2, 9),
         url: URL.createObjectURL(file),
+        file: file,
+        isExisting: false,
       })
     })
-    toast.success(`${filesArray.length} foto baru ditambahkan!`)
+    toast.success(`${filesArray.length} foto baru ditambahkan ke galeri!`)
   }
 }
 
@@ -119,10 +127,6 @@ const setAsCover = (index: number) => {
 }
 
 const removeImage = (index: number) => {
-  if (galleryImages.value.length <= 1) {
-    toast.error('Gagal menghapus', { description: 'Minimal harus ada 1 foto produk.' })
-    return
-  }
   galleryImages.value.splice(index, 1)
   toast.success('Foto dihapus dari galeri.')
 }
@@ -136,7 +140,18 @@ const toggleFields: { key: ToggleKey; label: string; description: string }[] = [
   { key: 'is_region_featured', label: 'Unggulan Kawasan', description: 'Highlight khusus komoditas khas kawasan' },
 ]
 
-const handleSubmit = () => {
+async function uploadFileToTemp(file: File): Promise<string> {
+  const formData = new FormData()
+  formData.append('file', file)
+  const res = await axios.post('/api/v1/media/upload', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  })
+  return res.data.folder
+}
+
+const handleSubmit = async () => {
   if (!form.name || !form.price) {
     toast.error('Gagal menyimpan', {
       description: 'Mohon lengkapi Nama Produk dan Harga Produk.',
@@ -144,27 +159,69 @@ const handleSubmit = () => {
     return
   }
 
-  if (props.isEdit && props.initialData?.id) {
-    form.put(`/admin/produk/${props.initialData.id}`, {
-      onSuccess: () => {
-        toast.success('Berhasil memperbarui data produk!')
-      },
-      onError: (errors) => {
-        toast.error('Gagal memperbarui produk', {
-          description: (Object.values(errors)[0] as string) || 'Mohon periksa kembali isian formulir.',
-        })
-      },
-    })
-  } else {
-    form.post('/admin/produk', {
-      onSuccess: () => {
-        toast.success('Produk baru berhasil ditambahkan!')
-      },
-      onError: (errors) => {
-        toast.error('Gagal menambah produk', {
-          description: (Object.values(errors)[0] as string) || 'Mohon periksa kembali isian formulir.',
-        })
-      },
+  isSubmitting.value = true
+
+  try {
+    const newFileItems = galleryImages.value.filter((img) => !img.isExisting && img.file)
+    const uploadedFolderUuids: string[] = []
+
+    if (newFileItems.length > 0) {
+      toast.info(`Mengunggah ${newFileItems.length} foto produk...`)
+      for (const item of newFileItems) {
+        if (item.file) {
+          const folderUuid = await uploadFileToTemp(item.file)
+          uploadedFolderUuids.push(folderUuid)
+        }
+      }
+    }
+
+    const retainedIds = galleryImages.value
+      .filter((img) => img.isExisting && img.mediaId !== undefined)
+      .map((img) => img.mediaId)
+
+    const endpoint = props.isEdit && props.initialData?.id
+      ? `/admin/produk/${props.initialData.id}`
+      : '/admin/produk'
+
+    form.transform((data) => ({
+      ...data,
+      photos: uploadedFolderUuids,
+      retained_photos: props.isEdit ? retainedIds : undefined,
+    }))
+
+    if (props.isEdit && props.initialData?.id) {
+      form.put(endpoint, {
+        onSuccess: () => {
+          toast.success('Berhasil memperbarui produk!')
+        },
+        onError: (errors) => {
+          toast.error('Gagal memperbarui produk', {
+            description: (Object.values(errors)[0] as string) || 'Mohon periksa kembali isian formulir.',
+          })
+        },
+        onFinish: () => {
+          isSubmitting.value = false
+        },
+      })
+    } else {
+      form.post(endpoint, {
+        onSuccess: () => {
+          toast.success('Produk baru berhasil ditambahkan!')
+        },
+        onError: (errors) => {
+          toast.error('Gagal menambah produk', {
+            description: (Object.values(errors)[0] as string) || 'Mohon periksa kembali isian formulir.',
+          })
+        },
+        onFinish: () => {
+          isSubmitting.value = false
+        },
+      })
+    }
+  } catch (err: any) {
+    isSubmitting.value = false
+    toast.error('Gagal mengunggah foto', {
+      description: err.response?.data?.message || err.message || 'Terjadi kesalahan saat mengunggah foto.',
     })
   }
 }
@@ -185,9 +242,9 @@ const handleSubmit = () => {
         <Link href="/admin/produk">
           <Button variant="secondary" size="sm" type="button">Batal</Button>
         </Link>
-        <Button size="sm" type="submit" :disabled="form.processing">
+        <Button size="sm" type="submit" :disabled="form.processing || isSubmitting">
           <Icon :icon="Save" :size="15" />
-          <span>{{ form.processing ? 'Menyimpan...' : isEdit ? 'Simpan Perubahan' : 'Simpan Produk' }}</span>
+          <span>{{ (form.processing || isSubmitting) ? 'Mengunggah &amp; Menyimpan...' : isEdit ? 'Simpan Perubahan' : 'Simpan Produk' }}</span>
         </Button>
       </div>
     </div>
