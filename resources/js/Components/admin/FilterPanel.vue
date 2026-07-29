@@ -10,9 +10,11 @@ export interface FilterOption {
   name: string
 }
 
-defineProps<{
+const props = defineProps<{
+  module?: 'product' | 'post'
   categories?: FilterOption[]
   regions?: FilterOption[]
+  authors?: FilterOption[]
 }>()
 
 const isOpen = ref(false)
@@ -32,22 +34,20 @@ const getUrlParam = (key: string) => {
   return new URLSearchParams(window.location.search).get(key) || ''
 }
 
-const filterKeys = [
-  'filter[product_category_id]',
-  'filter[region_id]',
-  'filter[stock_available]',
-  'filter[is_active]',
-] as const
-
 const filters = reactive({
   category: getUrlParam('filter[product_category_id]'),
   region: getUrlParam('filter[region_id]'),
   stock: getUrlParam('filter[stock_available]'),
   active: getUrlParam('filter[is_active]'),
+  status: getUrlParam('filter[status]'),
+  author_id: getUrlParam('filter[author_id]'),
 })
 
 const activeFilterCount = computed(() => {
-  return Object.values(filters).filter(Boolean).length
+  if (props.module === 'post') {
+    return [filters.status, filters.author_id].filter(Boolean).length
+  }
+  return [filters.category, filters.region, filters.stock, filters.active].filter(Boolean).length
 })
 
 function applyFilters() {
@@ -55,7 +55,10 @@ function applyFilters() {
   const currentUrl = new URL(window.location.href)
   const params = new URLSearchParams(currentUrl.search)
 
-  const mapping: Record<string, string> = {
+  const mapping: Record<string, string> = props.module === 'post' ? {
+    'filter[status]': filters.status,
+    'filter[author_id]': filters.author_id,
+  } : {
     'filter[product_category_id]': filters.category,
     'filter[region_id]': filters.region,
     'filter[stock_available]': filters.stock,
@@ -86,12 +89,18 @@ function resetFilters() {
   filters.region = ''
   filters.stock = ''
   filters.active = ''
+  filters.status = ''
+  filters.author_id = ''
 
   if (typeof window === 'undefined') return
   const currentUrl = new URL(window.location.href)
   const params = new URLSearchParams(currentUrl.search)
 
-  filterKeys.forEach((key) => params.delete(key))
+  const activeKeys = props.module === 'post' 
+    ? ['filter[status]', 'filter[author_id]'] 
+    : ['filter[product_category_id]', 'filter[region_id]', 'filter[stock_available]', 'filter[is_active]']
+    
+  activeKeys.forEach((key) => params.delete(key))
   params.set('page', '1')
 
   router.get(currentUrl.pathname, Object.fromEntries(params.entries()), {
@@ -114,7 +123,7 @@ function resetFilters() {
       @click="isOpen = !isOpen"
     >
       <Icon :icon="Filter" :size="16" class="text-fg-muted" />
-      <span>Filter Kategori &amp; Distrik</span>
+      <span>Filter {{ module === 'post' ? 'Status & Penulis' : 'Kategori & Distrik' }}</span>
       <span
         v-if="activeFilterCount > 0"
         class="flex size-5 items-center justify-center rounded-full bg-brand text-[11px] font-bold text-white"
@@ -131,7 +140,7 @@ function resetFilters() {
       <div class="flex items-center justify-between border-b border-border/60 pb-3">
         <div class="flex items-center gap-2">
           <Icon :icon="Filter" :size="16" class="text-brand" />
-          <h3 class="text-sm font-bold text-fg">Filter Produk</h3>
+          <h3 class="text-sm font-bold text-fg">Filter {{ module === 'post' ? 'Berita' : 'Produk' }}</h3>
         </div>
         <button
           type="button"
@@ -142,7 +151,28 @@ function resetFilters() {
         </button>
       </div>
 
-      <div class="mt-4 space-y-4">
+      <div v-if="module === 'post'" class="mt-4 space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-fg mb-1.5">Status Publikasi</label>
+          <Select v-model="filters.status" class="!min-h-9 text-xs">
+            <option value="">Semua Status</option>
+            <option value="published">Published</option>
+            <option value="draft">Draft</option>
+          </Select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-fg mb-1.5">Penulis Berita</label>
+          <Select v-model="filters.author_id" class="!min-h-9 text-xs">
+            <option value="">Semua Penulis</option>
+            <option v-for="author in (authors || [])" :key="author.id" :value="author.id">
+              {{ author.name }}
+            </option>
+          </Select>
+        </div>
+      </div>
+
+      <div v-else class="mt-4 space-y-4">
         <div>
           <label class="block text-xs font-bold text-fg mb-1.5">Kategori Produk</label>
           <Select v-model="filters.category" class="!min-h-9 text-xs">

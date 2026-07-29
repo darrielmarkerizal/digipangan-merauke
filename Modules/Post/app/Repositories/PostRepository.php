@@ -50,6 +50,6 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface
 
     protected function allowedSorts(): array
     {
-        return ['title', 'published_at', 'created_at'];
+        return ['title', 'status', 'published_at', 'created_at'];
     }
 }

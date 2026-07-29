@@ -14,6 +14,11 @@ class VillageRepository extends BaseRepository implements VillageRepositoryInter
         parent::__construct($model);
     }
 
+    public function query(): \Illuminate\Database\Eloquent\Builder
+    {
+        return parent::query()->with('region');
+    }
+
     protected function allowedFilters(): array
     {
         return [
