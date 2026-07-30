@@ -11,6 +11,8 @@ use Modules\Media\Traits\InteractsWithTemporaryMedia as TemporaryMediaTrait;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
+use OwenIt\Auditing\Auditable;
+use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
 
 #[Fillable(['name', 'website_url', 'description', 'sort_order', 'is_active'])]
 class Partner extends Model implements HasMedia
