@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useForm } from '@inertiajs/vue3'
 import AdminLayout from '@/Layouts/AdminLayout.vue'
-import PostForm from './PostForm.vue'
+import PostForm from "@/Components/admin/Post/PostForm.vue"
 
 const props = defineProps<{
   post: any

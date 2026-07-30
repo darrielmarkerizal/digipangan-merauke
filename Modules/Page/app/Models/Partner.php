@@ -14,8 +14,9 @@ use Spatie\Sluggable\SlugOptions;
 
 #[Fillable(['name', 'website_url', 'description', 'sort_order', 'is_active'])]
 class Partner extends Model implements HasMedia
+, AuditableContract
 {
-    use HasSlug, InteractsWithMedia, TemporaryMediaTrait, SoftDeletes;
+    use Auditable, HasSlug, InteractsWithMedia, TemporaryMediaTrait, SoftDeletes;
 
     protected function casts(): array
     {

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import AdminLayout from '@/Layouts/AdminLayout.vue'
-import ProductForm from './ProductForm.vue'
+import ProductForm from "@/Components/admin/Product/ProductForm.vue"
 
 defineProps<{
   categories?: any[]

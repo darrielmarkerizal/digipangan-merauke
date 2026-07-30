@@ -321,10 +321,7 @@ const executeDelete = (id: number) => {
                 </div>
             </AdminPageCard>
 
-            <!-- Pagination -->
-            <div v-if="posts?.meta && posts.meta.last_page > 0" class="mt-4">
-                <Pagination :meta="posts.meta" />
-            </div>
+            <Pagination :meta="posts?.meta" :links="posts?.links" />
         </div>
     </AdminLayout>
 </template>

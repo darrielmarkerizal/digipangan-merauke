@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import AdminLayout from '@/Layouts/AdminLayout.vue'
-import FarmerForm from './FarmerForm.vue'
+import FarmerForm from "@/Components/admin/Farmer/FarmerForm.vue"
 
 const props = defineProps<{
   farmer?: any

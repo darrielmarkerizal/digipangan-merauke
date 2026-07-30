@@ -95,7 +95,6 @@ const handleSubmit = async () => {
 
         <form @submit.prevent="handleSubmit" v-show="!isPreviewMode">
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <!-- Main Content -->
                 <div class="lg:col-span-2 space-y-6">
                     <div
                         class="rounded-2xl border border-border/80 bg-white p-6 shadow-xs space-y-6"
@@ -161,9 +160,7 @@ const handleSubmit = async () => {
                     </div>
                 </div>
 
-                <!-- Sidebar Config -->
                 <div class="lg:col-span-1 space-y-6">
-                    <!-- Gambar Sampul -->
                     <div
                         class="rounded-2xl border border-border/80 bg-white shadow-xs overflow-hidden"
                     >
@@ -238,7 +235,6 @@ const handleSubmit = async () => {
                         </div>
                     </div>
 
-                    <!-- Pengaturan Publikasi -->
                     <div
                         class="rounded-2xl border border-border/80 bg-white shadow-xs overflow-hidden"
                     >
@@ -317,10 +313,8 @@ const handleSubmit = async () => {
             </div>
         </form>
 
-        <!-- Preview Mode -->
         <div v-if="isPreviewMode" class="max-w-4xl mx-auto pb-12 animate-in fade-in slide-in-from-bottom-4 duration-300">
             <div class="bg-white rounded-2xl border border-border/80 shadow-xs overflow-hidden">
-                <!-- Cover Image (Preview) -->
                 <div class="w-full aspect-[21/9] bg-muted/20 relative overflow-hidden">
                     <img 
                         v-if="coverPreview"
@@ -336,14 +330,12 @@ const handleSubmit = async () => {
 
                 <div class="p-6 md:p-10 lg:p-12">
                     <div class="max-w-3xl mx-auto space-y-8">
-                        <!-- Header / Meta -->
                         <div class="space-y-4 border-b border-border/60 pb-8">
                             <h1 class="text-3xl md:text-4xl font-extrabold text-fg leading-tight">
                                 {{ form.title || 'Judul Berita Belum Diisi' }}
                             </h1>
                         </div>
                         
-                        <!-- Content -->
                         <div 
                             class="prose max-w-none text-fg-muted leading-relaxed whitespace-pre-wrap"
                             v-html="form.body || '<p class=\'text-center italic opacity-50 py-10\'>Konten berita masih kosong...</p>'"

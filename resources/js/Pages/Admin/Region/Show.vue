@@ -44,7 +44,6 @@ const props = defineProps<{
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <!-- Main Form Info (Read Only) -->
                 <div class="lg:col-span-2 space-y-6">
                     <div
                         class="rounded-2xl border border-border/80 bg-white p-6 shadow-xs space-y-6"
@@ -102,7 +101,6 @@ const props = defineProps<{
                     </div>
                 </div>
 
-                <!-- Sidebar Info -->
                 <div class="lg:col-span-1 space-y-6">
                     <div
                         class="rounded-2xl border border-border/80 bg-white shadow-xs overflow-hidden"

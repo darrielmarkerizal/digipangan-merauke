@@ -24,7 +24,11 @@ const villageList = computed(() => {
 
     if (!search.value) return items;
     const query = search.value.toLowerCase();
-    return items.filter((r: any) => r.name.toLowerCase().includes(query) || (r.region?.name && r.region.name.toLowerCase().includes(query)));
+    return items.filter(
+        (r: any) =>
+            r.name.toLowerCase().includes(query) ||
+            (r.region?.name && r.region.name.toLowerCase().includes(query)),
+    );
 });
 </script>
 
@@ -33,10 +37,6 @@ const villageList = computed(() => {
         title="Master Desa"
         subtitle="Manajemen data desa yang tergabung dalam kawasan transmigrasi."
     >
-        <template #actions>
-            <!-- Fitur Tambah Desa tidak tersedia karena data desa dikelola secara statis -->
-        </template>
-
         <AdminPageCard>
             <template #header-actions>
                 <div class="relative w-full sm:w-64">
@@ -61,9 +61,13 @@ const villageList = computed(() => {
                     >
                         <tr>
                             <th scope="col" class="px-5 py-3.5">Nama Desa</th>
-                            <th scope="col" class="px-4 py-3.5">Kawasan / Distrik</th>
+                            <th scope="col" class="px-4 py-3.5">
+                                Kawasan / Distrik
+                            </th>
                             <th scope="col" class="px-4 py-3.5">Status</th>
-                            <th scope="col" class="px-5 py-3.5 text-right">Aksi</th>
+                            <th scope="col" class="px-5 py-3.5 text-right">
+                                Aksi
+                            </th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-border/60">
@@ -108,7 +112,9 @@ const villageList = computed(() => {
                                 </Badge>
                             </td>
                             <td class="px-5 py-4 text-right">
-                                <div class="flex items-center justify-end gap-1.5">
+                                <div
+                                    class="flex items-center justify-end gap-1.5"
+                                >
                                     <Link :href="`/admin/desa/${item.id}`">
                                         <Button
                                             variant="secondary"

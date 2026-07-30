@@ -13,6 +13,10 @@ use Modules\Product\Http\Controllers\Admin\UnitAdminController;
 use Modules\Region\Http\Controllers\Admin\RegionAdminController;
 use Modules\Region\Http\Controllers\Admin\VillageAdminController;
 use Modules\User\Http\Controllers\Admin\AuthAdminController;
+use Modules\User\Http\Controllers\Admin\UserAdminController;
+use Modules\Page\Http\Controllers\Admin\FaqAdminController;
+use App\Http\Controllers\Admin\AuditLogAdminController;
+use App\Http\Controllers\Admin\DashboardAdminController;
 use Inertia\Inertia;
 
 Route::get('/', [HomePageController::class, 'index'])->name('home');
@@ -26,7 +30,7 @@ Route::middleware('guest')->group(function () {
 Route::post('/logout', [AuthAdminController::class, 'logout'])->name('logout');
 
 Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/dashboard', fn () => Inertia::render('Admin/Dashboard'))->name('dashboard.index');
+    Route::get('/dashboard', [DashboardAdminController::class, 'index'])->name('dashboard.index');
 
     Route::get('/produk', [ProductAdminController::class, 'index'])->name('product.index');
     Route::get('/produk/tambah', [ProductAdminController::class, 'create'])->name('product.create');
@@ -87,10 +91,21 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::put('/berita/{id}', [PostAdminController::class, 'update'])->name('post.update');
     Route::delete('/berita/{id}', [PostAdminController::class, 'destroy'])->name('post.destroy');
 
-    Route::get('/faq', fn () => Inertia::render('Admin/Faq/Index'))->name('faq.index');
+    Route::get('/faq', [FaqAdminController::class, 'index'])->name('faq.index');
+    Route::get('/faq/tambah', [FaqAdminController::class, 'create'])->name('faq.create');
+    Route::post('/faq', [FaqAdminController::class, 'store'])->name('faq.store');
+    Route::get('/faq/{id}/edit', [FaqAdminController::class, 'edit'])->name('faq.edit');
+    Route::put('/faq/{id}', [FaqAdminController::class, 'update'])->name('faq.update');
+    Route::delete('/faq/{id}', [FaqAdminController::class, 'destroy'])->name('faq.destroy');
     Route::get('/pengaturan', fn () => Inertia::render('Admin/Setting'))->name('setting.index');
-    Route::get('/user', fn () => Inertia::render('Admin/User/Index'))->name('user.index');
-    Route::get('/audit-log', fn () => Inertia::render('Admin/AuditLog'))->name('audit.index');
+    Route::get('/user', [UserAdminController::class, 'index'])->name('user.index');
+    Route::get('/user/tambah', [UserAdminController::class, 'create'])->name('user.create');
+    Route::post('/user', [UserAdminController::class, 'store'])->name('user.store');
+    Route::get('/user/{id}', [UserAdminController::class, 'show'])->name('user.show');
+    Route::get('/user/{id}/edit', [UserAdminController::class, 'edit'])->name('user.edit');
+    Route::put('/user/{id}', [UserAdminController::class, 'update'])->name('user.update');
+    Route::delete('/user/{id}', [UserAdminController::class, 'destroy'])->name('user.destroy');
+    Route::get('/audit-log', [AuditLogAdminController::class, 'index'])->name('audit.index');
 });
 
 if (! app()->isProduction()) {

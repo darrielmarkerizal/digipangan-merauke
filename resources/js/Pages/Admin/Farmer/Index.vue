@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { Link, router } from '@inertiajs/vue3'
 import AdminLayout from '@/Layouts/AdminLayout.vue'
-import FarmerFilterPanel from './FarmerFilterPanel.vue'
+import FarmerFilterPanel from "@/Components/admin/Farmer/FarmerFilterPanel.vue"
 import {
   Plus,
   Search,

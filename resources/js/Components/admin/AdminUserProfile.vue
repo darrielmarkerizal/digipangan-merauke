@@ -32,7 +32,6 @@ const initials = computed(() => {
 
 <template>
   <div ref="popoverRef" class="relative" @keydown.escape="isOpen = false">
-    <!-- Circle Avatar Trigger -->
     <button
       type="button"
       class="flex size-9 items-center justify-center rounded-full border border-border/80 bg-brand/10 font-bold text-brand text-xs uppercase shadow-xs transition-all duration-200 hover:scale-105 hover:bg-brand/15 hover:ring-2 hover:ring-brand/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand cursor-pointer"
@@ -44,7 +43,6 @@ const initials = computed(() => {
       {{ initials }}
     </button>
 
-    <!-- Popover Menu -->
     <Transition
       enter-active-class="transition duration-200 ease-out"
       enter-from-class="transform scale-95 opacity-0 translate-y-1"
@@ -57,7 +55,6 @@ const initials = computed(() => {
         v-if="isOpen"
         class="absolute right-0 mt-2.5 w-64 origin-top-right rounded-2xl border border-border/80 bg-white p-2 shadow-xl ring-1 ring-black/5 focus:outline-none z-50"
       >
-        <!-- User profile header -->
         <div class="flex items-center gap-3 rounded-xl bg-muted/40 p-3">
           <div
             class="flex size-10 shrink-0 items-center justify-center rounded-full bg-brand font-bold text-white text-sm shadow-sm"
@@ -81,7 +78,6 @@ const initials = computed(() => {
 
         <div class="my-1.5 h-px bg-border/80" />
 
-        <!-- Action items -->
         <div class="space-y-0.5">
           <Link
             href="/"
@@ -103,7 +99,6 @@ const initials = computed(() => {
 
         <div class="my-1.5 h-px bg-border/80" />
 
-        <!-- Logout button -->
         <button
           type="button"
           class="flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-semibold text-danger transition-colors hover:bg-danger-weak cursor-pointer"

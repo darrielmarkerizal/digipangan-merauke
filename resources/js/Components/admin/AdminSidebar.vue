@@ -87,7 +87,7 @@ const navGroups = [
         title: "Konten & Edukasi",
         items: [
             {
-                label: "Berita & Pelatihan",
+                label: "Berita",
                 href: "/admin/berita",
                 icon: Newspaper,
             },

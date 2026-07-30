@@ -77,7 +77,7 @@ const handleSubmit = () => {
               <Textarea
                 id="description"
                 v-model="form.description"
-                rows="3"
+                :rows="3"
                 placeholder="Gambaran umum mengenai wilayah ini..."
                 :error="!!form.errors.description"
               />
@@ -89,7 +89,7 @@ const handleSubmit = () => {
               <Textarea
                 id="agricultural_potential"
                 v-model="form.agricultural_potential"
-                rows="3"
+                :rows="3"
                 placeholder="Jelaskan potensi pertanian di daerah ini..."
                 :error="!!form.errors.agricultural_potential"
               />

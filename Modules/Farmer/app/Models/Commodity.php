@@ -9,9 +9,9 @@ use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 
 #[Fillable(['name'])]
-class Commodity extends Model
+class Commodity extends Model implements AuditableContract
 {
-    use HasSlug;
+    use Auditable, HasSlug;
 
     protected $table = 'commodities';
 

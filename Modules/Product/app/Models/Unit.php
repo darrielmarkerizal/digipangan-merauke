@@ -9,9 +9,9 @@ use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 
 #[Fillable(['name', 'symbol', 'is_active'])]
-class Unit extends Model
+class Unit extends Model implements AuditableContract
 {
-    use HasSlug;
+    use Auditable, HasSlug;
 
     protected function casts(): array
     {

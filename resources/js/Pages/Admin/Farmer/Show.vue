@@ -124,7 +124,6 @@ const executeDelete = () => {
         </div>
       </div>
 
-      <!-- Top Profile Card -->
       <div class="rounded-2xl border border-border/80 bg-white p-6 shadow-xs">
         <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div class="flex flex-col sm:flex-row items-start sm:items-center gap-5">
@@ -185,7 +184,6 @@ const executeDelete = () => {
         </div>
       </div>
 
-      <!-- Detail Grid: Wilayah & Komoditas -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div class="rounded-2xl border border-border/80 bg-white p-6 shadow-xs space-y-4">
           <div class="flex items-center gap-2.5 border-b border-border/60 pb-3">
@@ -238,7 +236,6 @@ const executeDelete = () => {
         </div>
       </div>
 
-      <!-- Produk Panen dari Petani Ini -->
       <div class="rounded-2xl border border-border/80 bg-white p-6 shadow-xs space-y-5">
         <div class="flex items-center justify-between border-b border-border/60 pb-4">
           <div class="flex items-center gap-2.5">

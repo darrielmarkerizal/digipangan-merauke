@@ -9,9 +9,9 @@ use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 
 #[Fillable(['name'])]
-class PostCategory extends Model
+class PostCategory extends Model implements AuditableContract
 {
-    use HasSlug;
+    use Auditable, HasSlug;
 
     public function getSlugOptions(): SlugOptions
     {

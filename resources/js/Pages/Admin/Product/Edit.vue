@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import AdminLayout from '@/Layouts/AdminLayout.vue'
-import ProductForm, { type ProductFormData } from './ProductForm.vue'
+import AdminLayout from "@/Layouts/AdminLayout.vue";
+import ProductForm, { type ProductFormData } from "@/Components/admin/Product/ProductForm.vue";
 
 const props = defineProps<{
   id?: number | string

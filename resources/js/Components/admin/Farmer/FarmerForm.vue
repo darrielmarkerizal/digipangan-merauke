@@ -182,7 +182,6 @@ const handleSubmit = () => {
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <!-- Left 2 Cols: Main Identitas & Wilayah -->
       <div class="lg:col-span-2 space-y-6">
         <div class="rounded-2xl border border-border/80 bg-white p-6 shadow-xs space-y-5">
           <div class="flex items-center gap-2 border-b border-border/60 pb-3">
@@ -270,7 +269,6 @@ const handleSubmit = () => {
         </div>
       </div>
 
-      <!-- Right Col: Komoditas & Foto -->
       <div class="space-y-6">
         <div class="rounded-2xl border border-border/80 bg-white p-6 shadow-xs space-y-5">
           <div class="flex items-center gap-2 border-b border-border/60 pb-3">

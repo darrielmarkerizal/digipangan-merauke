@@ -34,7 +34,6 @@ const regionList = computed(() => {
         subtitle="Manajemen profil distrik transmigrasi Muting, Ulilin, dan Elikobel."
     >
         <template #actions>
-            <!-- Fitur Tambah Wilayah dihapus karena wilayah statis (hanya 3) -->
         </template>
 
         <AdminPageCard>

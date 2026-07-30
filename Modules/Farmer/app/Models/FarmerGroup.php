@@ -13,9 +13,9 @@ use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 
 #[Fillable(['region_id', 'village_id', 'name'])]
-class FarmerGroup extends Model
+class FarmerGroup extends Model implements AuditableContract
 {
-    use HasSlug, SoftDeletes;
+    use Auditable, HasSlug, SoftDeletes;
 
     public function getSlugOptions(): SlugOptions
     {

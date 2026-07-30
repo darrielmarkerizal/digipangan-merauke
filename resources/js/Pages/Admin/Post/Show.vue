@@ -38,12 +38,10 @@ const props = defineProps<{
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <!-- Main Form Info (Read Only) -->
                 <div class="lg:col-span-2 space-y-6">
                     <div
                         class="rounded-2xl border border-border/80 bg-white shadow-xs overflow-hidden"
                     >
-                        <!-- Cover Preview -->
                         <div
                             class="w-full aspect-[21/9] bg-muted/30 relative flex items-center justify-center border-b border-border/60"
                         >
@@ -65,7 +63,6 @@ const props = defineProps<{
                         </div>
 
                         <div class="p-8 space-y-8">
-                            <!-- Title & Meta -->
                             <div class="space-y-4">
                                 <h1
                                     class="text-2xl font-bold text-fg leading-tight"
@@ -96,7 +93,6 @@ const props = defineProps<{
                     </div>
                 </div>
 
-                <!-- Sidebar Info -->
                 <div class="lg:col-span-1 space-y-6">
                     <div
                         class="rounded-2xl border border-border/80 bg-white shadow-xs overflow-hidden"

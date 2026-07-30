@@ -11,10 +11,11 @@ export interface FilterOption {
 }
 
 const props = defineProps<{
-  module?: 'product' | 'post'
+  module?: 'product' | 'post' | 'user'
   categories?: FilterOption[]
   regions?: FilterOption[]
   authors?: FilterOption[]
+  roles?: string[]
 }>()
 
 const isOpen = ref(false)
@@ -41,11 +42,14 @@ const filters = reactive({
   active: getUrlParam('filter[is_active]'),
   status: getUrlParam('filter[status]'),
   author_id: getUrlParam('filter[author_id]'),
+  role: getUrlParam('filter[role]'),
 })
 
 const activeFilterCount = computed(() => {
   if (props.module === 'post') {
     return [filters.status, filters.author_id].filter(Boolean).length
+  } else if (props.module === 'user') {
+    return [filters.role, filters.active].filter(Boolean).length
   }
   return [filters.category, filters.region, filters.stock, filters.active].filter(Boolean).length
 })
@@ -58,6 +62,9 @@ function applyFilters() {
   const mapping: Record<string, string> = props.module === 'post' ? {
     'filter[status]': filters.status,
     'filter[author_id]': filters.author_id,
+  } : props.module === 'user' ? {
+    'filter[role]': filters.role,
+    'filter[is_active]': filters.active,
   } : {
     'filter[product_category_id]': filters.category,
     'filter[region_id]': filters.region,
@@ -91,6 +98,7 @@ function resetFilters() {
   filters.active = ''
   filters.status = ''
   filters.author_id = ''
+  filters.role = ''
 
   if (typeof window === 'undefined') return
   const currentUrl = new URL(window.location.href)
@@ -98,6 +106,8 @@ function resetFilters() {
 
   const activeKeys = props.module === 'post' 
     ? ['filter[status]', 'filter[author_id]'] 
+    : props.module === 'user'
+    ? ['filter[role]', 'filter[is_active]']
     : ['filter[product_category_id]', 'filter[region_id]', 'filter[stock_available]', 'filter[is_active]']
     
   activeKeys.forEach((key) => params.delete(key))
@@ -123,7 +133,7 @@ function resetFilters() {
       @click="isOpen = !isOpen"
     >
       <Icon :icon="Filter" :size="16" class="text-fg-muted" />
-      <span>Filter {{ module === 'post' ? 'Status & Penulis' : 'Kategori & Distrik' }}</span>
+      <span>Filter {{ module === 'post' ? 'Status & Penulis' : module === 'user' ? 'Peran & Status' : 'Kategori & Distrik' }}</span>
       <span
         v-if="activeFilterCount > 0"
         class="flex size-5 items-center justify-center rounded-full bg-brand text-[11px] font-bold text-white"
@@ -140,7 +150,7 @@ function resetFilters() {
       <div class="flex items-center justify-between border-b border-border/60 pb-3">
         <div class="flex items-center gap-2">
           <Icon :icon="Filter" :size="16" class="text-brand" />
-          <h3 class="text-sm font-bold text-fg">Filter {{ module === 'post' ? 'Berita' : 'Produk' }}</h3>
+          <h3 class="text-sm font-bold text-fg">Filter {{ module === 'post' ? 'Berita' : module === 'user' ? 'Pengguna' : 'Produk' }}</h3>
         </div>
         <button
           type="button"
@@ -168,6 +178,27 @@ function resetFilters() {
             <option v-for="author in (authors || [])" :key="author.id" :value="author.id">
               {{ author.name }}
             </option>
+          </Select>
+        </div>
+      </div>
+
+      <div v-else-if="module === 'user'" class="mt-4 space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-fg mb-1.5">Peran Pengguna</label>
+          <Select v-model="filters.role" class="!min-h-9 text-xs">
+            <option value="">Semua Peran</option>
+            <option v-for="role in roles" :key="role" :value="role">
+              {{ role === 'super_admin' ? 'Super Admin' : 'Admin' }}
+            </option>
+          </Select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-fg mb-1.5">Status Aktif</label>
+          <Select v-model="filters.active" class="!min-h-9 text-xs">
+            <option value="">Semua Status</option>
+            <option value="1">Aktif</option>
+            <option value="0">Nonaktif</option>
           </Select>
         </div>
       </div>
