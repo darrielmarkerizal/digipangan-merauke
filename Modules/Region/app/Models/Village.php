@@ -11,6 +11,8 @@ use Modules\Farmer\Models\Farmer;
 use Modules\Farmer\Models\FarmerGroup;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
+use OwenIt\Auditing\Auditable;
+use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
 
 #[Fillable(['region_id', 'name', 'is_active'])]
 class Village extends Model implements AuditableContract
