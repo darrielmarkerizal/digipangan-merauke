@@ -11,6 +11,7 @@ use Modules\Product\Http\Resources\Public\PublicProductDetailResource;
 use Modules\Product\Http\Resources\Public\PublicProductResource;
 use Modules\Product\Models\ProductCategory;
 use Modules\Product\Repositories\Contracts\ProductRepositoryInterface;
+use Modules\Region\Models\Region;
 
 class ProductPageController extends Controller
 {
@@ -24,10 +25,16 @@ class ProductPageController extends Controller
             ->orderBy('sort_order')
             ->get();
 
+        $regions = Region::query()
+            ->where('is_active', true)
+            ->select(['id', 'name', 'slug'])
+            ->get();
+
         return Inertia::render('Product/Index', [
             'products' => PublicProductResource::collection($paginator),
             'categories' => ProductCategoryResource::collection($categories)->resolve(),
-            'filters' => $request->only(['kategori', 'q']),
+            'regions' => $regions,
+            'filters' => $request->only(['kategori', 'region', 'sort', 'q']),
         ]);
     }
 

@@ -40,6 +40,9 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
             AllowedFilter::callback('category', fn (Builder $query, $value) => $query->whereHas(
                 'category', fn (Builder $categoryQuery) => $categoryQuery->where('slug', $value)
             )),
+            AllowedFilter::callback('region', fn (Builder $query, $value) => $query->whereHas(
+                'region', fn (Builder $regionQuery) => $regionQuery->where('slug', $value)
+            )),
         ];
     }
 
