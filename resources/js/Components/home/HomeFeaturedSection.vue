@@ -82,7 +82,10 @@ const getBentoVariant = (index: number, total: number) => {
 
         <div
             v-if="featuredList.length > 0"
-            class="mt-8 sm:mt-12 grid grid-cols-1 gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-4 lg:grid-rows-2"
+            :class="[
+                'mt-8 sm:mt-12 grid grid-cols-1 gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-4',
+                featuredList.length >= 3 ? 'lg:grid-rows-2' : ''
+            ]"
         >
             <div
                 v-for="(prod, index) in featuredList.slice(0, 4)"
