@@ -28,7 +28,9 @@ const auditList = computed(() => {
         subtitle="Riwayat perubahan data dan jejak rekam aktivitas admin untuk menjaga transparansi, keandalan, dan keamanan sistem."
     >
         <div class="space-y-4">
-            <div class="overflow-hidden rounded-2xl border border-border/80 bg-white shadow-xs">
+            <div
+                class="overflow-hidden rounded-2xl border border-border/80 bg-white shadow-xs"
+            >
                 <AuditLogTable :audit-list="auditList" />
             </div>
 

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { computed } from "vue";
 import { router } from "@inertiajs/vue3";
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 import {
@@ -11,10 +11,17 @@ import {
     ArrowUp,
     ArrowDown,
     ArrowUpDown,
-    ToggleLeft,
-    ToggleRight,
+    CheckCircle2,
+    XCircle,
 } from "@lucide/vue";
-import { Icon, Button, Badge, AlertDialog, EmptyState, Pagination } from "@/Components/ui";
+import {
+    Icon,
+    Button,
+    Badge,
+    AlertDialog,
+    EmptyState,
+    Pagination,
+} from "@/Components/ui";
 import { Link } from "@inertiajs/vue3";
 import { useSearch } from "@/Composables/useSearch";
 import { useSort } from "@/Composables/useSort";
@@ -34,7 +41,9 @@ const { getSortDirection, sortBy } = useSort();
 
 const faqList = computed(() => {
     const rawData = props.faqs?.data;
-    const items = Array.isArray(rawData) ? rawData : (rawData as any)?.data || [];
+    const items = Array.isArray(rawData)
+        ? rawData
+        : (rawData as any)?.data || [];
     return items;
 });
 
@@ -48,7 +57,10 @@ const executeDelete = (id: number) => {
 </script>
 
 <template>
-    <AdminLayout title="Pusat Bantuan (FAQ)" subtitle="Kelola daftar pertanyaan yang sering diajukan oleh pengguna.">
+    <AdminLayout
+        title="Pusat Bantuan (FAQ)"
+        subtitle="Kelola daftar pertanyaan yang sering diajukan oleh pengguna."
+    >
         <template #actions>
             <Link href="/admin/faq/tambah">
                 <Button class="gap-2 font-semibold shadow-sm">
@@ -59,7 +71,9 @@ const executeDelete = (id: number) => {
         </template>
 
         <div class="space-y-4">
-            <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+            <div
+                class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3"
+            >
                 <div class="relative flex-1 max-w-sm">
                     <Icon
                         :icon="Search"
@@ -75,10 +89,14 @@ const executeDelete = (id: number) => {
                 </div>
             </div>
 
-            <div class="overflow-hidden rounded-2xl border border-border/80 bg-white shadow-xs">
+            <div
+                class="overflow-hidden rounded-2xl border border-border/80 bg-white shadow-xs"
+            >
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-sm text-fg">
-                        <thead class="border-b border-border/60 bg-muted/30 text-xs font-bold text-fg-muted uppercase tracking-wider">
+                        <thead
+                            class="border-b border-border/60 bg-muted/30 text-xs font-bold text-fg-muted uppercase tracking-wider"
+                        >
                             <tr>
                                 <th
                                     scope="col"
@@ -88,9 +106,23 @@ const executeDelete = (id: number) => {
                                     <div class="flex items-center gap-2">
                                         <span>No</span>
                                         <Icon
-                                            :icon="getSortDirection('sort_order') === 'asc' ? ArrowUp : getSortDirection('sort_order') === 'desc' ? ArrowDown : ArrowUpDown"
+                                            :icon="
+                                                getSortDirection(
+                                                    'sort_order',
+                                                ) === 'asc'
+                                                    ? ArrowUp
+                                                    : getSortDirection(
+                                                            'sort_order',
+                                                        ) === 'desc'
+                                                      ? ArrowDown
+                                                      : ArrowUpDown
+                                            "
                                             :size="14"
-                                            :class="getSortDirection('sort_order') ? 'text-brand' : 'text-fg-muted/40 group-hover:text-fg-muted'"
+                                            :class="
+                                                getSortDirection('sort_order')
+                                                    ? 'text-brand'
+                                                    : 'text-fg-muted/40 group-hover:text-fg-muted'
+                                            "
                                         />
                                     </div>
                                 </th>
@@ -102,9 +134,22 @@ const executeDelete = (id: number) => {
                                     <div class="flex items-center gap-2">
                                         <span>Pertanyaan</span>
                                         <Icon
-                                            :icon="getSortDirection('question') === 'asc' ? ArrowUp : getSortDirection('question') === 'desc' ? ArrowDown : ArrowUpDown"
+                                            :icon="
+                                                getSortDirection('question') ===
+                                                'asc'
+                                                    ? ArrowUp
+                                                    : getSortDirection(
+                                                            'question',
+                                                        ) === 'desc'
+                                                      ? ArrowDown
+                                                      : ArrowUpDown
+                                            "
                                             :size="14"
-                                            :class="getSortDirection('question') ? 'text-brand' : 'text-fg-muted/40 group-hover:text-fg-muted'"
+                                            :class="
+                                                getSortDirection('question')
+                                                    ? 'text-brand'
+                                                    : 'text-fg-muted/40 group-hover:text-fg-muted'
+                                            "
                                         />
                                     </div>
                                 </th>
@@ -117,13 +162,29 @@ const executeDelete = (id: number) => {
                                     <div class="flex items-center gap-2">
                                         <span>Dibuat</span>
                                         <Icon
-                                            :icon="getSortDirection('created_at') === 'asc' ? ArrowUp : getSortDirection('created_at') === 'desc' ? ArrowDown : ArrowUpDown"
+                                            :icon="
+                                                getSortDirection(
+                                                    'created_at',
+                                                ) === 'asc'
+                                                    ? ArrowUp
+                                                    : getSortDirection(
+                                                            'created_at',
+                                                        ) === 'desc'
+                                                      ? ArrowDown
+                                                      : ArrowUpDown
+                                            "
                                             :size="14"
-                                            :class="getSortDirection('created_at') ? 'text-brand' : 'text-fg-muted/40 group-hover:text-fg-muted'"
+                                            :class="
+                                                getSortDirection('created_at')
+                                                    ? 'text-brand'
+                                                    : 'text-fg-muted/40 group-hover:text-fg-muted'
+                                            "
                                         />
                                     </div>
                                 </th>
-                                <th scope="col" class="px-5 py-3.5 text-right">Aksi</th>
+                                <th scope="col" class="px-5 py-3.5 text-right">
+                                    Aksi
+                                </th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-border/60">
@@ -141,29 +202,71 @@ const executeDelete = (id: number) => {
                                 :key="item.id"
                                 class="transition-colors hover:bg-muted/20"
                             >
-                                <td class="px-5 py-4 text-fg-muted font-mono text-xs w-12">
+                                <td
+                                    class="px-5 py-4 text-fg-muted font-mono text-xs w-12"
+                                >
                                     {{ item.sort_order ?? index + 1 }}
                                 </td>
                                 <td class="px-4 py-4 max-w-md">
-                                    <p class="font-semibold text-fg line-clamp-1">{{ item.question }}</p>
-                                    <p class="text-xs text-fg-muted mt-0.5 line-clamp-2 leading-relaxed">{{ item.answer }}</p>
+                                    <p
+                                        class="font-semibold text-fg line-clamp-1"
+                                    >
+                                        {{ item.question }}
+                                    </p>
+                                    <p
+                                        class="text-xs text-fg-muted mt-0.5 line-clamp-2 leading-relaxed"
+                                    >
+                                        {{ item.answer }}
+                                    </p>
                                 </td>
                                 <td class="px-4 py-4">
-                                    <Badge :variant="item.is_active ? 'success' : 'neutral'" class="gap-1">
-                                        <Icon :icon="item.is_active ? ToggleRight : ToggleLeft" :size="12" />
-                                        {{ item.is_active ? "Aktif" : "Nonaktif" }}
+                                    <Badge
+                                        :variant="
+                                            item.is_active
+                                                ? 'success'
+                                                : 'neutral'
+                                        "
+                                        class="gap-1"
+                                    >
+                                        <Icon
+                                            :icon="
+                                                item.is_active
+                                                    ? CheckCircle2
+                                                    : XCircle
+                                            "
+                                            :size="12"
+                                        />
+                                        <span>{{
+                                            item.is_active
+                                                ? "Aktif"
+                                                : "Tidak Aktif"
+                                        }}</span>
                                     </Badge>
                                 </td>
                                 <td class="px-4 py-4">
-                                    <span class="text-xs text-fg-muted font-medium whitespace-nowrap">
+                                    <span
+                                        class="text-xs text-fg-muted font-medium whitespace-nowrap"
+                                    >
                                         {{ formatTanggal(item.created_at) }}
                                     </span>
                                 </td>
                                 <td class="px-5 py-4 text-right">
-                                    <div class="flex items-center justify-end gap-1.5">
-                                        <Link :href="`/admin/faq/${item.id}/edit`">
-                                            <Button variant="secondary" size="sm" class="size-8 p-0" title="Edit FAQ">
-                                                <Icon :icon="Edit2" :size="14" />
+                                    <div
+                                        class="flex items-center justify-end gap-1.5"
+                                    >
+                                        <Link
+                                            :href="`/admin/faq/${item.id}/edit`"
+                                        >
+                                            <Button
+                                                variant="secondary"
+                                                size="sm"
+                                                class="size-8 p-0"
+                                                title="Edit FAQ"
+                                            >
+                                                <Icon
+                                                    :icon="Edit2"
+                                                    :size="14"
+                                                />
                                             </Button>
                                         </Link>
                                         <AlertDialog
@@ -175,8 +278,16 @@ const executeDelete = (id: number) => {
                                             @confirm="executeDelete(item.id)"
                                         >
                                             <template #trigger>
-                                                <Button variant="danger-outline" size="sm" class="size-8 p-0" title="Hapus FAQ">
-                                                    <Icon :icon="Trash2" :size="14" />
+                                                <Button
+                                                    variant="danger-outline"
+                                                    size="sm"
+                                                    class="size-8 p-0"
+                                                    title="Hapus FAQ"
+                                                >
+                                                    <Icon
+                                                        :icon="Trash2"
+                                                        :size="14"
+                                                    />
                                                 </Button>
                                             </template>
                                         </AlertDialog>
