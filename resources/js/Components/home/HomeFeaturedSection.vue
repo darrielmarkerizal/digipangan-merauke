@@ -9,6 +9,30 @@ defineProps<{
     featuredList: ProductCardType[];
     categoriesPreview: TaxonomyRef[];
 }>();
+const getBentoClasses = (index: number, total: number) => {
+    if (total === 1) return 'sm:col-span-2 lg:col-span-4';
+    if (total === 2) return 'sm:col-span-1 lg:col-span-2';
+    if (total === 3) {
+        if (index === 0) return 'sm:col-span-2 lg:col-span-2 lg:row-span-2';
+        return 'sm:col-span-2 lg:col-span-2 lg:row-span-1';
+    }
+    // 4 or more
+    if (index === 0) return 'sm:col-span-2 lg:col-span-2 lg:row-span-2';
+    if (index === 1) return 'sm:col-span-2 lg:col-span-2 lg:row-span-1';
+    return 'sm:col-span-1 lg:col-span-1 lg:row-span-1';
+};
+
+const getBentoVariant = (index: number, total: number) => {
+    if (total === 1 || total === 2) return 'default';
+    if (total === 3) {
+        if (index === 0) return 'spotlight';
+        return 'horizontal';
+    }
+    // 4 or more
+    if (index === 0) return 'spotlight';
+    if (index === 1) return 'horizontal';
+    return 'default';
+};
 </script>
 
 <template>
@@ -60,13 +84,18 @@ defineProps<{
 
         <div
             v-if="featuredList.length > 0"
-            class="mt-8 sm:mt-12 grid grid-cols-1 gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+            class="mt-8 sm:mt-12 grid grid-cols-1 gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-4 lg:grid-rows-2"
         >
-            <ProductCard
-                v-for="prod in featuredList"
+            <div
+                v-for="(prod, index) in featuredList.slice(0, 4)"
                 :key="prod.slug"
-                :product="prod"
-            />
+                :class="['h-full w-full', getBentoClasses(index, Math.min(featuredList.length, 4))]"
+            >
+                <ProductCard
+                    :product="prod"
+                    :variant="getBentoVariant(index, Math.min(featuredList.length, 4)) as any"
+                />
+            </div>
         </div>
 
         <div v-else class="mt-8 sm:mt-12">
