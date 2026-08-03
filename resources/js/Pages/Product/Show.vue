@@ -42,7 +42,6 @@ const waLink = computed(() => {
     </Head>
 
     <main class="min-h-screen bg-bg pb-20 sm:pb-12">
-        <!-- Breadcrumb & Back navigation -->
         <div class="mx-auto max-w-[90rem] px-3 pt-6 pb-2 sm:px-5 lg:px-6">
             <Link
                 href="/produk"
@@ -62,11 +61,8 @@ const waLink = computed(() => {
             />
         </div>
 
-        <!-- Product Details Main Section -->
         <section class="mx-auto max-w-[90rem] px-3 py-6 sm:px-5 lg:px-6">
             <div class="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-10 xl:gap-14">
-                
-                <!-- Left: Multi Image Gallery -->
                 <div class="lg:col-span-6 space-y-3">
                     <div class="aspect-square sm:aspect-[4/3] lg:aspect-square overflow-hidden rounded-2xl bg-white shadow-xs border border-border/80 relative group">
                         <img
@@ -87,25 +83,23 @@ const waLink = computed(() => {
                         </span>
                     </div>
 
-                    <!-- Multi Image Thumbnail Strip -->
                     <div v-if="photos.length > 1" class="flex items-center gap-2.5 overflow-x-auto pb-1 scrollbar-none">
                         <button
                             v-for="(img, idx) in photos"
                             :key="idx"
-                            @click="activePhotoIndex = idx"
+                            @click="activePhotoIndex = Number(idx)"
                             :class="[
                                 'relative size-16 sm:size-20 shrink-0 overflow-hidden rounded-xl border-2 transition-all cursor-pointer bg-white',
-                                activePhotoIndex === idx
+                                activePhotoIndex === Number(idx)
                                     ? 'border-brand ring-2 ring-brand/20 shadow-xs'
                                     : 'border-border/70 opacity-70 hover:opacity-100'
                             ]"
                         >
-                            <img :src="img.thumb || img.card || img.original" :alt="`${product.name} ${idx + 1}`" class="size-full object-cover" />
+                            <img :src="img.thumb || img.card || img.original" :alt="`${product.name} ${Number(idx) + 1}`" class="size-full object-cover" />
                         </button>
                     </div>
                 </div>
 
-                <!-- Right: Product Info & Meta Details -->
                 <div class="lg:col-span-6 flex flex-col">
                     <div class="mb-6">
                         <div class="flex items-center gap-2 mb-2">
@@ -142,7 +136,6 @@ const waLink = computed(() => {
                         </div>
                     </div>
 
-                    <!-- Sleek Compact Meta Grid -->
                     <div class="grid grid-cols-2 gap-3 py-4 my-2 border-y border-border/60">
                         <div v-if="product.region" class="flex items-center gap-2.5 rounded-xl bg-white p-2.5 border border-border/60 shadow-2xs">
                             <div class="flex size-7 shrink-0 items-center justify-center rounded-lg bg-brand/10 text-brand">
@@ -185,7 +178,6 @@ const waLink = computed(() => {
                         </div>
                     </div>
 
-                    <!-- Description HTML Rendered from RichTextEditor -->
                     <div class="py-4 flex-1">
                         <h3 class="text-sm font-bold text-fg uppercase tracking-wider mb-2">Deskripsi Produk</h3>
                         <div
@@ -195,7 +187,6 @@ const waLink = computed(() => {
                         </div>
                     </div>
 
-                    <!-- Desktop & Tablet Action CTA Button -->
                     <div class="mt-6 pt-4 border-t border-border/60 hidden sm:block">
                         <a
                             v-if="waLink"
@@ -221,7 +212,6 @@ const waLink = computed(() => {
             </div>
         </section>
 
-        <!-- Mobile Floating Bottom CTA Bar -->
         <div v-if="waLink" class="fixed inset-x-0 bottom-0 z-40 bg-white/95 backdrop-blur-md p-3 border-t border-border/80 sm:hidden shadow-lg">
             <a
                 :href="waLink"
