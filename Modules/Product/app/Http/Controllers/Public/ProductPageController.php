@@ -49,8 +49,8 @@ class ProductPageController extends Controller
             ->where('is_active', true)
             ->where('id', '!=', $product->id)
             ->where(function ($query) use ($product) {
-                if ($product->category_id) {
-                    $query->where('category_id', $product->category_id);
+                if ($product->product_category_id) {
+                    $query->where('product_category_id', $product->product_category_id);
                 }
                 if ($product->region_id) {
                     $query->orWhere('region_id', $product->region_id);
