@@ -7,15 +7,10 @@ import {
     RotateCcw,
 } from "@lucide/vue";
 import { Icon } from "@/Components/ui";
+import type { TaxonomyRef } from "@/types/home";
 
 interface RegionItem {
-    id: number;
-    name: string;
-    slug: string;
-}
-
-interface TaxonomyRef {
-    id: number;
+    id?: number;
     name: string;
     slug: string;
 }

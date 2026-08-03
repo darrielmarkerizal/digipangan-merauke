@@ -41,14 +41,14 @@ const viewMode = ref<"grid" | "list">("grid");
 
 const currentCategory = computed(() => props.filters.kategori || "");
 const currentRegion = computed(() => props.filters.region || "");
-const currentSort = computed(() => props.filters.sort || "");
+const currentSort = computed(() => props.filters.sort || "-created_at");
 const searchQuery = computed(() => props.filters.q || "");
 
 const hasActiveFilters = computed(() => {
     return !!(
         currentCategory.value ||
         currentRegion.value ||
-        currentSort.value ||
+        (props.filters.sort && props.filters.sort !== "-created_at") ||
         searchQuery.value
     );
 });
@@ -87,8 +87,8 @@ const selectRegion = (slug: string) => {
 };
 
 const handleSortChange = (e: Event) => {
-    const target = e.target as HTMLSelectElement;
-    applyFilters({ sort: target.value || undefined });
+    const val = (e.target as HTMLSelectElement).value;
+    applyFilters({ sort: val === "-created_at" ? undefined : val });
 };
 
 const resetAllFilters = () => {
@@ -201,11 +201,11 @@ const resetAllFilters = () => {
                         <div class="flex items-center gap-3">
                             <div class="relative">
                                 <select
-                                    :value="currentSort || ''"
+                                    :value="currentSort"
                                     @change="handleSortChange"
                                     class="h-9 cursor-pointer rounded-xl border border-border/80 bg-white px-3 text-xs font-semibold text-fg shadow-xs transition-all focus:border-brand focus:outline-none"
                                 >
-                                    <option value="" :selected="!currentSort">Urutan: Terbaru</option>
+                                    <option value="-created_at">Urutan: Terbaru</option>
                                     <option value="price">Harga: Terendah</option>
                                     <option value="-price">Harga: Tertinggi</option>
                                     <option value="name">Nama (A - Z)</option>
