@@ -2,7 +2,6 @@
 import { ref, computed } from "vue";
 import { Link, router } from "@inertiajs/vue3";
 import AdminLayout from "@/Layouts/AdminLayout.vue";
-import AdminPageCard from "@/Components/admin/AdminPageCard.vue";
 import FilterPanel from "@/Components/admin/FilterPanel.vue";
 import {
     Search,
@@ -95,7 +94,7 @@ const executeDelete = (id: number) => {
                 <FilterPanel module="post" :authors="authors as any" />
             </div>
 
-            <AdminPageCard>
+            <div class="overflow-hidden rounded-2xl border border-border/80 bg-white shadow-xs">
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-sm text-fg">
                         <thead
@@ -319,7 +318,7 @@ const executeDelete = (id: number) => {
                         </tbody>
                     </table>
                 </div>
-            </AdminPageCard>
+            </div>
 
             <Pagination :meta="posts?.meta" :links="posts?.links" />
         </div>

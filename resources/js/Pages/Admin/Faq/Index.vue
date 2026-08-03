@@ -2,7 +2,6 @@
 import { ref, computed } from "vue";
 import { router } from "@inertiajs/vue3";
 import AdminLayout from "@/Layouts/AdminLayout.vue";
-import AdminPageCard from "@/Components/admin/AdminPageCard.vue";
 import {
     Plus,
     Search,
@@ -76,7 +75,7 @@ const executeDelete = (id: number) => {
                 </div>
             </div>
 
-            <AdminPageCard>
+            <div class="overflow-hidden rounded-2xl border border-border/80 bg-white shadow-xs">
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-sm text-fg">
                         <thead class="border-b border-border/60 bg-muted/30 text-xs font-bold text-fg-muted uppercase tracking-wider">
@@ -187,7 +186,7 @@ const executeDelete = (id: number) => {
                         </tbody>
                     </table>
                 </div>
-            </AdminPageCard>
+            </div>
 
             <Pagination :meta="faqs?.meta" :links="faqs?.links" />
         </div>

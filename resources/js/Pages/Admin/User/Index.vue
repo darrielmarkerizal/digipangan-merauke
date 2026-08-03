@@ -2,7 +2,6 @@
 import { computed } from "vue";
 import { Link } from "@inertiajs/vue3";
 import AdminLayout from "@/Layouts/AdminLayout.vue";
-import AdminPageCard from "@/Components/admin/AdminPageCard.vue";
 import FilterPanel from "@/Components/admin/FilterPanel.vue";
 import UserTable from "@/Components/admin/User/UserTable.vue";
 import { Plus, Search } from "@lucide/vue";
@@ -53,13 +52,13 @@ const userList = computed(() => {
                 <FilterPanel module="user" :roles="roles" />
             </div>
 
-            <AdminPageCard>
+            <div class="overflow-hidden rounded-2xl border border-border/80 bg-white shadow-xs">
                 <UserTable
                     :user-list="userList"
                     :sort-by="sortBy"
                     :get-sort-direction="getSortDirection"
                 />
-            </AdminPageCard>
+            </div>
 
             <Pagination :meta="users?.meta" :links="users?.links" />
         </div>
