@@ -22,13 +22,6 @@ const heroIsFeatured = computed(() => props.featuredProducts.length > 0);
 const featuredList = computed(() =>
     props.featuredProducts.filter((p) => p.slug !== heroProduct.value?.slug),
 );
-const useSpotlight = computed(() => featuredList.value.length >= 3);
-const spotlight = computed(() =>
-    useSpotlight.value ? featuredList.value[0] : null,
-);
-const restFeatured = computed(() =>
-    useSpotlight.value ? featuredList.value.slice(1, 4) : [],
-);
 
 const shownSlugs = computed(
     () =>
@@ -66,9 +59,6 @@ const categoriesPreview = computed(() => props.categories ?? []);
 
     <HomeFeaturedSection
         :featured-list="featuredList"
-        :use-spotlight="useSpotlight"
-        :spotlight="spotlight"
-        :rest-featured="restFeatured"
         :categories-preview="categoriesPreview"
     />
 

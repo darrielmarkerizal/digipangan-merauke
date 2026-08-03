@@ -7,9 +7,6 @@ import type { ProductCard as ProductCardType, TaxonomyRef } from "@/types/home";
 
 defineProps<{
     featuredList: ProductCardType[];
-    useSpotlight: boolean;
-    spotlight: ProductCardType | null;
-    restFeatured: ProductCardType[];
     categoriesPreview: TaxonomyRef[];
 }>();
 </script>
@@ -62,26 +59,8 @@ defineProps<{
         </div>
 
         <div
-            v-if="useSpotlight && spotlight"
-            class="mt-8 sm:mt-12 grid grid-cols-1 gap-6 sm:gap-8 lg:grid-cols-12"
-        >
-            <div class="lg:col-span-6">
-                <ProductCard :product="spotlight" :featured="true" />
-            </div>
-            <div
-                class="grid grid-cols-1 gap-4 sm:gap-6 sm:grid-cols-2 lg:col-span-6 lg:grid-cols-2"
-            >
-                <ProductCard
-                    v-for="prod in restFeatured"
-                    :key="prod.slug"
-                    :product="prod"
-                />
-            </div>
-        </div>
-
-        <div
-            v-else-if="featuredList.length > 0"
-            class="mt-8 sm:mt-12 grid grid-cols-1 gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3"
+            v-if="featuredList.length > 0"
+            class="mt-8 sm:mt-12 grid grid-cols-1 gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
         >
             <ProductCard
                 v-for="prod in featuredList"
