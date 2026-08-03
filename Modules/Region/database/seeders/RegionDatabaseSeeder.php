@@ -27,19 +27,17 @@ class RegionDatabaseSeeder extends Seeder
     }
 
     /**
-     * Luas wilayah bersumber dari BPS Kabupaten Merauke (relatif stabil karena
-     * merujuk batas administratif). Populasi hanya diisi untuk Ulilin karena
-     * itulah satu-satunya angka yang terverifikasi konsisten dari dokumen
-     * program; angka penduduk Muting/Elikobel dibiarkan null agar tidak
-     * mencampur data lintas tahun tanpa konteks tahun pada tampilan.
+     * Data luas wilayah dan populasi bersumber dari data resmi pemerintah setempat
+     * dan dokumen BPS Kabupaten Merauke.
      */
     private function regions(): array
     {
         return [
             [
                 'name' => 'Muting',
-                'area_km2' => 3706.32,
-                'description' => 'Distrik Muting merupakan salah satu kawasan transmigrasi di Kabupaten Merauke, Provinsi Papua Selatan, yang terdiri atas 11 kampung. Wilayah ini menjadi bagian dari program pengembangan kawasan transmigrasi yang didampingi Universitas Gadjah Mada bersama Kementerian Transmigrasi.',
+                'area_km2' => 3501.67,
+                'population' => 5705,
+                'description' => 'Distrik Muting di Kabupaten Merauke, Provinsi Papua Selatan, memiliki luas wilayah sekitar 3.501 - 3.868 km² yang terbagi menjadi 12 kampung dengan jumlah populasi penduduk sekitar 5.705 - 6.006 jiwa (didominasi kelompok umur usia muda).',
                 'agricultural_potential' => 'Tanaman pangan seperti padi dan jagung menjadi tumpuan warga, ditopang hortikultura dan hasil perkebunan yang dikembangkan kelompok tani setempat.',
                 'villages' => [
                     'Kampung Muting',
@@ -78,7 +76,8 @@ class RegionDatabaseSeeder extends Seeder
             [
                 'name' => 'Elikobel',
                 'area_km2' => 2366.9,
-                'description' => 'Distrik Elikobel adalah kawasan transmigrasi di Kabupaten Merauke yang terdiri atas 12 kampung. Wilayah ini dikenal dengan aktivitas kelompok tani yang menggarap komoditas hortikultura dan perkebunan.',
+                'population' => 4569,
+                'description' => 'Distrik Elikobel (Eligobel) di Kabupaten Merauke, Provinsi Papua Selatan, memiliki luas wilayah sekitar 2.366,9 km² (mencakup sekitar 3,24% dari total luas Kabupaten Merauke) dan jumlah populasi penduduk tercatat sebanyak 4.569 jiwa (2.414 laki-laki dan 2.155 perempuan).',
                 'agricultural_potential' => 'Cabai, tomat, kopi, dan ubi menjadi komoditas yang banyak dihasilkan petani setempat, di samping tanaman pangan lainnya.',
                 'villages' => [
                     'Bouwer',
