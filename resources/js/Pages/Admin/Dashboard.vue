@@ -3,6 +3,8 @@ import AdminLayout from "@/Layouts/AdminLayout.vue";
 import DashboardKpiCards from "@/Components/admin/DashboardKpiCards.vue";
 import DashboardTrendChart from "@/Components/admin/DashboardTrendChart.vue";
 import DashboardRegionDistribution from "@/Components/admin/DashboardRegionDistribution.vue";
+import DashboardRecentActivities from "@/Components/admin/DashboardRecentActivities.vue";
+import DashboardPopularProducts from "@/Components/admin/DashboardPopularProducts.vue";
 
 const props = defineProps<{
     metrics: {
@@ -10,6 +12,8 @@ const props = defineProps<{
         farmers_and_groups: number;
         wa_clicks: number;
         integrated_regions: number;
+        total_posts?: number;
+        active_faqs?: number;
     };
     region_distribution: Array<{
         name: string;
@@ -19,6 +23,21 @@ const props = defineProps<{
     trend_data: Array<{
         x: string;
         y: number;
+    }>;
+    recent_activities: Array<{
+        id: string;
+        type: string;
+        title: string;
+        description: string;
+        status: string;
+        timestamp: number;
+        date_human: string;
+    }>;
+    popular_products: Array<{
+        id: number;
+        name: string;
+        region: string;
+        contact_count: number;
     }>;
 }>();
 </script>
@@ -31,12 +50,18 @@ const props = defineProps<{
         <DashboardKpiCards :metrics="props.metrics" />
 
         <div class="mt-4 grid grid-cols-1 gap-5 lg:grid-cols-12">
-            <div class="lg:col-span-8">
+            <div class="lg:col-span-8 flex flex-col gap-5">
                 <DashboardTrendChart :trend-data="props.trend_data" />
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <DashboardPopularProducts :popular-products="props.popular_products" />
+                    <!-- Placeholder for future metrics if needed -->
+                </div>
             </div>
 
-            <div class="lg:col-span-4">
+            <div class="lg:col-span-4 flex flex-col gap-5">
                 <DashboardRegionDistribution :region-distribution="props.region_distribution" />
+                <DashboardRecentActivities :recent-activities="props.recent_activities" />
             </div>
         </div>
     </AdminLayout>
