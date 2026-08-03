@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { Head, Link } from "@inertiajs/vue3";
 import {
     ArrowLeft,
@@ -120,6 +120,36 @@ const prevPhoto = () => {
             photos.value.length;
     }
 };
+
+const trackContact = () => {
+    try {
+        fetch(`/api/v1/products/${props.product.slug}/contact`, {
+            method: "POST",
+            headers: {
+                "X-CSRF-TOKEN":
+                    (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement)?.content || "",
+                "Accept": "application/json",
+            },
+        }).catch(() => {});
+    } catch (e) {}
+};
+
+const trackView = () => {
+    try {
+        fetch(`/api/v1/products/${props.product.slug}/view`, {
+            method: "POST",
+            headers: {
+                "X-CSRF-TOKEN":
+                    (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement)?.content || "",
+                "Accept": "application/json",
+            },
+        }).catch(() => {});
+    } catch (e) {}
+};
+
+onMounted(() => {
+    trackView();
+});
 </script>
 
 <template>
@@ -487,6 +517,7 @@ const prevPhoto = () => {
                             :href="waLink"
                             target="_blank"
                             rel="noopener noreferrer"
+                            @click="trackContact"
                             class="inline-block w-full sm:w-auto"
                         >
                             <Button
@@ -603,6 +634,7 @@ const prevPhoto = () => {
                 :href="waLink"
                 target="_blank"
                 rel="noopener noreferrer"
+                @click="trackContact"
                 class="block w-full"
             >
                 <Button
