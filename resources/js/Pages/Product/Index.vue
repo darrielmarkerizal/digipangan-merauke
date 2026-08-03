@@ -381,8 +381,8 @@ const resetAllFilters = () => {
                         </button>
                     </div>
 
-                    <div v-if="products.meta && products.meta.last_page > 1" class="flex justify-center border-t border-border/60 pt-8">
-                        <Pagination :meta="products.meta" />
+                    <div v-if="products.meta && products.meta.last_page > 1" class="flex justify-center pt-6">
+                        <Pagination :meta="products.meta" :links="products.links" />
                     </div>
 
                 </div>
