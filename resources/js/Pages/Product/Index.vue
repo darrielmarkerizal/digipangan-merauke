@@ -306,7 +306,7 @@ const resetAllFilters = () => {
                                 <select
                                     :value="currentSort"
                                     @change="handleSortChange"
-                                    class="h-9 rounded-xl border border-border/80 bg-white pl-3 pr-8 text-xs font-semibold text-fg shadow-xs transition-all focus:border-brand focus:ring-brand focus:outline-none"
+                                    class="h-9 cursor-pointer rounded-xl border border-border/80 bg-white px-3 text-xs font-semibold text-fg shadow-xs transition-all focus:border-brand focus:outline-none"
                                 >
                                     <option value="">Urutan: Terbaru</option>
                                     <option value="price">Harga: Terendah</option>
