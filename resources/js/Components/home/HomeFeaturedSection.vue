@@ -16,7 +16,6 @@ const getBentoClasses = (index: number, total: number) => {
         if (index === 0) return 'sm:col-span-2 lg:col-span-2 lg:row-span-2';
         return 'sm:col-span-2 lg:col-span-2 lg:row-span-1';
     }
-    // 4 or more
     if (index === 0) return 'sm:col-span-2 lg:col-span-2 lg:row-span-2';
     if (index === 1) return 'sm:col-span-2 lg:col-span-2 lg:row-span-1';
     return 'sm:col-span-1 lg:col-span-1 lg:row-span-1';
@@ -28,7 +27,6 @@ const getBentoVariant = (index: number, total: number) => {
         if (index === 0) return 'spotlight';
         return 'horizontal';
     }
-    // 4 or more
     if (index === 0) return 'spotlight';
     if (index === 1) return 'horizontal';
     return 'default';
