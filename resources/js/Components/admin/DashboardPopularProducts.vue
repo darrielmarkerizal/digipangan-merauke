@@ -25,7 +25,7 @@ defineProps<{
             <div v-for="(product, index) in popularProducts" :key="product.id" class="flex items-center justify-between p-3 border border-border/50 rounded-xl bg-muted/10 transition-colors hover:bg-muted/20">
                 <div class="flex items-center gap-3">
                     <div class="flex h-6 w-6 items-center justify-center rounded-full bg-brand text-white text-xs font-bold shadow-sm">
-                        {{ index + 1 }}
+                        {{ Number(index) + 1 }}
                     </div>
                     <div>
                         <p class="text-sm font-semibold text-fg">{{ product.name }}</p>

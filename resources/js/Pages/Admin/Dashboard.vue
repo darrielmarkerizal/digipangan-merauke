@@ -52,16 +52,21 @@ const props = defineProps<{
         <div class="mt-4 grid grid-cols-1 gap-5 lg:grid-cols-12">
             <div class="lg:col-span-8 flex flex-col gap-5">
                 <DashboardTrendChart :trend-data="props.trend_data" />
-                
+
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    <DashboardPopularProducts :popular-products="props.popular_products" />
-                    <!-- Placeholder for future metrics if needed -->
+                    <DashboardPopularProducts
+                        :popular-products="props.popular_products"
+                    />
                 </div>
             </div>
 
             <div class="lg:col-span-4 flex flex-col gap-5">
-                <DashboardRegionDistribution :region-distribution="props.region_distribution" />
-                <DashboardRecentActivities :recent-activities="props.recent_activities" />
+                <DashboardRegionDistribution
+                    :region-distribution="props.region_distribution"
+                />
+                <DashboardRecentActivities
+                    :recent-activities="props.recent_activities"
+                />
             </div>
         </div>
     </AdminLayout>
