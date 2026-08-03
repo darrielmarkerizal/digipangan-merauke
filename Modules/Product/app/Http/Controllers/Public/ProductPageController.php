@@ -9,6 +9,7 @@ use Inertia\Response;
 use Modules\Product\Http\Resources\ProductCategoryResource;
 use Modules\Product\Http\Resources\Public\PublicProductDetailResource;
 use Modules\Product\Http\Resources\Public\PublicProductResource;
+use Modules\Product\Models\Product;
 use Modules\Product\Models\ProductCategory;
 use Modules\Product\Repositories\Contracts\ProductRepositoryInterface;
 use Modules\Region\Models\Region;
@@ -44,8 +45,25 @@ class ProductPageController extends Controller
 
         abort_if($product === null, 404, 'Produk tidak ditemukan.');
 
+        $relatedProducts = Product::query()
+            ->where('is_active', true)
+            ->where('id', '!=', $product->id)
+            ->where(function ($query) use ($product) {
+                if ($product->category_id) {
+                    $query->where('category_id', $product->category_id);
+                }
+                if ($product->region_id) {
+                    $query->orWhere('region_id', $product->region_id);
+                }
+            })
+            ->with(['region', 'category', 'farmer', 'media'])
+            ->latest()
+            ->take(4)
+            ->get();
+
         return Inertia::render('Product/Show', [
             'product' => (new PublicProductDetailResource($product))->resolve(),
+            'relatedProducts' => PublicProductResource::collection($relatedProducts)->resolve(),
         ]);
     }
 }
