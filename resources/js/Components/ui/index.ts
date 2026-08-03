@@ -18,4 +18,5 @@ export { default as AlertDialog } from './AlertDialog.vue'
 export { default as Breadcrumb, type BreadcrumbItem } from './Breadcrumb.vue'
 export { default as Pagination } from './Pagination.vue'
 export { default as Switch } from './Switch.vue'
+export { default as WhatsappIcon } from './WhatsappIcon.vue'
 

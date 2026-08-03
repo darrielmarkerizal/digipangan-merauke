@@ -3,7 +3,7 @@ import { computed } from "vue";
 import { Head, Link } from "@inertiajs/vue3";
 import { ArrowLeft, MapPin, Store, Scale, Tag, CircleCheck, CircleX, MessageCircle } from "@lucide/vue";
 import PublicLayout from "@/Layouts/PublicLayout.vue";
-import { Icon, Button, Breadcrumb } from "@/Components/ui";
+import { Icon, Button, Breadcrumb, WhatsappIcon } from "@/Components/ui";
 import { useRupiah } from "@/Composables/useRupiah";
 
 defineOptions({ layout: PublicLayout });
@@ -153,10 +153,20 @@ const waLink = computed(() => {
 
                     <!-- Action -->
                     <div class="mt-4 pt-6 border-t border-border/60">
-                        <a v-if="waLink" :href="waLink" target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto inline-block">
-                            <Button size="xl" class="w-full sm:w-auto gap-2 bg-[#25D366] hover:bg-[#128C7E] text-white">
-                                <Icon :icon="MessageCircle" :size="20" />
-                                Hubungi Penjual via WhatsApp
+                        <a
+                            v-if="waLink"
+                            :href="waLink"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="inline-block w-full sm:w-auto"
+                        >
+                            <Button
+                                variant="whatsapp"
+                                size="lg"
+                                class="w-full sm:w-auto px-6 py-3 text-sm sm:text-base font-bold shadow-md transition-all flex items-center justify-center gap-2.5"
+                            >
+                                <WhatsappIcon :size="20" />
+                                <span>Hubungi Penjual via WhatsApp</span>
                             </Button>
                         </a>
                         <div v-else class="rounded-card bg-muted p-4 text-center">
