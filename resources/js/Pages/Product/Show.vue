@@ -35,17 +35,35 @@ const props = defineProps<{
 
 const activePhotoIndex = ref(0);
 const isLightboxOpen = ref(false);
+const isDescriptionModalOpen = ref(false);
 const quantity = ref(1);
 
+const openDescriptionModal = () => {
+    isDescriptionModalOpen.value = true;
+};
+
+const closeDescriptionModal = () => {
+    isDescriptionModalOpen.value = false;
+};
+
 const { formatRupiah } = useRupiah();
-const unitName = computed(() => props.product.unit?.symbol || props.product.unit?.name || "satuan");
+const unitName = computed(
+    () => props.product.unit?.symbol || props.product.unit?.name || "satuan",
+);
 const unitPrice = computed(() => Number(props.product.price) || 0);
 
 const harga = computed(() => formatRupiah(unitPrice.value));
-const totalEstimatedPrice = computed(() => formatRupiah(unitPrice.value * quantity.value));
+const totalEstimatedPrice = computed(() =>
+    formatRupiah(unitPrice.value * quantity.value),
+);
 
 const photos = computed(() => props.product.photos || []);
-const activePhoto = computed(() => photos.value[activePhotoIndex.value]?.original || photos.value[0]?.original || null);
+const activePhoto = computed(
+    () =>
+        photos.value[activePhotoIndex.value]?.original ||
+        photos.value[0]?.original ||
+        null,
+);
 
 const decreaseQuantity = () => {
     if (quantity.value > 1) {
@@ -60,12 +78,12 @@ const increaseQuantity = () => {
 const waLink = computed(() => {
     const phone = props.product.farmer?.phone;
     if (!phone) return null;
-    
+
     let cleanPhone = phone.replace(/\D/g, "");
     if (cleanPhone.startsWith("0")) {
         cleanPhone = "62" + cleanPhone.substring(1);
     }
-    
+
     const qtyText = `${quantity.value} ${unitName.value}`;
     const totalText = totalEstimatedPrice.value;
     const message = `Halo Bapak/Ibu ${props.product.farmer.name}, saya melihat produk *${props.product.name}* di DigiPangan Merauke dan tertarik memesan sebanyak *${qtyText}* (Estimasi Total: ${totalText}). Mohon info ketersediaan stok & proses pengirimannya. Terima kasih!`;
@@ -90,13 +108,16 @@ const closeLightbox = () => {
 
 const nextPhoto = () => {
     if (photos.value.length > 0) {
-        activePhotoIndex.value = (activePhotoIndex.value + 1) % photos.value.length;
+        activePhotoIndex.value =
+            (activePhotoIndex.value + 1) % photos.value.length;
     }
 };
 
 const prevPhoto = () => {
     if (photos.value.length > 0) {
-        activePhotoIndex.value = (activePhotoIndex.value - 1 + photos.value.length) % photos.value.length;
+        activePhotoIndex.value =
+            (activePhotoIndex.value - 1 + photos.value.length) %
+            photos.value.length;
     }
 };
 </script>
@@ -133,23 +154,33 @@ const prevPhoto = () => {
                 :items="[
                     { label: 'Beranda', href: '/' },
                     { label: 'Produk', href: '/produk' },
-                    ...(product.category ? [{ label: product.category.name, href: `/produk?kategori=${product.category.slug}` }] : []),
-                    { label: product.name }
+                    ...(product.category
+                        ? [
+                              {
+                                  label: product.category.name,
+                                  href: `/produk?kategori=${product.category.slug}`,
+                              },
+                          ]
+                        : []),
+                    { label: product.name },
                 ]"
             />
         </div>
 
         <!-- Product Main Detail Section -->
         <section class="mx-auto max-w-[90rem] px-3 py-6 sm:px-5 lg:px-6">
-            <div class="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-10 xl:gap-14">
-                
+            <div
+                class="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-10 xl:gap-14"
+            >
                 <!-- Left: Image Gallery & Lightbox Trigger -->
                 <div class="lg:col-span-6 space-y-3">
                     <div
-                        @click="photos.length > 0 && openLightbox(activePhotoIndex)"
+                        @click="
+                            photos.length > 0 && openLightbox(activePhotoIndex)
+                        "
                         :class="[
                             'aspect-square sm:aspect-[4/3] lg:aspect-square overflow-hidden rounded-2xl bg-white shadow-xs border border-border/80 relative group',
-                            photos.length > 0 ? 'cursor-zoom-in' : ''
+                            photos.length > 0 ? 'cursor-zoom-in' : '',
                         ]"
                     >
                         <img
@@ -158,7 +189,10 @@ const prevPhoto = () => {
                             :alt="product.name"
                             class="size-full object-cover transition-all duration-300 group-hover:scale-103"
                         />
-                        <div v-else class="flex size-full items-center justify-center text-brand/30">
+                        <div
+                            v-else
+                            class="flex size-full items-center justify-center text-brand/30"
+                        >
                             <Icon :icon="Tag" :size="64" />
                         </div>
 
@@ -179,7 +213,10 @@ const prevPhoto = () => {
                     </div>
 
                     <!-- Thumbnail Strip -->
-                    <div v-if="photos.length > 1" class="flex items-center gap-2.5 overflow-x-auto pb-1 scrollbar-none">
+                    <div
+                        v-if="photos.length > 1"
+                        class="flex items-center gap-2.5 overflow-x-auto pb-1 scrollbar-none"
+                    >
                         <button
                             v-for="(img, idx) in photos"
                             :key="idx"
@@ -188,10 +225,14 @@ const prevPhoto = () => {
                                 'relative size-16 sm:size-20 shrink-0 overflow-hidden rounded-xl border-2 transition-all cursor-pointer bg-white',
                                 activePhotoIndex === Number(idx)
                                     ? 'border-brand ring-2 ring-brand/20 shadow-xs'
-                                    : 'border-border/70 opacity-70 hover:opacity-100'
+                                    : 'border-border/70 opacity-70 hover:opacity-100',
                             ]"
                         >
-                            <img :src="img.thumb || img.card || img.original" :alt="`${product.name} ${Number(idx) + 1}`" class="size-full object-cover" />
+                            <img
+                                :src="img.thumb || img.card || img.original"
+                                :alt="`${product.name} ${Number(idx) + 1}`"
+                                class="size-full object-cover"
+                            />
                         </button>
                     </div>
                 </div>
@@ -200,26 +241,38 @@ const prevPhoto = () => {
                 <div class="lg:col-span-6 flex flex-col">
                     <div class="mb-6">
                         <div class="flex items-center gap-2 mb-2">
-                            <span v-if="product.category" class="inline-flex items-center gap-1 rounded-full bg-brand/10 px-2.5 py-0.5 text-xs font-bold text-brand">
+                            <span
+                                v-if="product.category"
+                                class="inline-flex items-center gap-1 rounded-full bg-brand/10 px-2.5 py-0.5 text-xs font-bold text-brand"
+                            >
                                 <Icon :icon="Tag" :size="12" />
                                 {{ product.category.name }}
                             </span>
-                            <span v-if="product.region" class="inline-flex items-center gap-1 rounded-full bg-muted px-2.5 py-0.5 text-xs font-semibold text-fg-muted">
+                            <span
+                                v-if="product.region"
+                                class="inline-flex items-center gap-1 rounded-full bg-muted px-2.5 py-0.5 text-xs font-semibold text-fg-muted"
+                            >
                                 <Icon :icon="MapPin" :size="12" />
                                 {{ product.region.name }}
                             </span>
                         </div>
 
-                        <h1 class="text-2xl font-extrabold tracking-tight text-fg sm:text-3xl lg:text-4xl">
+                        <h1
+                            class="text-2xl font-extrabold tracking-tight text-fg sm:text-3xl lg:text-4xl"
+                        >
                             {{ product.name }}
                         </h1>
 
                         <div class="mt-4 flex flex-wrap items-center gap-4">
                             <div class="flex items-baseline gap-1">
-                                <span class="text-3xl font-extrabold text-brand tabular-nums">
+                                <span
+                                    class="text-3xl font-extrabold text-brand tabular-nums"
+                                >
                                     {{ harga }}
                                 </span>
-                                <span class="text-xs font-semibold text-fg-muted">
+                                <span
+                                    class="text-xs font-semibold text-fg-muted"
+                                >
                                     / {{ unitName }}
                                 </span>
                             </div>
@@ -228,7 +281,8 @@ const prevPhoto = () => {
                                 v-if="product.stock_available"
                                 class="inline-flex items-center gap-1.5 rounded-full bg-success-weak px-3 py-1 text-xs font-bold text-success"
                             >
-                                <Icon :icon="CircleCheck" :size="14" /> Stok Tersedia
+                                <Icon :icon="CircleCheck" :size="14" /> Stok
+                                Tersedia
                             </span>
                             <span
                                 v-else
@@ -240,57 +294,120 @@ const prevPhoto = () => {
                     </div>
 
                     <!-- Compact Metadata Grid -->
-                    <div class="grid grid-cols-2 gap-3 py-4 my-2 border-y border-border/60">
-                        <div v-if="product.region" class="flex items-center gap-2.5 rounded-xl bg-white p-2.5 border border-border/60 shadow-2xs">
-                            <div class="flex size-7 shrink-0 items-center justify-center rounded-lg bg-brand/10 text-brand">
+                    <div
+                        class="grid grid-cols-2 gap-3 py-4 my-2 border-y border-border/60"
+                    >
+                        <div
+                            v-if="product.region"
+                            class="flex items-center gap-2.5 rounded-xl bg-white p-2.5 border border-border/60 shadow-2xs"
+                        >
+                            <div
+                                class="flex size-7 shrink-0 items-center justify-center rounded-lg bg-brand/10 text-brand"
+                            >
                                 <Icon :icon="MapPin" :size="14" />
                             </div>
                             <div class="min-w-0">
-                                <p class="text-[11px] font-medium text-fg-muted uppercase tracking-wider">Lokasi Asal</p>
-                                <p class="text-xs sm:text-sm font-bold text-fg truncate">{{ product.region.name }}</p>
+                                <p
+                                    class="text-[11px] font-medium text-fg-muted uppercase tracking-wider"
+                                >
+                                    Lokasi Asal
+                                </p>
+                                <p
+                                    class="text-xs sm:text-sm font-bold text-fg truncate"
+                                >
+                                    {{ product.region.name }}
+                                </p>
                             </div>
                         </div>
 
-                        <div v-if="product.farmer" class="flex items-center gap-2.5 rounded-xl bg-white p-2.5 border border-border/60 shadow-2xs">
-                            <div class="flex size-7 shrink-0 items-center justify-center rounded-lg bg-orange-100 text-orange-600">
+                        <div
+                            v-if="product.farmer"
+                            class="flex items-center gap-2.5 rounded-xl bg-white p-2.5 border border-border/60 shadow-2xs"
+                        >
+                            <div
+                                class="flex size-7 shrink-0 items-center justify-center rounded-lg bg-orange-100 text-orange-600"
+                            >
                                 <Icon :icon="Store" :size="14" />
                             </div>
                             <div class="min-w-0">
-                                <p class="text-[11px] font-medium text-fg-muted uppercase tracking-wider">Petani / Kelompok</p>
-                                <p class="text-xs sm:text-sm font-bold text-fg truncate">{{ product.farmer.name }}</p>
+                                <p
+                                    class="text-[11px] font-medium text-fg-muted uppercase tracking-wider"
+                                >
+                                    Petani / Kelompok
+                                </p>
+                                <p
+                                    class="text-xs sm:text-sm font-bold text-fg truncate"
+                                >
+                                    {{ product.farmer.name }}
+                                </p>
                             </div>
                         </div>
 
-                        <div v-if="product.weight_value && product.unit" class="flex items-center gap-2.5 rounded-xl bg-white p-2.5 border border-border/60 shadow-2xs">
-                            <div class="flex size-7 shrink-0 items-center justify-center rounded-lg bg-blue-100 text-blue-600">
+                        <div
+                            v-if="product.weight_value && product.unit"
+                            class="flex items-center gap-2.5 rounded-xl bg-white p-2.5 border border-border/60 shadow-2xs"
+                        >
+                            <div
+                                class="flex size-7 shrink-0 items-center justify-center rounded-lg bg-blue-100 text-blue-600"
+                            >
                                 <Icon :icon="Scale" :size="14" />
                             </div>
                             <div class="min-w-0">
-                                <p class="text-[11px] font-medium text-fg-muted uppercase tracking-wider">Berat / Satuan</p>
-                                <p class="text-xs sm:text-sm font-bold text-fg truncate">{{ product.weight_value }} {{ product.unit.symbol || product.unit.name }}</p>
+                                <p
+                                    class="text-[11px] font-medium text-fg-muted uppercase tracking-wider"
+                                >
+                                    Berat / Satuan
+                                </p>
+                                <p
+                                    class="text-xs sm:text-sm font-bold text-fg truncate"
+                                >
+                                    {{ product.weight_value }}
+                                    {{
+                                        product.unit.symbol || product.unit.name
+                                    }}
+                                </p>
                             </div>
                         </div>
 
-                        <div v-if="product.category" class="flex items-center gap-2.5 rounded-xl bg-white p-2.5 border border-border/60 shadow-2xs">
-                            <div class="flex size-7 shrink-0 items-center justify-center rounded-lg bg-purple-100 text-purple-600">
+                        <div
+                            v-if="product.category"
+                            class="flex items-center gap-2.5 rounded-xl bg-white p-2.5 border border-border/60 shadow-2xs"
+                        >
+                            <div
+                                class="flex size-7 shrink-0 items-center justify-center rounded-lg bg-purple-100 text-purple-600"
+                            >
                                 <Icon :icon="Tag" :size="14" />
                             </div>
                             <div class="min-w-0">
-                                <p class="text-[11px] font-medium text-fg-muted uppercase tracking-wider">Kategori</p>
-                                <p class="text-xs sm:text-sm font-bold text-fg truncate">{{ product.category.name }}</p>
+                                <p
+                                    class="text-[11px] font-medium text-fg-muted uppercase tracking-wider"
+                                >
+                                    Kategori
+                                </p>
+                                <p
+                                    class="text-xs sm:text-sm font-bold text-fg truncate"
+                                >
+                                    {{ product.category.name }}
+                                </p>
                             </div>
                         </div>
                     </div>
 
                     <!-- Quantity Selector & Calculator Block -->
                     <div v-if="product.stock_available" class="py-4 space-y-3">
-                        <label class="block text-xs font-bold uppercase tracking-wider text-fg-muted">
+                        <label
+                            class="block text-xs font-bold uppercase tracking-wider text-fg-muted"
+                        >
                             Jumlah Pembelian & Estimasi
                         </label>
 
-                        <div class="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-border/80 bg-white p-3 shadow-2xs">
+                        <div
+                            class="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-border/80 bg-white p-3 shadow-2xs"
+                        >
                             <div class="flex items-center gap-3">
-                                <div class="flex items-center rounded-lg border border-border/80 bg-muted/30 p-1">
+                                <div
+                                    class="flex items-center rounded-lg border border-border/80 bg-muted/30 p-1"
+                                >
                                     <button
                                         @click="decreaseQuantity"
                                         :disabled="quantity <= 1"
@@ -313,30 +430,66 @@ const prevPhoto = () => {
                                         <Icon :icon="Plus" :size="14" />
                                     </button>
                                 </div>
-                                <span class="text-xs font-semibold text-fg-muted">
+                                <span
+                                    class="text-xs font-semibold text-fg-muted"
+                                >
                                     {{ unitName }}
                                 </span>
                             </div>
 
                             <div class="text-right">
-                                <p class="text-[11px] font-medium text-fg-muted">Estimasi Total</p>
-                                <p class="text-lg font-bold text-brand tabular-nums">{{ totalEstimatedPrice }}</p>
+                                <p
+                                    class="text-[11px] font-medium text-fg-muted"
+                                >
+                                    Estimasi Total
+                                </p>
+                                <p
+                                    class="text-lg font-bold text-brand tabular-nums"
+                                >
+                                    {{ totalEstimatedPrice }}
+                                </p>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Product Description -->
+                    <!-- Product Description Preview with Line-Clamp -->
                     <div class="py-4 flex-1">
-                        <h3 class="text-xs font-bold text-fg uppercase tracking-wider mb-2">Deskripsi Produk</h3>
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-xs font-bold text-fg uppercase tracking-wider">
+                                Deskripsi Produk
+                            </h3>
+                            <button
+                                v-if="product.description"
+                                @click="openDescriptionModal"
+                                class="text-xs font-bold text-brand hover:underline flex items-center gap-1 cursor-pointer"
+                            >
+                                <span>Lihat Selengkapnya</span>
+                                <Icon :icon="ChevronRight" :size="14" />
+                            </button>
+                        </div>
+
                         <div
-                            class="prose prose-sm max-w-none text-fg-muted leading-relaxed prose-headings:text-fg prose-a:text-brand prose-strong:text-fg prose-ul:list-disc prose-ol:list-decimal"
-                            v-html="product.description || '<p class=\'italic text-fg-muted\'>Belum ada deskripsi untuk produk ini.</p>'"
+                            class="relative group cursor-pointer rounded-xl border border-transparent p-1 transition-all hover:border-brand/20 hover:bg-muted/20"
+                            @click="openDescriptionModal"
                         >
+                            <div
+                                class="prose prose-sm max-w-none text-fg-muted leading-relaxed line-clamp-3 prose-headings:text-fg prose-a:text-brand prose-strong:text-fg"
+                                v-html="
+                                    product.description ||
+                                    '<p class=\'italic text-fg-muted\'>Belum ada deskripsi untuk produk ini.</p>'
+                                "
+                            ></div>
+
+                            <div v-if="product.description" class="mt-1.5 flex items-center gap-1 text-xs font-bold text-brand group-hover:underline">
+                                <span>Baca deskripsi selengkapnya &rarr;</span>
+                            </div>
                         </div>
                     </div>
 
                     <!-- Desktop & Tablet WhatsApp CTA Button -->
-                    <div class="mt-6 pt-4 border-t border-border/60 hidden sm:block">
+                    <div
+                        class="mt-6 pt-4 border-t border-border/60 hidden sm:block"
+                    >
                         <a
                             v-if="waLink"
                             :href="waLink"
@@ -353,31 +506,48 @@ const prevPhoto = () => {
                                 <span>Hubungi Penjual via WhatsApp</span>
                             </Button>
                         </a>
-                        <div v-else class="rounded-xl bg-muted/60 p-4 text-center">
-                            <p class="text-xs font-semibold text-fg-muted">Kontak penjual tidak tersedia saat ini.</p>
+                        <div
+                            v-else
+                            class="rounded-xl bg-muted/60 p-4 text-center"
+                        >
+                            <p class="text-xs font-semibold text-fg-muted">
+                                Kontak penjual tidak tersedia saat ini.
+                            </p>
                         </div>
                     </div>
-
                 </div>
             </div>
         </section>
 
         <!-- Farmer Trust Profile Card Section -->
-        <section v-if="product.farmer" class="mx-auto max-w-[90rem] px-3 py-4 sm:px-5 lg:px-6">
-            <div class="rounded-2xl border border-border/80 bg-white p-5 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <section
+            v-if="product.farmer"
+            class="mx-auto max-w-[90rem] px-3 py-4 sm:px-5 lg:px-6"
+        >
+            <div
+                class="rounded-2xl border border-border/80 bg-white p-5 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+            >
                 <div class="flex items-center gap-4">
-                    <div class="flex size-12 shrink-0 items-center justify-center rounded-xl bg-brand/10 text-brand font-bold text-lg border border-brand/20">
+                    <div
+                        class="flex size-12 shrink-0 items-center justify-center rounded-xl bg-brand/10 text-brand font-bold text-lg border border-brand/20"
+                    >
                         <Icon :icon="Sprout" :size="24" />
                     </div>
                     <div>
                         <div class="flex items-center gap-2">
-                            <h3 class="text-base font-bold text-fg">{{ product.farmer.name }}</h3>
-                            <span class="inline-flex items-center gap-1 rounded-full bg-green-50 border border-green-200 px-2 py-0.5 text-[11px] font-bold text-green-700">
-                                <Icon :icon="ShieldCheck" :size="12" /> Terverifikasi
+                            <h3 class="text-base font-bold text-fg">
+                                {{ product.farmer.name }}
+                            </h3>
+                            <span
+                                class="inline-flex items-center gap-1 rounded-full bg-green-50 border border-green-200 px-2 py-0.5 text-[11px] font-bold text-green-700"
+                            >
+                                <Icon :icon="ShieldCheck" :size="12" />
+                                Terverifikasi
                             </span>
                         </div>
                         <p class="text-xs text-fg-muted mt-0.5">
-                            Petani Lokal Transmigrasi — {{ product.region?.name || 'Kabupaten Merauke' }}
+                            Petani Lokal Transmigrasi —
+                            {{ product.region?.name || "Kabupaten Merauke" }}
                         </p>
                     </div>
                 </div>
@@ -393,13 +563,24 @@ const prevPhoto = () => {
         </section>
 
         <!-- Related Products Section -->
-        <section v-if="relatedProducts && relatedProducts.length > 0" class="mx-auto max-w-[90rem] px-3 py-8 sm:px-5 lg:px-6 border-t border-border/60 mt-8">
+        <section
+            v-if="relatedProducts && relatedProducts.length > 0"
+            class="mx-auto max-w-[90rem] px-3 py-8 sm:px-5 lg:px-6 border-t border-border/60 mt-8"
+        >
             <div class="mb-6 flex items-center justify-between">
                 <div>
-                    <h2 class="text-xl sm:text-2xl font-extrabold text-fg">Komoditas Sejenis</h2>
-                    <p class="text-xs sm:text-sm text-fg-muted mt-1">Pilihan hasil pertanian lainnya dari kawasan unggulan yang sama.</p>
+                    <h2 class="text-xl sm:text-2xl font-extrabold text-fg">
+                        Komoditas Sejenis
+                    </h2>
+                    <p class="text-xs sm:text-sm text-fg-muted mt-1">
+                        Pilihan hasil pertanian lainnya dari kawasan unggulan
+                        yang sama.
+                    </p>
                 </div>
-                <Link href="/produk" class="text-xs sm:text-sm font-bold text-brand hover:underline">
+                <Link
+                    href="/produk"
+                    class="text-xs sm:text-sm font-bold text-brand hover:underline"
+                >
                     Lihat Semua Katalog &rarr;
                 </Link>
             </div>
@@ -414,10 +595,16 @@ const prevPhoto = () => {
         </section>
 
         <!-- Mobile Floating Bottom CTA Bar -->
-        <div v-if="waLink" class="fixed inset-x-0 bottom-0 z-40 bg-white/95 backdrop-blur-md p-3 border-t border-border/80 sm:hidden shadow-lg">
+        <div
+            v-if="waLink"
+            class="fixed inset-x-0 bottom-0 z-40 bg-white/95 backdrop-blur-md p-3 border-t border-border/80 sm:hidden shadow-lg"
+        >
             <div class="flex items-center justify-between gap-3 mb-2 px-1">
                 <div class="text-xs text-fg-muted font-medium">
-                    Jml: <span class="font-bold text-fg">{{ quantity }} {{ unitName }}</span>
+                    Jml:
+                    <span class="font-bold text-fg"
+                        >{{ quantity }} {{ unitName }}</span
+                    >
                 </div>
                 <div class="text-xs font-bold text-brand">
                     Est: {{ totalEstimatedPrice }}
@@ -479,6 +666,42 @@ const prevPhoto = () => {
             >
                 <Icon :icon="ChevronRight" :size="24" />
             </button>
+        </div>
+
+        <!-- Full Description Modal Popup -->
+        <div
+            v-if="isDescriptionModalOpen"
+            class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
+            @click.self="closeDescriptionModal"
+        >
+            <div class="w-full max-w-2xl max-h-[85vh] overflow-hidden rounded-2xl bg-white shadow-2xl flex flex-col animate-in fade-in zoom-in-95 duration-200">
+                <div class="flex items-center justify-between border-b border-border/80 px-6 py-4 bg-muted/20">
+                    <div>
+                        <h3 class="text-base font-extrabold text-fg">Deskripsi Lengkap Produk</h3>
+                        <p class="text-xs text-fg-muted font-medium">{{ product.name }}</p>
+                    </div>
+                    <button
+                        @click="closeDescriptionModal"
+                        class="size-8 rounded-full bg-white text-fg-muted hover:text-fg border border-border/80 flex items-center justify-center shadow-2xs transition-colors cursor-pointer"
+                        title="Tutup"
+                    >
+                        <Icon :icon="X" :size="16" />
+                    </button>
+                </div>
+
+                <div class="p-6 overflow-y-auto flex-1">
+                    <div
+                        class="prose prose-sm sm:prose-base max-w-none text-fg-muted leading-relaxed prose-headings:text-fg prose-a:text-brand prose-strong:text-fg prose-ul:list-disc prose-ol:list-decimal"
+                        v-html="product.description || '<p class=\'italic text-fg-muted\'>Belum ada deskripsi untuk produk ini.</p>'"
+                    ></div>
+                </div>
+
+                <div class="border-t border-border/80 px-6 py-3 bg-muted/20 text-right">
+                    <Button size="sm" variant="secondary" @click="closeDescriptionModal">
+                        Tutup
+                    </Button>
+                </div>
+            </div>
         </div>
     </main>
 </template>
