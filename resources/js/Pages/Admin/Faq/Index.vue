@@ -205,7 +205,7 @@ const executeDelete = (id: number) => {
                                 <td
                                     class="px-5 py-4 text-fg-muted font-mono text-xs w-12"
                                 >
-                                    {{ item.sort_order ?? index + 1 }}
+                                    {{ item.sort_order ?? Number(index) + 1 }}
                                 </td>
                                 <td class="px-4 py-4 max-w-md">
                                     <p
