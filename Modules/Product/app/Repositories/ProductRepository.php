@@ -37,12 +37,20 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
             AllowedFilter::exact('is_region_featured'),
             AllowedFilter::exact('is_active'),
             AllowedFilter::exact('stock_available'),
-            AllowedFilter::callback('category', fn (Builder $query, $value) => $query->whereHas(
-                'category', fn (Builder $categoryQuery) => $categoryQuery->where('slug', $value)
-            )),
-            AllowedFilter::callback('region', fn (Builder $query, $value) => $query->whereHas(
-                'region', fn (Builder $regionQuery) => $regionQuery->where('slug', $value)
-            )),
+            AllowedFilter::callback('category', function (Builder $query, $value) {
+                $slugs = is_array($value) ? $value : explode(',', (string) $value);
+                $slugs = array_filter(array_map('trim', $slugs));
+                if (! empty($slugs)) {
+                    $query->whereHas('category', fn (Builder $categoryQuery) => $categoryQuery->whereIn('slug', $slugs));
+                }
+            }),
+            AllowedFilter::callback('region', function (Builder $query, $value) {
+                $slugs = is_array($value) ? $value : explode(',', (string) $value);
+                $slugs = array_filter(array_map('trim', $slugs));
+                if (! empty($slugs)) {
+                    $query->whereHas('region', fn (Builder $regionQuery) => $regionQuery->whereIn('slug', $slugs));
+                }
+            }),
         ];
     }
 

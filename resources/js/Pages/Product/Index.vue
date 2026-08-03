@@ -20,7 +20,7 @@ import type { ProductCard as ProductCardType, TaxonomyRef } from "@/types/home";
 defineOptions({ layout: PublicLayout });
 
 interface RegionItem {
-    id: number;
+    id?: number;
     name: string;
     slug: string;
 }
@@ -39,15 +39,21 @@ const props = defineProps<{
 
 const viewMode = ref<"grid" | "list">("grid");
 
-const currentCategory = computed(() => props.filters.kategori || "");
-const currentRegion = computed(() => props.filters.region || "");
+const selectedCategories = computed<string[]>(() => {
+    return props.filters.kategori ? props.filters.kategori.split(",").filter(Boolean) : [];
+});
+
+const selectedRegions = computed<string[]>(() => {
+    return props.filters.region ? props.filters.region.split(",").filter(Boolean) : [];
+});
+
 const currentSort = computed(() => props.filters.sort || "-created_at");
 const searchQuery = computed(() => props.filters.q || "");
 
 const hasActiveFilters = computed(() => {
     return !!(
-        currentCategory.value ||
-        currentRegion.value ||
+        selectedCategories.value.length > 0 ||
+        selectedRegions.value.length > 0 ||
         (props.filters.sort && props.filters.sort !== "-created_at") ||
         searchQuery.value
     );
@@ -78,12 +84,34 @@ const clearSearch = () => {
     applyFilters({ q: undefined });
 };
 
-const selectCategory = (slug: string) => {
-    applyFilters({ kategori: slug || undefined });
+const toggleCategory = (slug: string) => {
+    const current = [...selectedCategories.value];
+    const idx = current.indexOf(slug);
+    if (idx > -1) {
+        current.splice(idx, 1);
+    } else {
+        current.push(slug);
+    }
+    applyFilters({ kategori: current.join(",") || undefined });
 };
 
-const selectRegion = (slug: string) => {
-    applyFilters({ region: slug || undefined });
+const clearCategories = () => {
+    applyFilters({ kategori: undefined });
+};
+
+const toggleRegion = (slug: string) => {
+    const current = [...selectedRegions.value];
+    const idx = current.indexOf(slug);
+    if (idx > -1) {
+        current.splice(idx, 1);
+    } else {
+        current.push(slug);
+    }
+    applyFilters({ region: current.join(",") || undefined });
+};
+
+const clearRegions = () => {
+    applyFilters({ region: undefined });
 };
 
 const handleSortChange = (e: Event) => {
@@ -142,15 +170,17 @@ const resetAllFilters = () => {
                 
                 <ProductFilterPanel
                     :search-query="searchQuery"
-                    :current-category="currentCategory"
-                    :current-region="currentRegion"
+                    :selected-categories="selectedCategories"
+                    :selected-regions="selectedRegions"
                     :categories="categories"
                     :regions="regions"
                     :has-active-filters="hasActiveFilters"
                     @search="handleSearch"
                     @clear-search="clearSearch"
-                    @select-category="selectCategory"
-                    @select-region="selectRegion"
+                    @toggle-category="toggleCategory"
+                    @clear-categories="clearCategories"
+                    @toggle-region="toggleRegion"
+                    @clear-regions="clearRegions"
                     @reset-all="resetAllFilters"
                 />
 
@@ -167,31 +197,36 @@ const resetAllFilters = () => {
                                 Komoditas
                             </p>
 
+                            <!-- Active Filter Chips Bar -->
                             <div v-if="hasActiveFilters" class="flex flex-wrap items-center gap-1.5 pt-1">
                                 <span
                                     v-if="searchQuery"
                                     class="inline-flex items-center gap-1 rounded-md bg-muted/60 px-2 py-0.5 text-xs text-fg font-medium"
                                 >
                                     Teks: "{{ searchQuery }}"
-                                    <button @click="clearSearch" class="hover:text-red-500">
+                                    <button @click="clearSearch" class="hover:text-red-500 cursor-pointer">
                                         <Icon :icon="X" :size="12" />
                                     </button>
                                 </span>
+
                                 <span
-                                    v-if="currentCategory"
+                                    v-for="catSlug in selectedCategories"
+                                    :key="catSlug"
                                     class="inline-flex items-center gap-1 rounded-md bg-brand/10 text-brand px-2 py-0.5 text-xs font-medium"
                                 >
-                                    Kat: {{ currentCategory }}
-                                    <button @click="selectCategory('')" class="hover:text-red-500">
+                                    Kat: {{ categories.find(c => c.slug === catSlug)?.name || catSlug }}
+                                    <button @click="toggleCategory(catSlug)" class="hover:text-red-500 cursor-pointer">
                                         <Icon :icon="X" :size="12" />
                                     </button>
                                 </span>
+
                                 <span
-                                    v-if="currentRegion"
+                                    v-for="regSlug in selectedRegions"
+                                    :key="regSlug"
                                     class="inline-flex items-center gap-1 rounded-md bg-green-50 text-green-700 border border-green-200 px-2 py-0.5 text-xs font-medium"
                                 >
-                                    Distrik: {{ currentRegion }}
-                                    <button @click="selectRegion('')" class="hover:text-red-500">
+                                    Distrik: {{ regions?.find(r => r.slug === regSlug)?.name || regSlug }}
+                                    <button @click="toggleRegion(regSlug)" class="hover:text-red-500 cursor-pointer">
                                         <Icon :icon="X" :size="12" />
                                     </button>
                                 </span>
@@ -216,7 +251,7 @@ const resetAllFilters = () => {
                                 <button
                                     @click="viewMode = 'grid'"
                                     :class="[
-                                        'flex size-8 items-center justify-center rounded-lg transition-colors',
+                                        'flex size-8 items-center justify-center rounded-lg transition-colors cursor-pointer',
                                         viewMode === 'grid'
                                             ? 'bg-white text-brand shadow-xs'
                                             : 'text-fg-muted hover:text-fg'
@@ -228,7 +263,7 @@ const resetAllFilters = () => {
                                 <button
                                     @click="viewMode = 'list'"
                                     :class="[
-                                        'flex size-8 items-center justify-center rounded-lg transition-colors',
+                                        'flex size-8 items-center justify-center rounded-lg transition-colors cursor-pointer',
                                         viewMode === 'list'
                                             ? 'bg-white text-brand shadow-xs'
                                             : 'text-fg-muted hover:text-fg'
