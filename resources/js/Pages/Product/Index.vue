@@ -304,11 +304,11 @@ const resetAllFilters = () => {
                         <div class="flex items-center gap-3">
                             <div class="relative">
                                 <select
-                                    :value="currentSort"
+                                    :value="currentSort || ''"
                                     @change="handleSortChange"
                                     class="h-9 cursor-pointer rounded-xl border border-border/80 bg-white px-3 text-xs font-semibold text-fg shadow-xs transition-all focus:border-brand focus:outline-none"
                                 >
-                                    <option value="">Urutan: Terbaru</option>
+                                    <option value="" :selected="!currentSort">Urutan: Terbaru</option>
                                     <option value="price">Harga: Terendah</option>
                                     <option value="-price">Harga: Tertinggi</option>
                                     <option value="name">Nama (A - Z)</option>

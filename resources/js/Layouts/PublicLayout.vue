@@ -36,7 +36,7 @@ const isActive = (href: string) =>
 
 <template>
     <Toaster position="top-center" richColors />
-    <div class="flex min-h-[100dvh] flex-col overflow-x-hidden">
+    <div class="flex min-h-[100dvh] flex-col overflow-x-clip">
         <header class="fixed inset-x-0 top-0 z-40 px-3 sm:px-4 pt-3">
             <div
                 class="mx-auto flex h-14 sm:h-16 max-w-7xl items-center justify-between gap-2 sm:gap-4 rounded-full bg-card/85 pl-3 pr-3 sm:pl-4 sm:pr-4 shadow-[0_10px_40px_-12px_rgba(20,40,31,0.18)] ring-1 ring-fg/5 backdrop-blur-xl transition-all"
