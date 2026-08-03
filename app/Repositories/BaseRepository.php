@@ -69,17 +69,21 @@ abstract class BaseRepository implements BaseRepositoryInterface
     {
         $request = request();
 
-        if ($this->searchable() === [] || ! $request->filled('search')) {
-            return;
-        }
-
         $filter = (array) $request->input('filter', []);
 
-        if (array_key_exists('search', $filter)) {
-            return;
+        $searchVal = $request->input('search') ?? $request->input('q');
+        if ($this->searchable() !== [] && $searchVal && ! array_key_exists('search', $filter)) {
+            $filter['search'] = $searchVal;
         }
 
-        $filter['search'] = $request->input('search');
+        if ($request->filled('kategori') && ! array_key_exists('category', $filter)) {
+            $filter['category'] = $request->input('kategori');
+        }
+
+        if ($request->filled('region') && ! array_key_exists('region', $filter)) {
+            $filter['region'] = $request->input('region');
+        }
+
         $request->merge(['filter' => $filter]);
     }
 
