@@ -35,7 +35,7 @@ const solutions = [
 
 <template>
     <section
-        class="mx-auto flex min-h-[100dvh] w-full max-w-[90rem] items-center px-3 py-20 sm:px-5 sm:py-24 lg:px-6"
+        class="mx-auto flex w-full max-w-[90rem] items-center px-3 py-20 sm:px-5 sm:py-24 lg:px-6"
     >
         <div
             class="grid w-full grid-cols-1 items-start gap-8 sm:gap-10 lg:grid-cols-12 lg:gap-12"

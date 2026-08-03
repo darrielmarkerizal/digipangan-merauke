@@ -48,7 +48,7 @@ const pillars = [
 
 <template>
     <section
-        class="relative isolate flex min-h-[100dvh] flex-col justify-center overflow-hidden border-b border-emerald-900/40 bg-[#14281f] py-14 sm:py-20 lg:py-28"
+        class="relative isolate flex flex-col justify-center overflow-hidden border-b border-emerald-900/40 bg-[#14281f] py-14 sm:py-20 lg:py-28"
     >
         <div
             v-if="grain"

@@ -14,7 +14,7 @@ defineProps<{
 <template>
     <section
         v-if="showLatest"
-        class="mx-auto flex min-h-[100dvh] w-full max-w-[90rem] flex-col justify-center border-b border-border/80 px-3 py-20 sm:px-5 sm:py-24 lg:px-6"
+        class="mx-auto flex w-full max-w-[90rem] flex-col justify-center border-b border-border/80 px-3 py-20 sm:px-5 sm:py-24 lg:px-6"
     >
         <div
             class="flex flex-col justify-between gap-4 sm:gap-6 md:flex-row md:items-end"

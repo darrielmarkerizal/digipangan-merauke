@@ -1,11 +1,18 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { computed } from "vue";
 import { Link } from "@inertiajs/vue3";
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 import AdminPageCard from "@/Components/admin/AdminPageCard.vue";
 import FilterPanel from "@/Components/admin/FilterPanel.vue";
 import { Search, Edit2, Home, CheckCircle2, XCircle, Eye } from "@lucide/vue";
-import { Icon, Input, Button, Badge, EmptyState, Pagination } from "@/Components/ui";
+import {
+    Icon,
+    Input,
+    Button,
+    Badge,
+    EmptyState,
+    Pagination,
+} from "@/Components/ui";
 import { useSearch } from "@/Composables/useSearch";
 
 const props = defineProps<{
@@ -35,9 +42,11 @@ const villageList = computed(() => {
         subtitle="Manajemen data desa yang tergabung dalam kawasan transmigrasi."
     >
         <AdminPageCard>
-            <template #header-actions>
-                <div class="flex flex-col sm:flex-row w-full sm:w-auto gap-3 items-center">
-                    <div class="relative w-full sm:w-64">
+            <div class="p-4 border-b border-border/60">
+                <div
+                    class="flex flex-col sm:flex-row w-full sm:w-auto justify-between gap-3 items-center"
+                >
+                    <div class="relative w-full sm:w-80">
                         <Icon
                             :icon="Search"
                             :size="16"
@@ -52,7 +61,7 @@ const villageList = computed(() => {
                     </div>
                     <FilterPanel module="village" :regions="regions" />
                 </div>
-            </template>
+            </div>
 
             <div class="overflow-x-auto">
                 <table class="w-full text-left text-sm text-fg">
