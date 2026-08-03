@@ -1,22 +1,20 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
-import { Head, Link, router } from "@inertiajs/vue3";
+import { Head, router } from "@inertiajs/vue3";
 import {
     Search,
     X,
-    Filter,
     LayoutGrid,
     List,
     MapPin,
     Sprout,
     ShieldCheck,
     SlidersHorizontal,
-    ArrowUpDown,
     RotateCcw,
 } from "@lucide/vue";
 import PublicLayout from "@/Layouts/PublicLayout.vue";
 import ProductCard from "@/Components/product/ProductCard.vue";
-import { Icon, Pagination, EmptyState, Badge } from "@/Components/ui";
+import { Icon, Pagination, EmptyState } from "@/Components/ui";
 import { useDebounceFn } from "@vueuse/core";
 import type { PaginatedData } from "@/types/pagination";
 import type { ProductCard as ProductCardType, TaxonomyRef } from "@/types/home";
@@ -60,14 +58,15 @@ const hasActiveFilters = computed(() => {
 const applyFilters = (newFilters: Record<string, string | undefined>) => {
     const merged = { ...props.filters, ...newFilters };
     
-    // Clean up empty parameters
+    const cleanedFilters: Record<string, string> = {};
     Object.keys(merged).forEach((key) => {
-        if (!merged[key as keyof typeof merged]) {
-            delete merged[key as keyof typeof merged];
+        const val = merged[key as keyof typeof merged];
+        if (val) {
+            cleanedFilters[key] = val;
         }
     });
 
-    router.get("/produk", merged, {
+    router.get("/produk", cleanedFilters, {
         preserveState: true,
         replace: true,
     });
@@ -104,11 +103,9 @@ const resetAllFilters = () => {
     <Head title="Katalog Produk - DigiPangan Merauke" />
 
     <main class="min-h-screen bg-bg">
-        <!-- Hero Header -->
-        <section class="relative overflow-hidden border-b border-border/80 bg-gradient-to-b from-brand/5 via-white to-bg py-12 sm:py-16">
+        <section class="border-b border-border/80 bg-white py-12 sm:py-16">
             <div class="mx-auto max-w-[90rem] px-4 sm:px-6 lg:px-8">
                 <div class="max-w-3xl">
-                    <!-- Badges Row -->
                     <div class="mb-4 flex flex-wrap items-center gap-2">
                         <span class="inline-flex items-center gap-1.5 rounded-full border border-brand/20 bg-brand/10 px-3 py-1 text-xs font-bold text-brand">
                             <Icon :icon="Sprout" :size="14" />
@@ -127,7 +124,6 @@ const resetAllFilters = () => {
                         Jelajahi berbagai produk komoditas pertanian dan olahan segar langsung dari lahan transmigrasi Kabupaten Merauke.
                     </p>
 
-                    <!-- Quick Stats Pill -->
                     <div class="mt-6 flex flex-wrap items-center gap-6 pt-4 border-t border-border/60 text-xs font-medium text-fg-muted">
                         <div class="flex items-center gap-2">
                             <div class="flex size-7 items-center justify-center rounded-lg bg-white shadow-xs border border-border/60 text-brand">
@@ -146,15 +142,12 @@ const resetAllFilters = () => {
             </div>
         </section>
 
-        <!-- Main Content (Sidebar + Catalog Grid) -->
         <section class="mx-auto max-w-[90rem] px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
             <div class="flex flex-col gap-8 lg:flex-row lg:items-start">
                 
-                <!-- Sticky Filter Sidebar -->
                 <aside class="w-full lg:w-72 shrink-0 space-y-6 lg:sticky lg:top-24">
                     <div class="rounded-2xl border border-border/80 bg-white p-5 shadow-xs space-y-6">
                         
-                        <!-- Sidebar Title -->
                         <div class="flex items-center justify-between border-b border-border/60 pb-3">
                             <div class="flex items-center gap-2 font-bold text-fg">
                                 <Icon :icon="SlidersHorizontal" :size="16" class="text-brand" />
@@ -170,7 +163,6 @@ const resetAllFilters = () => {
                             </button>
                         </div>
 
-                        <!-- Search Box -->
                         <div>
                             <label class="mb-2 block text-xs font-bold uppercase tracking-wider text-fg-muted">
                                 Pencarian Teks
@@ -196,7 +188,6 @@ const resetAllFilters = () => {
                             </div>
                         </div>
 
-                        <!-- Kategori Products Filter -->
                         <div>
                             <label class="mb-2 block text-xs font-bold uppercase tracking-wider text-fg-muted">
                                 Kategori
@@ -229,7 +220,6 @@ const resetAllFilters = () => {
                             </div>
                         </div>
 
-                        <!-- Wilayah / Distrik Filter -->
                         <div v-if="regions && regions.length > 0">
                             <label class="mb-2 block text-xs font-bold uppercase tracking-wider text-fg-muted">
                                 Distrik / Kawasan
@@ -267,13 +257,10 @@ const resetAllFilters = () => {
                     </div>
                 </aside>
 
-                <!-- Catalog Content Area -->
                 <div class="flex-1 space-y-6">
 
-                    <!-- Toolbar (Results count, Active Filter Chips, Sort & View Mode) -->
                     <div class="flex flex-col gap-4 rounded-2xl border border-border/80 bg-white p-4 shadow-xs sm:flex-row sm:items-center sm:justify-between">
                         
-                        <!-- Count & Active Chips -->
                         <div class="space-y-1">
                             <p class="text-sm font-semibold text-fg">
                                 Menampilkan
@@ -283,7 +270,6 @@ const resetAllFilters = () => {
                                 Komoditas
                             </p>
 
-                            <!-- Active Filter Chips -->
                             <div v-if="hasActiveFilters" class="flex flex-wrap items-center gap-1.5 pt-1">
                                 <span
                                     v-if="searchQuery"
@@ -315,9 +301,7 @@ const resetAllFilters = () => {
                             </div>
                         </div>
 
-                        <!-- Right Control Actions (Sort & View Layout) -->
                         <div class="flex items-center gap-3">
-                            <!-- Sort Selector -->
                             <div class="relative">
                                 <select
                                     :value="currentSort"
@@ -331,7 +315,6 @@ const resetAllFilters = () => {
                                 </select>
                             </div>
 
-                            <!-- View Mode Toggle Buttons -->
                             <div class="flex items-center rounded-xl border border-border/80 bg-muted/20 p-0.5">
                                 <button
                                     @click="viewMode = 'grid'"
@@ -361,9 +344,7 @@ const resetAllFilters = () => {
                         </div>
                     </div>
 
-                    <!-- Products Output Grid / List -->
                     <div v-if="products.data.length > 0">
-                        <!-- Grid Layout -->
                         <div
                             v-if="viewMode === 'grid'"
                             class="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3"
@@ -375,7 +356,6 @@ const resetAllFilters = () => {
                             />
                         </div>
 
-                        <!-- List Layout -->
                         <div v-else class="space-y-4">
                             <ProductCard
                                 v-for="product in products.data"
@@ -386,7 +366,6 @@ const resetAllFilters = () => {
                         </div>
                     </div>
 
-                    <!-- Empty State -->
                     <div v-else class="rounded-2xl border border-border/80 bg-white py-16 text-center shadow-xs">
                         <EmptyState
                             title="Komoditas Tidak Ditemukan"
@@ -402,7 +381,6 @@ const resetAllFilters = () => {
                         </button>
                     </div>
 
-                    <!-- Pagination -->
                     <div v-if="products.meta && products.meta.last_page > 1" class="flex justify-center border-t border-border/60 pt-8">
                         <Pagination :meta="products.meta" />
                     </div>
