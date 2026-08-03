@@ -2,20 +2,18 @@
 import { ref, computed } from "vue";
 import { Head, router } from "@inertiajs/vue3";
 import {
-    Search,
     X,
     LayoutGrid,
     List,
     MapPin,
     Sprout,
     ShieldCheck,
-    SlidersHorizontal,
     RotateCcw,
 } from "@lucide/vue";
 import PublicLayout from "@/Layouts/PublicLayout.vue";
 import ProductCard from "@/Components/product/ProductCard.vue";
-import { Icon, Pagination, EmptyState } from "@/Components/ui";
-import { useDebounceFn } from "@vueuse/core";
+import ProductFilterPanel from "@/Components/product/ProductFilterPanel.vue";
+import { Icon, Pagination, EmptyState, Badge, Button } from "@/Components/ui";
 import type { PaginatedData } from "@/types/pagination";
 import type { ProductCard as ProductCardType, TaxonomyRef } from "@/types/home";
 
@@ -72,10 +70,9 @@ const applyFilters = (newFilters: Record<string, string | undefined>) => {
     });
 };
 
-const handleSearch = useDebounceFn((e: Event) => {
-    const target = e.target as HTMLInputElement;
-    applyFilters({ q: target.value });
-}, 300);
+const handleSearch = (query: string) => {
+    applyFilters({ q: query });
+};
 
 const clearSearch = () => {
     applyFilters({ q: undefined });
@@ -107,14 +104,12 @@ const resetAllFilters = () => {
             <div class="mx-auto max-w-[90rem] px-4 sm:px-6 lg:px-8">
                 <div class="max-w-3xl">
                     <div class="mb-4 flex flex-wrap items-center gap-2">
-                        <span class="inline-flex items-center gap-1.5 rounded-full border border-brand/20 bg-brand/10 px-3 py-1 text-xs font-bold text-brand">
-                            <Icon :icon="Sprout" :size="14" />
-                            <span>Pangan Lokal Merauke</span>
-                        </span>
-                        <span class="inline-flex items-center gap-1.5 rounded-full border border-border/80 bg-white px-3 py-1 text-xs font-semibold text-fg-muted shadow-xs">
-                            <Icon :icon="ShieldCheck" :size="14" class="text-green-600" />
-                            <span>Terverifikasi Tim Pendamping</span>
-                        </span>
+                        <Badge variant="brand" :icon="Sprout">
+                            Pangan Lokal Merauke
+                        </Badge>
+                        <Badge variant="neutral" :icon="ShieldCheck">
+                            Terverifikasi Tim Pendamping
+                        </Badge>
                     </div>
 
                     <h1 class="text-3xl font-extrabold tracking-tight text-fg sm:text-4xl lg:text-5xl">
@@ -145,117 +140,19 @@ const resetAllFilters = () => {
         <section class="mx-auto max-w-[90rem] px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
             <div class="flex flex-col gap-8 lg:flex-row lg:items-start">
                 
-                <aside class="w-full lg:w-72 shrink-0 space-y-6 lg:sticky lg:top-24">
-                    <div class="rounded-2xl border border-border/80 bg-white p-5 shadow-xs space-y-6">
-                        
-                        <div class="flex items-center justify-between border-b border-border/60 pb-3">
-                            <div class="flex items-center gap-2 font-bold text-fg">
-                                <Icon :icon="SlidersHorizontal" :size="16" class="text-brand" />
-                                <span>Filter Komoditas</span>
-                            </div>
-                            <button
-                                v-if="hasActiveFilters"
-                                @click="resetAllFilters"
-                                class="text-xs font-semibold text-brand hover:underline flex items-center gap-1"
-                            >
-                                <Icon :icon="RotateCcw" :size="12" />
-                                <span>Reset</span>
-                            </button>
-                        </div>
-
-                        <div>
-                            <label class="mb-2 block text-xs font-bold uppercase tracking-wider text-fg-muted">
-                                Pencarian Teks
-                            </label>
-                            <div class="relative">
-                                <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-fg-muted">
-                                    <Icon :icon="Search" :size="16" />
-                                </div>
-                                <input
-                                    type="text"
-                                    :value="searchQuery"
-                                    @input="handleSearch"
-                                    placeholder="Cari beras, cabai..."
-                                    class="w-full rounded-xl border border-border/80 bg-white py-2.5 pl-9 pr-8 text-sm text-fg shadow-xs transition-all focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none"
-                                />
-                                <button
-                                    v-if="searchQuery"
-                                    @click="clearSearch"
-                                    class="absolute inset-y-0 right-0 flex items-center pr-2.5 text-fg-muted hover:text-fg"
-                                >
-                                    <Icon :icon="X" :size="14" />
-                                </button>
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="mb-2 block text-xs font-bold uppercase tracking-wider text-fg-muted">
-                                Kategori
-                            </label>
-                            <div class="flex flex-wrap gap-1.5 lg:flex-col lg:gap-1">
-                                <button
-                                    @click="selectCategory('')"
-                                    :class="[
-                                        'w-full text-left rounded-lg px-3 py-2 text-xs font-semibold transition-all flex items-center justify-between',
-                                        currentCategory === ''
-                                            ? 'bg-brand text-white shadow-xs'
-                                            : 'text-fg-muted hover:bg-muted/40 hover:text-fg'
-                                    ]"
-                                >
-                                    <span>Semua Kategori</span>
-                                </button>
-                                <button
-                                    v-for="cat in categories"
-                                    :key="cat.slug"
-                                    @click="selectCategory(cat.slug)"
-                                    :class="[
-                                        'w-full text-left rounded-lg px-3 py-2 text-xs font-semibold transition-all flex items-center justify-between',
-                                        currentCategory === cat.slug
-                                            ? 'bg-brand text-white shadow-xs'
-                                            : 'text-fg-muted hover:bg-muted/40 hover:text-fg'
-                                    ]"
-                                >
-                                    <span>{{ cat.name }}</span>
-                                </button>
-                            </div>
-                        </div>
-
-                        <div v-if="regions && regions.length > 0">
-                            <label class="mb-2 block text-xs font-bold uppercase tracking-wider text-fg-muted">
-                                Distrik / Kawasan
-                            </label>
-                            <div class="flex flex-wrap gap-1.5 lg:flex-col lg:gap-1">
-                                <button
-                                    @click="selectRegion('')"
-                                    :class="[
-                                        'w-full text-left rounded-lg px-3 py-2 text-xs font-semibold transition-all flex items-center gap-2',
-                                        currentRegion === ''
-                                            ? 'bg-brand text-white shadow-xs'
-                                            : 'text-fg-muted hover:bg-muted/40 hover:text-fg'
-                                    ]"
-                                >
-                                    <Icon :icon="MapPin" :size="14" />
-                                    <span>Semua Wilayah</span>
-                                </button>
-                                <button
-                                    v-for="reg in regions"
-                                    :key="reg.slug"
-                                    @click="selectRegion(reg.slug)"
-                                    :class="[
-                                        'w-full text-left rounded-lg px-3 py-2 text-xs font-semibold transition-all flex items-center gap-2',
-                                        currentRegion === reg.slug
-                                            ? 'bg-brand text-white shadow-xs'
-                                            : 'text-fg-muted hover:bg-muted/40 hover:text-fg'
-                                    ]"
-                                >
-                                    <Icon :icon="MapPin" :size="14" />
-                                    <span>{{ reg.name }}</span>
-                                </button>
-                            </div>
-                        </div>
-
-                    </div>
-                </aside>
+                <ProductFilterPanel
+                    :search-query="searchQuery"
+                    :current-category="currentCategory"
+                    :current-region="currentRegion"
+                    :categories="categories"
+                    :regions="regions"
+                    :has-active-filters="hasActiveFilters"
+                    @search="handleSearch"
+                    @clear-search="clearSearch"
+                    @select-category="selectCategory"
+                    @select-region="selectRegion"
+                    @reset-all="resetAllFilters"
+                />
 
                 <div class="flex-1 space-y-6">
 
@@ -371,14 +268,14 @@ const resetAllFilters = () => {
                             title="Komoditas Tidak Ditemukan"
                             description="Maaf, tidak ada produk komoditas yang sesuai dengan kriteria filter atau pencarian Anda."
                         />
-                        <button
+                        <Button
                             v-if="hasActiveFilters"
                             @click="resetAllFilters"
-                            class="mt-4 inline-flex items-center gap-2 rounded-xl bg-brand px-4 py-2 text-xs font-bold text-white shadow-xs hover:bg-brand/90"
+                            class="mt-4 gap-2 text-xs font-bold"
                         >
                             <Icon :icon="RotateCcw" :size="14" />
                             <span>Tampilkan Semua Komoditas</span>
-                        </button>
+                        </Button>
                     </div>
 
                     <div v-if="products.meta && products.meta.last_page > 1" class="flex justify-center pt-6">
