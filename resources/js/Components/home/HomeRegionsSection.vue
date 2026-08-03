@@ -11,7 +11,7 @@ defineProps<{
 
 <template>
     <section
-        class="flex min-h-[100dvh] w-full flex-col justify-center border-b border-border/80 bg-white py-16 sm:py-20 lg:py-28"
+        class="flex w-full flex-col justify-center border-b border-border/80 bg-white py-16 sm:py-20 lg:py-28"
     >
         <div class="mx-auto max-w-[90rem] px-3 sm:px-5 lg:px-6">
             <div class="mx-auto max-w-3xl text-center space-y-3 sm:space-y-4">
