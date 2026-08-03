@@ -12,9 +12,14 @@ cd $DIR
 echo "Menarik pembaruan terbaru dari GitHub..."
 git pull origin main
 
-echo "Menyalin folder build frontend..."
+echo "Menyalin aset frontend (build & images)..."
 rm -rf $DOC_ROOT/build
 cp -R public/build $DOC_ROOT/build
+
+if [ -d "public/images" ]; then
+    rm -rf $DOC_ROOT/images
+    cp -R public/images $DOC_ROOT/images
+fi
 
 echo "Menjalankan migrasi database..."
 $PHP_BIN artisan migrate --force
