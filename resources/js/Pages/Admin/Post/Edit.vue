@@ -17,7 +17,7 @@ const form = useForm({
 })
 
 const handleSubmit = () => {
-  form.put(`/admin/berita/${props.post.id}`, {
+  form.submit('put', `/admin/berita/${props.post.id}`, {
     preserveScroll: true,
   })
 }

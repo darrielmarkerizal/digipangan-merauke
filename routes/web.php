@@ -22,6 +22,9 @@ use Inertia\Inertia;
 Route::get('/', [HomePageController::class, 'index'])->name('home');
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 
+Route::get('/produk', [\Modules\Product\Http\Controllers\Public\ProductPageController::class, 'index'])->name('product.public.index');
+Route::get('/produk/{slug}', [\Modules\Product\Http\Controllers\Public\ProductPageController::class, 'show'])->name('product.public.show');
+
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthAdminController::class, 'showLogin'])->name('login');
     Route::post('/login', [AuthAdminController::class, 'login'])->name('login.store');

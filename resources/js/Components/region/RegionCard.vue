@@ -38,26 +38,26 @@ const stats = computed(() => [
         </div>
       </div>
 
-      <div class="flex flex-1 flex-col p-5">
+      <div class="flex flex-1 flex-col p-6">
         <h3
           class="text-xl font-bold text-fg transition-colors group-hover:text-brand"
         >
           {{ region.name }}
         </h3>
 
-        <dl class="mt-4 grid grid-cols-3 gap-3">
+        <dl class="my-5 grid grid-cols-3 gap-2 sm:gap-3">
           <div v-for="s in stats" :key="s.label" class="min-w-0">
-            <dt class="truncate text-xs font-medium text-fg-muted">
+            <dt class="truncate text-[11px] sm:text-xs font-medium text-fg-muted">
               {{ s.label }}
             </dt>
-            <dd class="text-xl font-bold tabular-nums text-fg">
+            <dd class="mt-1 text-base sm:text-xl font-bold tabular-nums text-fg">
               {{ formatAngka(s.value) }}
             </dd>
           </div>
         </dl>
 
         <div
-          class="mt-auto flex items-center justify-between gap-2 border-t border-border pt-4"
+          class="mt-auto flex items-center justify-between gap-2 border-t border-border/80 pt-4"
         >
           <span class="text-sm font-semibold text-brand">Lihat wilayah</span>
           <span

@@ -48,7 +48,7 @@ const handleSubmit = async () => {
         try {
             const formData = new FormData();
             formData.append("file", coverFile.value);
-            const res = await axios.post("/api/v1/media/upload", formData, {
+            const res = await axios.post("/admin/media/upload", formData, {
                 headers: { "Content-Type": "multipart/form-data" },
             });
             props.form.cover = res.data.folder;

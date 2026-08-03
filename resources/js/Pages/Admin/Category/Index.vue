@@ -104,7 +104,7 @@ const closeModal = () => {
 
 const handleSubmit = () => {
   if (editingCategory.value) {
-    form.put(`/admin/kategori/${editingCategory.value.id}`, {
+    form.submit('put', `/admin/kategori/${editingCategory.value.id}`, {
       onSuccess: () => {
         toast.success('Kategori produk berhasil diperbarui.')
         closeModal()

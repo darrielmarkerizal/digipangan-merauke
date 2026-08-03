@@ -5,8 +5,10 @@ namespace Modules\Home\Http\Controllers\Public;
 use App\Http\Controllers\Controller;
 use Inertia\Inertia;
 use Inertia\Response;
+use Modules\Product\Http\Resources\ProductCategoryResource;
 use Modules\Product\Http\Resources\Public\PublicProductResource;
 use Modules\Product\Models\Product;
+use Modules\Product\Models\ProductCategory;
 use Modules\Region\Http\Resources\Public\PublicRegionResource;
 use Modules\Region\Repositories\Contracts\RegionRepositoryInterface;
 
@@ -35,9 +37,14 @@ class HomePageController extends Controller
             ->limit(self::LIMIT)
             ->get();
 
+        $categories = ProductCategory::query()
+            ->orderBy('sort_order')
+            ->get();
+
         return Inertia::render('Home', [
             'featuredProducts' => PublicProductResource::collection($featured)->resolve(),
             'latestProducts' => PublicProductResource::collection($latest)->resolve(),
+            'categories' => ProductCategoryResource::collection($categories)->resolve(),
             'regions' => PublicRegionResource::collection($this->regions->publicFiltered()->get())->resolve(),
         ]);
     }

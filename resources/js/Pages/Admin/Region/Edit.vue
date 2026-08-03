@@ -18,7 +18,7 @@ const form = useForm({
 });
 
 const handleSubmit = () => {
-    form.put(`/admin/wilayah/${props.region.id}`, {
+    form.submit('put', `/admin/wilayah/${props.region.id}`, {
         preserveScroll: true,
     });
 };

@@ -31,5 +31,6 @@ export interface RegionCard {
 export interface HomeProps {
   featuredProducts: ProductCard[]
   latestProducts: ProductCard[]
+  categories?: TaxonomyRef[]
   regions: RegionCard[]
 }

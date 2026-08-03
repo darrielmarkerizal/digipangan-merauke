@@ -8,6 +8,7 @@
 @theme static {
     --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-serif: 'Lora', ui-serif, Georgia, Cambria, 'Times New Roman', serif;
 
     --color-brand: #047857;
     --color-brand-strong: #065f46;

@@ -14,23 +14,23 @@ defineProps<{
 <template>
     <section
         v-if="showLatest"
-        class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8 lg:py-28"
+        class="mx-auto flex min-h-[100dvh] w-full max-w-[90rem] flex-col justify-center border-b border-border/80 px-3 py-20 sm:px-5 sm:py-24 lg:px-6"
     >
         <div
-            class="flex flex-col justify-between gap-6 md:flex-row md:items-end"
+            class="flex flex-col justify-between gap-4 sm:gap-6 md:flex-row md:items-end"
         >
-            <div class="space-y-3">
+            <div class="space-y-2 sm:space-y-3">
                 <span
                     class="text-xs font-bold uppercase tracking-widest text-brand"
                 >
                     Keterbaruan Lahan Komunitas
                 </span>
                 <h2
-                    class="text-3xl font-extrabold tracking-tight text-fg sm:text-4xl"
+                    class="text-2xl font-extrabold tracking-tight text-fg sm:text-3xl lg:text-4xl"
                 >
                     Hasil Panen Terbaru
                 </h2>
-                <p class="text-base text-fg-muted">
+                <p class="text-sm text-fg-muted sm:text-base">
                     Produk segar yang baru masuk etalase resmi dari seluruh
                     kelompok tani Merauke.
                 </p>
@@ -38,7 +38,7 @@ defineProps<{
 
             <Link
                 href="/produk"
-                class="inline-flex items-center gap-2 rounded-full border border-border/80 bg-white px-6 py-3 text-sm font-bold text-fg shadow-sm transition-all hover:border-brand/40 hover:bg-card"
+                class="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-full border border-border/80 bg-white px-6 py-3 text-sm font-bold text-fg shadow-sm transition-all hover:border-brand/40 hover:bg-card"
             >
                 <span>Lihat Semua Produk</span>
                 <Icon :icon="ArrowRight" :size="16" />
@@ -47,7 +47,7 @@ defineProps<{
 
         <div
             v-if="latestList.length > 0"
-            class="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4"
+            class="mt-8 sm:mt-12 grid grid-cols-1 gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-4"
         >
             <ProductCard
                 v-for="prod in latestList"
@@ -56,10 +56,10 @@ defineProps<{
             />
         </div>
 
-        <div v-else class="mt-12">
+        <div v-else class="mt-8 sm:mt-12">
             <EmptyState
-                title="Belum ada produk baru lainnya"
-                description="Semua produk saat ini sudah ditampilkan pada kategori unggulan di atas."
+                title="Belum Ada Hasil Panen Terbaru"
+                description="Saat ini belum ada produk panen terbaru yang ditambahkan."
             />
         </div>
     </section>

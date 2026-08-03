@@ -1,36 +1,38 @@
 <script setup lang="ts">
 import { Link } from "@inertiajs/vue3";
 import { ArrowRight } from "@lucide/vue";
-import { Icon } from "@/Components/ui";
+import { Icon, EmptyState } from "@/Components/ui";
 import ProductCard from "@/Components/product/ProductCard.vue";
-import type { ProductCard as ProductCardType } from "@/types/home";
+import type { ProductCard as ProductCardType, TaxonomyRef } from "@/types/home";
 
 defineProps<{
     featuredList: ProductCardType[];
     useSpotlight: boolean;
     spotlight: ProductCardType | null;
     restFeatured: ProductCardType[];
-    categoriesPreview: string[];
+    categoriesPreview: TaxonomyRef[];
 }>();
 </script>
 
 <template>
-    <section class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
+    <section
+        class="mx-auto flex min-h-[100dvh] w-full max-w-[90rem] flex-col justify-center px-3 py-20 sm:px-5 sm:py-24 lg:px-6"
+    >
         <div
-            class="flex flex-col justify-between gap-6 md:flex-row md:items-end"
+            class="flex flex-col justify-between gap-4 sm:gap-6 md:flex-row md:items-end"
         >
-            <div class="space-y-3">
+            <div class="space-y-2 sm:space-y-3">
                 <span
                     class="text-xs font-bold uppercase tracking-widest text-brand"
                 >
                     Kualitas Terverifikasi Tim Pendamping
                 </span>
                 <h2
-                    class="text-3xl font-extrabold tracking-tight text-fg sm:text-4xl"
+                    class="text-2xl font-extrabold tracking-tight text-fg sm:text-3xl lg:text-4xl"
                 >
                     Komoditas Unggulan Kawasan
                 </h2>
-                <p class="text-base text-fg-muted">
+                <p class="text-sm text-fg-muted sm:text-base">
                     Pilihan hasil panen terbaik langsung dari lahan transmigran
                     di Kabupaten Merauke.
                 </p>
@@ -38,33 +40,36 @@ defineProps<{
 
             <Link
                 href="/produk"
-                class="inline-flex items-center gap-2 rounded-full border border-border/80 bg-white px-6 py-3 text-sm font-bold text-fg shadow-sm transition-all hover:border-brand/40 hover:bg-card"
+                class="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-full border border-border/80 bg-white px-6 py-3 text-sm font-bold text-fg shadow-sm transition-all hover:border-brand/40 hover:bg-card"
             >
                 <span>Lihat Semua Produk</span>
                 <Icon :icon="ArrowRight" :size="16" />
             </Link>
         </div>
 
-        <div class="mt-8 flex flex-wrap gap-2.5">
+        <div
+            v-if="categoriesPreview.length > 0"
+            class="-mx-4 flex flex-nowrap overflow-x-auto px-4 pb-2 pt-6 sm:mx-0 sm:flex-wrap sm:px-0 sm:pt-8 gap-2 sm:gap-2.5 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+        >
             <Link
                 v-for="cat in categoriesPreview"
-                :key="cat"
-                :href="`/produk?kategori=${encodeURIComponent(cat)}`"
-                class="rounded-full border border-border/80 bg-white px-5 py-2 text-xs font-bold text-fg shadow-xs transition-colors hover:border-brand hover:text-brand"
+                :key="cat.slug"
+                :href="`/produk?kategori=${encodeURIComponent(cat.slug)}`"
+                class="shrink-0 rounded-full border border-border/80 bg-white px-4 py-1.5 sm:px-5 sm:py-2 text-xs font-bold text-fg shadow-xs transition-colors hover:border-brand hover:text-brand"
             >
-                {{ cat }}
+                {{ cat.name }}
             </Link>
         </div>
 
         <div
             v-if="useSpotlight && spotlight"
-            class="mt-12 grid grid-cols-1 gap-8 lg:grid-cols-12"
+            class="mt-8 sm:mt-12 grid grid-cols-1 gap-6 sm:gap-8 lg:grid-cols-12"
         >
             <div class="lg:col-span-6">
                 <ProductCard :product="spotlight" :featured="true" />
             </div>
             <div
-                class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:col-span-6 lg:grid-cols-2"
+                class="grid grid-cols-1 gap-4 sm:gap-6 sm:grid-cols-2 lg:col-span-6 lg:grid-cols-2"
             >
                 <ProductCard
                     v-for="prod in restFeatured"
@@ -75,13 +80,20 @@ defineProps<{
         </div>
 
         <div
-            v-else
-            class="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
+            v-else-if="featuredList.length > 0"
+            class="mt-8 sm:mt-12 grid grid-cols-1 gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3"
         >
             <ProductCard
                 v-for="prod in featuredList"
                 :key="prod.slug"
                 :product="prod"
+            />
+        </div>
+
+        <div v-else class="mt-8 sm:mt-12">
+            <EmptyState
+                title="Belum Ada Produk Unggulan"
+                description="Saat ini belum ada produk unggulan kawasan yang ditambahkan ke etalase."
             />
         </div>
     </section>

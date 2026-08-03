@@ -10,6 +10,8 @@ import {
 } from "@lucide/vue";
 import { Icon } from "@/Components/ui";
 
+withDefaults(defineProps<{ grain?: string }>(), { grain: "" });
+
 const pillars = [
     {
         num: "01",
@@ -45,82 +47,96 @@ const pillars = [
 </script>
 
 <template>
-    <section class="border-y border-border/80 bg-white py-24 lg:py-28">
-        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div class="mx-auto max-w-3xl text-center space-y-4">
-                <span
-                    class="text-xs font-bold uppercase tracking-widest text-brand"
-                >
-                    Pendekatan Terintegrasi &amp; Berkelanjutan
-                </span>
-                <h2
-                    class="text-3xl font-extrabold tracking-tight text-fg sm:text-4xl"
-                >
-                    5 Pilar Metodologi Program Pendampingan
-                </h2>
-                <p class="text-base text-fg-muted">
-                    Metodologi komprehensif yang dirancang oleh Tim UGM bersama
-                    Kementerian Transmigrasi RI untuk membangun ekosistem
-                    ekonomi lokal yang produktif dan berdaya saing.
-                </p>
-            </div>
-
+    <section
+        class="relative isolate flex min-h-[100dvh] flex-col justify-center overflow-hidden border-b border-emerald-900/40 bg-[#14281f] py-14 sm:py-20 lg:py-28"
+    >
+        <div
+            v-if="grain"
+            class="pointer-events-none absolute inset-0 z-0 opacity-[0.18] mix-blend-overlay"
+            :style="{ backgroundImage: grain }"
+            aria-hidden="true"
+        />
+        <div class="relative z-10 mx-auto max-w-[90rem] px-3 sm:px-5 lg:px-6">
             <div
-                class="mt-14 grid grid-cols-1 divide-y divide-border/80 overflow-hidden rounded-2xl border border-border/80 bg-white shadow-sm md:grid-cols-3 md:divide-x md:divide-y-0 lg:grid-cols-5"
+                class="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:items-end lg:gap-12"
             >
-                <div
-                    v-for="pilar in pillars"
-                    :key="pilar.num"
-                    class="flex flex-col justify-between p-7 transition-colors hover:bg-bg/60"
-                >
-                    <div>
-                        <div class="flex items-center justify-between">
-                            <span class="text-2xl font-black text-brand/80"
-                                >{{ pilar.num }}.</span
-                            >
-                            <div
-                                class="flex size-10 items-center justify-center rounded-xl bg-brand/10 text-brand"
-                            >
-                                <Icon :icon="pilar.icon" :size="20" />
-                            </div>
-                        </div>
-                        <h3 class="mt-6 text-base font-bold text-fg">
-                            {{ pilar.title }}
-                        </h3>
-                        <p class="mt-2.5 text-sm leading-relaxed text-fg-muted">
-                            {{ pilar.desc }}
-                        </p>
+                <div class="lg:col-span-7">
+                    <div class="flex items-center gap-3">
+                        <span class="h-px w-8 bg-emerald-400/60" />
+                        <span
+                            class="text-xs font-bold uppercase tracking-widest text-emerald-300"
+                        >
+                            Pendekatan Terintegrasi &amp; Berkelanjutan
+                        </span>
                     </div>
-                    <div
-                        class="mt-6 border-t border-border/60 pt-4 text-[11px] font-semibold text-fg-muted/80"
+
+                    <h2
+                        class="mt-4 font-serif text-[1.75rem] font-semibold leading-[1.12] tracking-tight text-white sm:text-4xl lg:text-[2.75rem] lg:leading-[1.08]"
                     >
-                        Metodologi Resmi Program
-                    </div>
+                        <span class="text-emerald-300">5 Pilar</span> Metodologi
+                        Program Pendampingan
+                    </h2>
                 </div>
-            </div>
 
-            <div
-                class="mt-10 flex flex-col items-center justify-between gap-6 rounded-3xl border border-brand bg-brand-strong p-8 text-white shadow-soft md:flex-row md:p-10"
-            >
-                <div class="space-y-2 text-center md:text-left">
+                <div class="lg:col-span-5">
                     <p
-                        class="text-xs font-bold uppercase tracking-widest text-emerald-200"
+                        class="text-sm leading-relaxed text-emerald-100/70 sm:text-base"
                     >
-                        Hasil Akhir Program
+                        Metodologi komprehensif yang dirancang oleh Tim UGM
+                        bersama Kementerian Transmigrasi RI untuk membangun
+                        ekosistem ekonomi lokal yang produktif dan berdaya
+                        saing.
                     </p>
-                    <p class="text-xl font-bold text-white sm:text-2xl">
-                        Terbentuk Ekosistem Ekonomi Lokal yang Mandiri,
-                        Inklusif, dan Berdaya Saing
-                    </p>
+
+                    <Link
+                        href="/tentang"
+                        class="mt-5 inline-flex items-center gap-2.5 rounded-full border border-emerald-400/30 bg-emerald-500/10 px-5 py-3 text-sm font-bold text-emerald-200 transition-all duration-200 hover:-translate-y-0.5 hover:border-emerald-400/60 hover:bg-emerald-500/20 hover:text-white active:scale-[0.98]"
+                    >
+                        <span>Baca Dokumen Laporan Lengkap</span>
+                        <Icon :icon="ArrowRight" :size="16" />
+                    </Link>
                 </div>
-                <Link
-                    href="/tentang"
-                    class="inline-flex shrink-0 items-center gap-2.5 rounded-full bg-white px-7 py-3.5 text-sm font-bold text-brand shadow-sm transition-all duration-200 hover:bg-emerald-50 hover:shadow-md"
-                >
-                    <span>Baca Dokumen Laporan Lengkap</span>
-                    <Icon :icon="ArrowRight" :size="16" />
-                </Link>
             </div>
+
+            <ol
+                class="mt-12 grid grid-cols-1 gap-x-8 gap-y-10 sm:mt-16 sm:grid-cols-2 lg:grid-cols-6 xl:grid-cols-5"
+            >
+                <li
+                    v-for="(pilar, i) in pillars"
+                    :key="pilar.num"
+                    class="group relative border-t border-white/12 pt-6 sm:pt-7 xl:col-span-1"
+                    :class="i < 3 ? 'lg:col-span-2' : 'lg:col-span-3'"
+                >
+                    <span
+                        class="pointer-events-none absolute -top-px left-0 h-px w-0 bg-emerald-400 transition-all duration-500 ease-premium group-hover:w-full"
+                        aria-hidden="true"
+                    />
+
+                    <div class="flex items-start justify-between gap-3">
+                        <span
+                            class="font-serif text-4xl font-semibold leading-none text-emerald-300/35 transition-colors duration-300 group-hover:text-emerald-300/80 sm:text-5xl"
+                        >
+                            {{ pilar.num }}
+                        </span>
+                        <span
+                            class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-300 ring-1 ring-inset ring-emerald-400/20 transition-colors duration-300 group-hover:bg-emerald-500/20 group-hover:text-emerald-200"
+                        >
+                            <Icon :icon="pilar.icon" :size="19" />
+                        </span>
+                    </div>
+
+                    <h3
+                        class="mt-5 text-base font-bold leading-snug text-white"
+                    >
+                        {{ pilar.title }}
+                    </h3>
+                    <p
+                        class="mt-2 text-[13px] leading-relaxed text-emerald-100/65 sm:text-sm"
+                    >
+                        {{ pilar.desc }}
+                    </p>
+                </li>
+            </ol>
         </div>
     </section>
 </template>

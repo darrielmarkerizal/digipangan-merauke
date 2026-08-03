@@ -43,7 +43,7 @@ const toggleRole = (role: string) => {
 
 const submit = () => {
     if (props.isEdit && props.user?.id) {
-        form.put(`/admin/user/${props.user.id}`, { preserveScroll: true });
+        form.submit('put', `/admin/user/${props.user.id}`, { preserveScroll: true });
     } else {
         form.post("/admin/user", { preserveScroll: true });
     }

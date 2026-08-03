@@ -100,7 +100,7 @@ const closeModal = () => {
 
 const handleSubmit = () => {
   if (editingUnit.value) {
-    form.put(`/admin/satuan/${editingUnit.value.id}`, {
+    form.submit('put', `/admin/satuan/${editingUnit.value.id}`, {
       onSuccess: () => {
         toast.success('Satuan berhasil diperbarui.')
         closeModal()

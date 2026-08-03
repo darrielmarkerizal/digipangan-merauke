@@ -90,7 +90,7 @@ const closeModal = () => {
 
 const handleSubmit = () => {
   if (editingCommodity.value) {
-    form.put(`/admin/komoditas/${editingCommodity.value.id}`, {
+    form.submit('put', `/admin/komoditas/${editingCommodity.value.id}`, {
       onSuccess: () => {
         toast.success('Komoditas berhasil diperbarui.')
         closeModal()

@@ -5,6 +5,9 @@ import { createPinia } from 'pinia'
 
 import '../css/app.css'
 import 'vue-sonner/style.css'
+import axios from 'axios'
+
+axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
 
 createInertiaApp({
   title: (title) => `${title} - Digipangan`,

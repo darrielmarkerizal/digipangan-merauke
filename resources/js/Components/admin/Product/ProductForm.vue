@@ -143,7 +143,7 @@ const toggleFields: { key: ToggleKey; label: string; description: string }[] = [
 async function uploadFileToTemp(file: File): Promise<string> {
   const formData = new FormData()
   formData.append('file', file)
-  const res = await axios.post('/api/v1/media/upload', formData, {
+  const res = await axios.post('/admin/media/upload', formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
@@ -190,7 +190,7 @@ const handleSubmit = async () => {
     }))
 
     if (props.isEdit && props.initialData?.id) {
-      form.put(endpoint, {
+      form.submit('put', endpoint, {
         onSuccess: () => {
           toast.success('Berhasil memperbarui produk!')
         },
