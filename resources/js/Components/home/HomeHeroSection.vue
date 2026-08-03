@@ -70,7 +70,6 @@ const features = [
             <div
                 class="mx-auto grid w-full max-w-[90rem] items-center gap-6 px-3 pb-4 pt-2 sm:gap-8 sm:px-5 sm:pt-4 lg:grid-cols-12 lg:gap-8 lg:px-6 lg:pb-4 lg:pt-4"
             >
-                <!-- Copy Text Column -->
                 <div class="space-y-5 sm:space-y-6 lg:col-span-7 lg:pr-8">
                     <h1
                         class="font-serif text-[2rem] font-semibold leading-[1.12] tracking-tight text-fg sm:text-[2.75rem] sm:leading-[1.1] lg:text-[3.1rem] lg:leading-[1.08]"
@@ -143,7 +142,6 @@ const features = [
                     </div>
                 </div>
 
-                <!-- Mobile Top Image / Desktop Right Column -->
                 <div
                     class="relative order-first lg:order-last lg:col-span-5 lg:min-h-[26rem] lg:self-stretch lg:mx-0 lg:mt-0"
                 >

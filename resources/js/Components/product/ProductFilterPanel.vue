@@ -54,7 +54,6 @@ const emit = defineEmits<{
                 </button>
             </div>
 
-            <!-- Search Input -->
             <div>
                 <label class="mb-2 block text-xs font-bold uppercase tracking-wider text-fg-muted">
                     Pencarian Teks
@@ -80,7 +79,6 @@ const emit = defineEmits<{
                 </div>
             </div>
 
-            <!-- Multi Category Filter (Checkboxes) -->
             <div>
                 <div class="mb-2 flex items-center justify-between">
                     <label class="text-xs font-bold uppercase tracking-wider text-fg-muted">
@@ -137,7 +135,6 @@ const emit = defineEmits<{
                 </div>
             </div>
 
-            <!-- Multi Region Filter (Checkboxes) -->
             <div v-if="regions && regions.length > 0">
                 <div class="mb-2 flex items-center justify-between">
                     <label class="text-xs font-bold uppercase tracking-wider text-fg-muted">

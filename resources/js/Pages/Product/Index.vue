@@ -197,7 +197,6 @@ const resetAllFilters = () => {
                                 Komoditas
                             </p>
 
-                            <!-- Active Filter Chips Bar -->
                             <div v-if="hasActiveFilters" class="flex flex-wrap items-center gap-1.5 pt-1">
                                 <span
                                     v-if="searchQuery"

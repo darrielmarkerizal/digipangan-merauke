@@ -167,12 +167,10 @@ const prevPhoto = () => {
             />
         </div>
 
-        <!-- Product Main Detail Section -->
         <section class="mx-auto max-w-[90rem] px-3 py-6 sm:px-5 lg:px-6">
             <div
                 class="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-10 xl:gap-14"
             >
-                <!-- Left: Image Gallery & Lightbox Trigger -->
                 <div class="lg:col-span-6 space-y-3">
                     <div
                         @click="
@@ -212,7 +210,6 @@ const prevPhoto = () => {
                         </button>
                     </div>
 
-                    <!-- Thumbnail Strip -->
                     <div
                         v-if="photos.length > 1"
                         class="flex items-center gap-2.5 overflow-x-auto pb-1 scrollbar-none"
@@ -237,7 +234,6 @@ const prevPhoto = () => {
                     </div>
                 </div>
 
-                <!-- Right: Product Info, Quantity Selector & Action CTA -->
                 <div class="lg:col-span-6 flex flex-col">
                     <div class="mb-6">
                         <div class="flex items-center gap-2 mb-2">
@@ -293,7 +289,6 @@ const prevPhoto = () => {
                         </div>
                     </div>
 
-                    <!-- Compact Metadata Grid -->
                     <div
                         class="grid grid-cols-2 gap-3 py-4 my-2 border-y border-border/60"
                     >
@@ -393,7 +388,6 @@ const prevPhoto = () => {
                         </div>
                     </div>
 
-                    <!-- Quantity Selector & Calculator Block -->
                     <div v-if="product.stock_available" class="py-4 space-y-3">
                         <label
                             class="block text-xs font-bold uppercase tracking-wider text-fg-muted"
@@ -452,7 +446,6 @@ const prevPhoto = () => {
                         </div>
                     </div>
 
-                    <!-- Product Description Preview with Line-Clamp -->
                     <div class="py-4 flex-1">
                         <div class="flex items-center justify-between mb-2">
                             <h3 class="text-xs font-bold text-fg uppercase tracking-wider">
@@ -486,7 +479,6 @@ const prevPhoto = () => {
                         </div>
                     </div>
 
-                    <!-- Desktop & Tablet WhatsApp CTA Button -->
                     <div
                         class="mt-6 pt-4 border-t border-border/60 hidden sm:block"
                     >
@@ -519,7 +511,6 @@ const prevPhoto = () => {
             </div>
         </section>
 
-        <!-- Farmer Trust Profile Card Section -->
         <section
             v-if="product.farmer"
             class="mx-auto max-w-[90rem] px-3 py-4 sm:px-5 lg:px-6"
@@ -562,7 +553,6 @@ const prevPhoto = () => {
             </div>
         </section>
 
-        <!-- Related Products Section -->
         <section
             v-if="relatedProducts && relatedProducts.length > 0"
             class="mx-auto max-w-[90rem] px-3 py-8 sm:px-5 lg:px-6 border-t border-border/60 mt-8"
@@ -594,7 +584,6 @@ const prevPhoto = () => {
             </div>
         </section>
 
-        <!-- Mobile Floating Bottom CTA Bar -->
         <div
             v-if="waLink"
             class="fixed inset-x-0 bottom-0 z-40 bg-white/95 backdrop-blur-md p-3 border-t border-border/80 sm:hidden shadow-lg"
@@ -627,7 +616,6 @@ const prevPhoto = () => {
             </a>
         </div>
 
-        <!-- Fullscreen Lightbox Modal -->
         <div
             v-if="isLightboxOpen"
             class="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md p-4"
@@ -668,7 +656,6 @@ const prevPhoto = () => {
             </button>
         </div>
 
-        <!-- Full Description Modal Popup -->
         <div
             v-if="isDescriptionModalOpen"
             class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
