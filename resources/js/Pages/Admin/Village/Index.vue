@@ -3,8 +3,10 @@ import { ref, computed } from "vue";
 import { Link } from "@inertiajs/vue3";
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 import AdminPageCard from "@/Components/admin/AdminPageCard.vue";
+import FilterPanel from "@/Components/admin/FilterPanel.vue";
 import { Search, Edit2, Home, CheckCircle2, XCircle, Eye } from "@lucide/vue";
-import { Icon, Input, Button, Badge, EmptyState } from "@/Components/ui";
+import { Icon, Input, Button, Badge, EmptyState, Pagination } from "@/Components/ui";
+import { useSearch } from "@/Composables/useSearch";
 
 const props = defineProps<{
     villages?: {
@@ -12,9 +14,10 @@ const props = defineProps<{
         links?: any;
         meta?: any;
     };
+    regions?: Array<{ id: number; name: string }>;
 }>();
 
-const search = ref("");
+const { search } = useSearch();
 
 const villageList = computed(() => {
     const rawData = props.villages?.data;
@@ -22,13 +25,7 @@ const villageList = computed(() => {
         ? rawData
         : (rawData as any)?.data || [];
 
-    if (!search.value) return items;
-    const query = search.value.toLowerCase();
-    return items.filter(
-        (r: any) =>
-            r.name.toLowerCase().includes(query) ||
-            (r.region?.name && r.region.name.toLowerCase().includes(query)),
-    );
+    return items;
 });
 </script>
 
@@ -39,18 +36,21 @@ const villageList = computed(() => {
     >
         <AdminPageCard>
             <template #header-actions>
-                <div class="relative w-full sm:w-64">
-                    <Icon
-                        :icon="Search"
-                        :size="16"
-                        class="absolute left-3 top-1/2 -translate-y-1/2 text-fg-muted"
-                    />
-                    <Input
-                        v-model="search"
-                        type="search"
-                        placeholder="Cari desa atau distrik..."
-                        class="pl-9 w-full"
-                    />
+                <div class="flex flex-col sm:flex-row w-full sm:w-auto gap-3 items-center">
+                    <div class="relative w-full sm:w-64">
+                        <Icon
+                            :icon="Search"
+                            :size="16"
+                            class="absolute left-3 top-1/2 -translate-y-1/2 text-fg-muted"
+                        />
+                        <Input
+                            v-model="search"
+                            type="search"
+                            placeholder="Cari desa..."
+                            class="pl-9 w-full"
+                        />
+                    </div>
+                    <FilterPanel module="village" :regions="regions" />
                 </div>
             </template>
 
@@ -141,6 +141,8 @@ const villageList = computed(() => {
                     </tbody>
                 </table>
             </div>
+
+            <Pagination :meta="villages?.meta" :links="villages?.links" />
         </AdminPageCard>
     </AdminLayout>
 </template>

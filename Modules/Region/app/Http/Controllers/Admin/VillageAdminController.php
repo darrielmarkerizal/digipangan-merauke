@@ -25,7 +25,9 @@ class VillageAdminController extends Controller
             'Admin/Village/Index',
             $this->service->paginateFiltered(),
             VillageResource::class,
-            [],
+            [
+                'regions' => $this->regionService->list(),
+            ],
             'villages'
         );
     }
