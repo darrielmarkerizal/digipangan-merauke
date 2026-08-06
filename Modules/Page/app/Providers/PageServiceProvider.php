@@ -5,8 +5,10 @@ namespace Modules\Page\Providers;
 use Illuminate\Console\Scheduling\Schedule;
 use Modules\Page\Repositories\Contracts\FaqRepositoryInterface;
 use Modules\Page\Repositories\Contracts\PartnerRepositoryInterface;
+use Modules\Page\Repositories\Contracts\SiteSettingRepositoryInterface;
 use Modules\Page\Repositories\FaqRepository;
 use Modules\Page\Repositories\PartnerRepository;
+use Modules\Page\Repositories\SiteSettingRepository;
 use Nwidart\Modules\Support\ModuleServiceProvider;
 
 class PageServiceProvider extends ModuleServiceProvider
@@ -54,5 +56,6 @@ class PageServiceProvider extends ModuleServiceProvider
 
         $this->app->bind(PartnerRepositoryInterface::class, PartnerRepository::class);
         $this->app->bind(FaqRepositoryInterface::class, FaqRepository::class);
+        $this->app->bind(SiteSettingRepositoryInterface::class, SiteSettingRepository::class);
     }
 }

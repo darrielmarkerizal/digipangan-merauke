@@ -127,7 +127,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
         return $this->paginateQuery($this->publicFiltered(), $perPage);
     }
 
-    private function paginateQuery(QueryBuilder $query, ?int $perPage): LengthAwarePaginator
+    protected function paginateQuery(QueryBuilder $query, ?int $perPage): LengthAwarePaginator
     {
         $perPage = $perPage ?? (int) request()->integer('per_page', $this->defaultPerPage);
 

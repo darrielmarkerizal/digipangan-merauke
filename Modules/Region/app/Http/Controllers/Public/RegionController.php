@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Modules\Product\Http\Resources\Public\PublicProductResource;
-use Modules\Product\Models\Product;
 use Modules\Product\Repositories\Contracts\ProductRepositoryInterface;
 use Modules\Region\Http\Resources\Public\PublicRegionDetailResource;
 use Modules\Region\Http\Resources\Public\PublicRegionResource;
@@ -30,17 +29,9 @@ class RegionController extends Controller
 
     public function show(string $slug): JsonResponse
     {
-        $region = $this->regions->publicFindBySlug($slug);
+        $region = $this->regions->publicFindBySlugWithFeaturedProducts($slug);
 
         abort_if($region === null, 404, 'Wilayah tidak ditemukan.');
-
-        $region->setRelation('regionFeaturedProducts', Product::query()
-            ->where('region_id', $region->id)
-            ->where('is_active', true)
-            ->where('is_region_featured', true)
-            ->with(['media', 'category', 'farmer'])
-            ->latest()
-            ->get());
 
         return $this->successResponse(new PublicRegionDetailResource($region));
     }

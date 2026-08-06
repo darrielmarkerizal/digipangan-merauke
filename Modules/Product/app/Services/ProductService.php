@@ -3,6 +3,7 @@
 namespace Modules\Product\Services;
 
 use App\Services\BaseService;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
@@ -10,9 +11,24 @@ use Modules\Product\Repositories\Contracts\ProductRepositoryInterface;
 
 class ProductService extends BaseService
 {
-    public function __construct(ProductRepositoryInterface $repository)
+    public function __construct(private readonly ProductRepositoryInterface $products)
     {
-        parent::__construct($repository);
+        parent::__construct($products);
+    }
+
+    public function publicFeatured(int $limit = 8): Collection
+    {
+        return $this->products->publicFeatured($limit);
+    }
+
+    public function publicLatest(int $limit = 8): Collection
+    {
+        return $this->products->publicLatest($limit);
+    }
+
+    public function publicRelated(Model $product, int $limit = 4): Collection
+    {
+        return $this->products->publicRelated($product->id, $product->product_category_id, $product->region_id, $limit);
     }
 
     public function create(array $data): Model

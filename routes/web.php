@@ -14,6 +14,10 @@ use Modules\Region\Http\Controllers\Admin\RegionAdminController;
 use Modules\Region\Http\Controllers\Admin\VillageAdminController;
 use Modules\User\Http\Controllers\Admin\AuthAdminController;
 use Modules\User\Http\Controllers\Admin\UserAdminController;
+use Modules\Farmer\Http\Controllers\Public\FarmerRegisterController;
+use Modules\Farmer\Http\Controllers\Farmer\FarmerProfileController;
+use Modules\Product\Http\Controllers\Farmer\FarmerProductController;
+use App\Http\Controllers\Farmer\FarmerDashboardController;
 use Modules\Page\Http\Controllers\Admin\FaqAdminController;
 use App\Http\Controllers\Admin\AuditLogAdminController;
 use App\Http\Controllers\Admin\DashboardAdminController;
@@ -22,17 +26,44 @@ use Inertia\Inertia;
 Route::get('/', [HomePageController::class, 'index'])->name('home');
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 
+Route::get('/wilayah', [\Modules\Region\Http\Controllers\Public\RegionPageController::class, 'index'])->name('region.public.index');
+Route::get('/wilayah/{slug}', [\Modules\Region\Http\Controllers\Public\RegionPageController::class, 'show'])->name('region.public.show');
+
 Route::get('/produk', [\Modules\Product\Http\Controllers\Public\ProductPageController::class, 'index'])->name('product.public.index');
 Route::get('/produk/{slug}', [\Modules\Product\Http\Controllers\Public\ProductPageController::class, 'show'])->name('product.public.show');
+
+Route::middleware(['auth', 'role:farmer'])->prefix('petani/dashboard')->name('farmer.dashboard.')->group(function () {
+    Route::get('/', [FarmerDashboardController::class, 'index'])->name('index');
+
+    Route::get('/profil', [FarmerProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profil', [FarmerProfileController::class, 'update'])->name('profile.update');
+
+    Route::get('/produk', [FarmerProductController::class, 'index'])->name('product.index');
+    Route::get('/produk/tambah', [FarmerProductController::class, 'create'])->name('product.create');
+    Route::post('/produk', [FarmerProductController::class, 'store'])->name('product.store');
+    Route::get('/produk/{id}/edit', [FarmerProductController::class, 'edit'])->name('product.edit');
+    Route::put('/produk/{id}', [FarmerProductController::class, 'update'])->name('product.update');
+    Route::delete('/produk/{id}', [FarmerProductController::class, 'destroy'])->name('product.destroy');
+});
+
+Route::get('/petani', [\Modules\Farmer\Http\Controllers\Public\FarmerPageController::class, 'index'])->name('farmer.public.index');
+Route::get('/petani/{slug}', [\Modules\Farmer\Http\Controllers\Public\FarmerPageController::class, 'show'])->name('farmer.public.show');
+
+Route::get('/berita', [\Modules\Post\Http\Controllers\Public\PostPageController::class, 'index'])->name('post.public.index');
+Route::get('/berita/{slug}', [\Modules\Post\Http\Controllers\Public\PostPageController::class, 'show'])->name('post.public.show');
+
+Route::get('/tentang', [\Modules\Page\Http\Controllers\Public\AboutPageController::class, 'show'])->name('about.public.show');
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthAdminController::class, 'showLogin'])->name('login');
     Route::post('/login', [AuthAdminController::class, 'login'])->name('login.store');
+    Route::get('/daftar', [FarmerRegisterController::class, 'create'])->name('farmer.register');
+    Route::post('/daftar', [FarmerRegisterController::class, 'store'])->name('farmer.register.store');
 });
 
 Route::post('/logout', [AuthAdminController::class, 'logout'])->name('logout');
 
-Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'role:admin|super_admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [DashboardAdminController::class, 'index'])->name('dashboard.index');
 
     Route::get('/produk', [ProductAdminController::class, 'index'])->name('product.index');

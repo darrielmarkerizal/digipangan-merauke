@@ -4,6 +4,7 @@ namespace Modules\Post\Repositories;
 
 use App\Repositories\BaseRepository;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Modules\Post\Models\Post;
 use Modules\Post\Repositories\Contracts\PostRepositoryInterface;
 use Spatie\QueryBuilder\AllowedFilter;
@@ -51,5 +52,32 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface
     protected function allowedSorts(): array
     {
         return ['title', 'status', 'published_at', 'created_at'];
+    }
+
+    /**
+     * Other published posts sharing a category, for the "related posts"
+     * section on a post detail page.
+     */
+    public function publicRelated(int $excludeId, ?int $categoryId, int $limit = 3): Collection
+    {
+        return $this->visibilityScope($this->query())
+            ->where('id', '!=', $excludeId)
+            ->when($categoryId, fn (Builder $query) => $query->where('post_category_id', $categoryId))
+            ->latest('published_at')
+            ->take($limit)
+            ->get();
+    }
+
+    /**
+     * Minimal {slug, updated_at} rows for published posts, for the sitemap.
+     */
+    public function publicSitemapEntries(): Collection
+    {
+        return $this->visibilityScope($this->model->newQuery())->get(['slug', 'updated_at']);
+    }
+
+    public function countPublished(): int
+    {
+        return $this->visibilityScope($this->model->newQuery())->count();
     }
 }

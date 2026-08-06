@@ -12,7 +12,6 @@ use Modules\User\Http\Requests\StoreUserRequest;
 use Modules\User\Http\Requests\UpdateUserRequest;
 use Modules\User\Http\Resources\UserResource;
 use Modules\User\Services\UserService;
-use Spatie\Permission\Models\Role;
 
 class UserAdminController extends Controller
 {
@@ -24,7 +23,7 @@ class UserAdminController extends Controller
             'Admin/User/Index',
             $this->service->paginateFiltered(),
             UserResource::class,
-            ['roles' => Role::pluck('name')],
+            ['roles' => $this->service->availableRoleNames()],
             'users'
         );
     }
@@ -32,7 +31,7 @@ class UserAdminController extends Controller
     public function create(): Response
     {
         return Inertia::render('Admin/User/Create', [
-            'roles' => Role::pluck('name'),
+            'roles' => $this->service->availableRoleNames(),
         ]);
     }
 
@@ -55,7 +54,7 @@ class UserAdminController extends Controller
     {
         return Inertia::render('Admin/User/Edit', [
             'user'  => (new UserResource($this->service->findOrFail($id, ['roles'])))->resolve(),
-            'roles' => Role::pluck('name'),
+            'roles' => $this->service->availableRoleNames(),
         ]);
     }
 

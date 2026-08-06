@@ -22,10 +22,12 @@ class AuthAdminController extends Controller
 
     public function login(LoginRequest $request): RedirectResponse
     {
-        $this->authService->login($request, $request->credentials(), $request->remember());
+        $user = $this->authService->login($request, $request->credentials(), $request->remember());
 
-        return redirect()->intended('/admin/dashboard')
-            ->with('success', 'Berhasil masuk ke Portal Admin DigiPangan Merauke.');
+        $default = $user->hasRole('farmer') ? '/petani/dashboard' : '/admin/dashboard';
+
+        return redirect()->intended($default)
+            ->with('success', 'Berhasil masuk ke DigiPangan Merauke.');
     }
 
     public function logout(Request $request): RedirectResponse

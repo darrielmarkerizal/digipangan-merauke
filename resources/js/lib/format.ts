@@ -34,19 +34,19 @@ export function formatAngka(value: number | string | null | undefined): string {
     return angkaFormatter.format(num);
 }
 
-export function formatTanggal(value: Date | string): string {
+export function formatTanggal(value: Date | string | null | undefined): string {
+    if (value === null || value === undefined || value === "") return "";
     const date = value instanceof Date ? value : new Date(value);
     if (Number.isNaN(date.getTime()))
         return typeof value === "string" ? value : "";
     return tanggalFormatter.format(date);
 }
 
-export function formatWaktuLengkap(value: Date | string): string {
+export function formatWaktuLengkap(value: Date | string | null | undefined): string {
+    if (value === null || value === undefined || value === "") return "";
     const date = value instanceof Date ? value : new Date(value);
     if (Number.isNaN(date.getTime()))
         return typeof value === "string" ? value : "";
-    
-    // Some browsers format timeZoneName: "short" as "WIB", others as "GMT+7".
-    // id-ID defaults to using '.' for time separator (e.g. 14.30). We can replace it with ':' if needed, but standard id-ID is fine.
     return waktuLengkapFormatter.format(date);
 }
+

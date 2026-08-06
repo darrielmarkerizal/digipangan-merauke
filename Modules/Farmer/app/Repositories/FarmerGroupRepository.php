@@ -37,4 +37,9 @@ class FarmerGroupRepository extends BaseRepository implements FarmerGroupReposit
     {
         return ['name', 'created_at'];
     }
+
+    public function countAll(): int
+    {
+        return $this->model->newQuery()->count();
+    }
 }

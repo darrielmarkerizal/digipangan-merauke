@@ -6,6 +6,7 @@ use App\Support\PublicUrl;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Str;
+use Modules\Farmer\Http\Resources\Public\PublicFarmerListResource;
 use Modules\Product\Http\Resources\Public\PublicProductResource;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
@@ -35,7 +36,11 @@ class PublicRegionDetailResource extends JsonResource
             ])->all(),
             'featured_products' => $this->whenLoaded(
                 'regionFeaturedProducts',
-                fn () => PublicProductResource::collection($this->regionFeaturedProducts)
+                fn () => PublicProductResource::collection($this->regionFeaturedProducts)->resolve()
+            ),
+            'farmers' => $this->whenLoaded(
+                'regionFarmers',
+                fn () => PublicFarmerListResource::collection($this->regionFarmers)->resolve()
             ),
             'seo' => [
                 'title' => 'Wilayah '.$this->name.' — DigiPangan Merauke',

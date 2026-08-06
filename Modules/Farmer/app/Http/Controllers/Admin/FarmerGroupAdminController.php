@@ -4,15 +4,15 @@ namespace Modules\Farmer\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Support\InertiaQuery;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Http\RedirectResponse;
+use Modules\Farmer\Http\Requests\AttachFarmerToGroupRequest;
+use Modules\Farmer\Http\Requests\DetachFarmerFromGroupRequest;
 use Modules\Farmer\Http\Requests\StoreFarmerGroupRequest;
 use Modules\Farmer\Http\Requests\UpdateFarmerGroupRequest;
 use Modules\Farmer\Http\Resources\FarmerGroupResource;
 use Modules\Farmer\Http\Resources\FarmerResource;
-use Modules\Farmer\Models\Farmer;
 use Modules\Farmer\Services\FarmerGroupService;
 use Modules\Farmer\Services\FarmerService;
 use Modules\Region\Services\RegionService;
@@ -64,9 +64,7 @@ class FarmerGroupAdminController extends Controller
     public function edit(int $id): Response
     {
         $group           = $this->service->findOrFail($id);
-        $availableFarmers = Farmer::where('region_id', $group->region_id)
-            ->whereNull('farmer_group_id')
-            ->get();
+        $availableFarmers = $this->farmerService->availableForGroup($group->region_id);
 
         return Inertia::render('Admin/FarmerGroup/Edit', [
             'farmerGroup'     => (new FarmerGroupResource($group))->resolve(),
@@ -94,35 +92,31 @@ class FarmerGroupAdminController extends Controller
             ->with('success', 'Kelompok tani berhasil dihapus.');
     }
 
-    public function attachFarmer(Request $request, int $id): RedirectResponse
+    public function attachFarmer(AttachFarmerToGroupRequest $request, int $id): RedirectResponse
     {
-        $request->validate(['farmer_id' => 'required|exists:farmers,id']);
-
         $group  = $this->service->findOrFail($id);
-        $farmer = $this->farmerService->findOrFail($request->farmer_id);
+        $farmer = $this->farmerService->findOrFail($request->validated('farmer_id'));
 
         if ($farmer->region_id !== $group->region_id) {
             abort(400, 'Petani tidak berada di distrik yang sama dengan kelompok tani ini.');
         }
 
-        $farmer->update(['farmer_group_id' => $group->id]);
+        $this->farmerService->update($farmer, ['farmer_group_id' => $group->id]);
 
         return redirect()->back()
             ->with('success', 'Petani berhasil ditambahkan ke kelompok.');
     }
 
-    public function detachFarmer(Request $request, int $id): RedirectResponse
+    public function detachFarmer(DetachFarmerFromGroupRequest $request, int $id): RedirectResponse
     {
-        $request->validate(['farmer_id' => 'required|exists:farmers,id']);
-
         $group  = $this->service->findOrFail($id);
-        $farmer = $this->farmerService->findOrFail($request->farmer_id);
+        $farmer = $this->farmerService->findOrFail($request->validated('farmer_id'));
 
         if ($farmer->farmer_group_id !== $group->id) {
             abort(400, 'Petani tersebut bukan anggota kelompok ini.');
         }
 
-        $farmer->update(['farmer_group_id' => null]);
+        $this->farmerService->update($farmer, ['farmer_group_id' => null]);
 
         return redirect()->back()
             ->with('success', 'Petani berhasil dikeluarkan dari kelompok.');

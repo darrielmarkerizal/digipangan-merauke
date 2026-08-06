@@ -4,8 +4,11 @@ namespace Modules\User\Repositories;
 
 use App\Models\User;
 use App\Repositories\BaseRepository;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Collection as SupportCollection;
 use Modules\User\Repositories\Contracts\UserRepositoryInterface;
+use Spatie\Permission\Models\Role;
 use Spatie\QueryBuilder\AllowedFilter;
 
 class UserRepository extends BaseRepository implements UserRepositoryInterface
@@ -53,5 +56,23 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
     public function syncRoles(User $user, array $roles): void
     {
         $user->syncRoles($roles);
+    }
+
+    /**
+     * Lightweight {id, name} options — used to populate admin "author"
+     * pickers without loading full user records.
+     */
+    public function listNameOptions(): Collection
+    {
+        return $this->model->newQuery()->select('id', 'name')->get();
+    }
+
+    /**
+     * All role names known to the permission system, for the admin user
+     * form's role picker.
+     */
+    public function availableRoleNames(): SupportCollection
+    {
+        return Role::pluck('name');
     }
 }

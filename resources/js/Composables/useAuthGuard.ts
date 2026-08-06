@@ -32,6 +32,10 @@ export function useAuthGuard() {
     return roles.value.includes('super_admin') || roles.value.includes('admin')
   })
 
+  const isFarmer = computed(() => {
+    return roles.value.includes('farmer')
+  })
+
   const hasRole = (roleName: string): boolean => {
     return roles.value.includes(roleName)
   }
@@ -80,6 +84,7 @@ export function useAuthGuard() {
     permissions,
     isAuthenticated,
     isSuperAdmin,
+    isFarmer,
     hasRole,
     hasPermission,
     requireAuth,

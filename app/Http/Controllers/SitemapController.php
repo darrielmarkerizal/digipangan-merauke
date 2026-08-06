@@ -5,13 +5,20 @@ namespace App\Http\Controllers;
 use App\Support\PublicUrl;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
-use Modules\Farmer\Models\Farmer;
-use Modules\Post\Models\Post;
-use Modules\Product\Models\Product;
-use Modules\Region\Models\Region;
+use Modules\Farmer\Repositories\Contracts\FarmerRepositoryInterface;
+use Modules\Post\Repositories\Contracts\PostRepositoryInterface;
+use Modules\Product\Repositories\Contracts\ProductRepositoryInterface;
+use Modules\Region\Repositories\Contracts\RegionRepositoryInterface;
 
 class SitemapController extends Controller
 {
+    public function __construct(
+        private readonly ProductRepositoryInterface $products,
+        private readonly RegionRepositoryInterface $regions,
+        private readonly FarmerRepositoryInterface $farmers,
+        private readonly PostRepositoryInterface $posts,
+    ) {}
+
     public function index(): Response
     {
         $urls = collect([
@@ -20,14 +27,14 @@ class SitemapController extends Controller
             ['loc' => PublicUrl::posts()],
             ['loc' => PublicUrl::about()],
         ])
-            ->merge(Product::where('is_active', true)->get(['slug', 'updated_at'])
-                ->map(fn (Product $p) => ['loc' => PublicUrl::product($p->slug), 'lastmod' => $p->updated_at]))
-            ->merge(Region::where('is_active', true)->get(['slug', 'updated_at'])
-                ->map(fn (Region $r) => ['loc' => PublicUrl::region($r->slug), 'lastmod' => $r->updated_at]))
-            ->merge(Farmer::where('is_active', true)->get(['slug', 'updated_at'])
-                ->map(fn (Farmer $f) => ['loc' => PublicUrl::farmer($f->slug), 'lastmod' => $f->updated_at]))
-            ->merge(Post::published()->get(['slug', 'updated_at'])
-                ->map(fn (Post $p) => ['loc' => PublicUrl::post($p->slug), 'lastmod' => $p->updated_at]))
+            ->merge($this->products->publicSitemapEntries()
+                ->map(fn ($p) => ['loc' => PublicUrl::product($p->slug), 'lastmod' => $p->updated_at]))
+            ->merge($this->regions->publicSitemapEntries()
+                ->map(fn ($r) => ['loc' => PublicUrl::region($r->slug), 'lastmod' => $r->updated_at]))
+            ->merge($this->farmers->publicSitemapEntries()
+                ->map(fn ($f) => ['loc' => PublicUrl::farmer($f->slug), 'lastmod' => $f->updated_at]))
+            ->merge($this->posts->publicSitemapEntries()
+                ->map(fn ($p) => ['loc' => PublicUrl::post($p->slug), 'lastmod' => $p->updated_at]))
             ->all();
 
         return response($this->render($urls), 200)

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\User;
 use Modules\Product\Models\Product;
 use Modules\Region\Models\Region;
 use Modules\Region\Models\Village;
@@ -22,6 +23,7 @@ use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 
 #[Fillable([
+    'user_id',
     'region_id',
     'village_id',
     'farmer_group_id',
@@ -63,6 +65,11 @@ class Farmer extends Model implements AuditableContract, HasMedia
     {
         $this->addMediaConversion('thumb')->fit(Fit::Crop, 400, 400)->nonQueued();
         $this->addMediaConversion('card')->width(800)->nonQueued();
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 
     public function region(): BelongsTo

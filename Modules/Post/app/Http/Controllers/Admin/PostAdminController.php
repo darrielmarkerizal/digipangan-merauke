@@ -3,7 +3,6 @@
 namespace Modules\Post\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
 use App\Support\InertiaQuery;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -13,12 +12,14 @@ use Modules\Post\Http\Requests\UpdatePostRequest;
 use Modules\Post\Http\Resources\PostResource;
 use Modules\Post\Services\PostCategoryService;
 use Modules\Post\Services\PostService;
+use Modules\User\Services\UserService;
 
 class PostAdminController extends Controller
 {
     public function __construct(
         private readonly PostService $service,
         private readonly PostCategoryService $categoryService,
+        private readonly UserService $userService,
     ) {}
 
     public function index(): Response
@@ -27,7 +28,7 @@ class PostAdminController extends Controller
             'Admin/Post/Index',
             $this->service->paginateFiltered(),
             PostResource::class,
-            ['authors' => User::select('id', 'name')->get()],
+            ['authors' => $this->userService->listNameOptions()],
             'posts'
         );
     }

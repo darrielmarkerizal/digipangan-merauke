@@ -18,6 +18,7 @@ import {
     X,
     ShieldCheck,
     Sprout,
+    User,
 } from "@lucide/vue";
 import { toast } from "vue-sonner";
 import PublicLayout from "@/Layouts/PublicLayout.vue";
@@ -127,8 +128,12 @@ const trackContact = () => {
             method: "POST",
             headers: {
                 "X-CSRF-TOKEN":
-                    (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement)?.content || "",
-                "Accept": "application/json",
+                    (
+                        document.querySelector(
+                            'meta[name="csrf-token"]',
+                        ) as HTMLMetaElement
+                    )?.content || "",
+                Accept: "application/json",
             },
         }).catch(() => {});
     } catch (e) {}
@@ -140,8 +145,12 @@ const trackView = () => {
             method: "POST",
             headers: {
                 "X-CSRF-TOKEN":
-                    (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement)?.content || "",
-                "Accept": "application/json",
+                    (
+                        document.querySelector(
+                            'meta[name="csrf-token"]',
+                        ) as HTMLMetaElement
+                    )?.content || "",
+                Accept: "application/json",
             },
         }).catch(() => {});
     } catch (e) {}
@@ -345,9 +354,20 @@ onMounted(() => {
                             </div>
                         </div>
 
-                        <div
+                        <component
+                            :is="product.farmer?.slug ? Link : 'div'"
                             v-if="product.farmer"
-                            class="flex items-center gap-2.5 rounded-xl bg-white p-2.5 border border-border/60 shadow-2xs"
+                            :href="
+                                product.farmer?.slug
+                                    ? `/petani/${product.farmer.slug}`
+                                    : undefined
+                            "
+                            :class="[
+                                'flex items-center gap-2.5 rounded-xl bg-white p-2.5 border border-border/60 shadow-2xs transition-colors',
+                                product.farmer?.slug
+                                    ? 'hover:border-brand/40 hover:bg-brand/5 cursor-pointer'
+                                    : '',
+                            ]"
                         >
                             <div
                                 class="flex size-7 shrink-0 items-center justify-center rounded-lg bg-orange-100 text-orange-600"
@@ -366,7 +386,7 @@ onMounted(() => {
                                     {{ product.farmer.name }}
                                 </p>
                             </div>
-                        </div>
+                        </component>
 
                         <div
                             v-if="product.weight_value && product.unit"
@@ -478,7 +498,9 @@ onMounted(() => {
 
                     <div class="py-4 flex-1">
                         <div class="flex items-center justify-between mb-2">
-                            <h3 class="text-xs font-bold text-fg uppercase tracking-wider">
+                            <h3
+                                class="text-xs font-bold text-fg uppercase tracking-wider"
+                            >
                                 Deskripsi Produk
                             </h3>
                             <button
@@ -503,7 +525,10 @@ onMounted(() => {
                                 "
                             ></div>
 
-                            <div v-if="product.description" class="mt-1.5 flex items-center gap-1 text-xs font-bold text-brand group-hover:underline">
+                            <div
+                                v-if="product.description"
+                                class="mt-1.5 flex items-center gap-1 text-xs font-bold text-brand group-hover:underline"
+                            >
                                 <span>Baca deskripsi selengkapnya &rarr;</span>
                             </div>
                         </div>
@@ -557,9 +582,22 @@ onMounted(() => {
                     </div>
                     <div>
                         <div class="flex items-center gap-2">
-                            <h3 class="text-base font-bold text-fg">
+                            <component
+                                :is="product.farmer?.slug ? Link : 'h3'"
+                                :href="
+                                    product.farmer?.slug
+                                        ? `/petani/${product.farmer.slug}`
+                                        : undefined
+                                "
+                                :class="[
+                                    'text-base font-bold text-fg',
+                                    product.farmer?.slug
+                                        ? 'hover:text-brand hover:underline transition-colors cursor-pointer'
+                                        : '',
+                                ]"
+                            >
                                 {{ product.farmer.name }}
-                            </h3>
+                            </component>
                             <span
                                 class="inline-flex items-center gap-1 rounded-full bg-green-50 border border-green-200 px-2 py-0.5 text-[11px] font-bold text-green-700"
                             >
@@ -575,7 +613,15 @@ onMounted(() => {
                 </div>
 
                 <Link
-                    v-if="product.region"
+                    v-if="product.farmer?.slug"
+                    :href="`/petani/${product.farmer.slug}`"
+                    class="inline-flex items-center gap-1.5 rounded-xl border border-border/80 bg-muted/30 px-4 py-2 text-xs font-bold text-fg hover:bg-brand hover:text-white transition-all cursor-pointer"
+                >
+                    <Icon :icon="User" :size="14" />
+                    <span>Lihat Profil Petani</span>
+                </Link>
+                <Link
+                    v-else-if="product.region"
                     :href="`/produk?region=${product.region.slug}`"
                     class="inline-flex items-center gap-1.5 rounded-xl border border-border/80 bg-muted/30 px-4 py-2 text-xs font-bold text-fg hover:bg-brand hover:text-white transition-all cursor-pointer"
                 >
@@ -693,11 +739,19 @@ onMounted(() => {
             class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
             @click.self="closeDescriptionModal"
         >
-            <div class="w-full max-w-2xl max-h-[85vh] overflow-hidden rounded-2xl bg-white shadow-2xl flex flex-col animate-in fade-in zoom-in-95 duration-200">
-                <div class="flex items-center justify-between border-b border-border/80 px-6 py-4 bg-muted/20">
+            <div
+                class="w-full max-w-2xl max-h-[85vh] overflow-hidden rounded-2xl bg-white shadow-2xl flex flex-col animate-in fade-in zoom-in-95 duration-200"
+            >
+                <div
+                    class="flex items-center justify-between border-b border-border/80 px-6 py-4 bg-muted/20"
+                >
                     <div>
-                        <h3 class="text-base font-extrabold text-fg">Deskripsi Lengkap Produk</h3>
-                        <p class="text-xs text-fg-muted font-medium">{{ product.name }}</p>
+                        <h3 class="text-base font-extrabold text-fg">
+                            Deskripsi Lengkap Produk
+                        </h3>
+                        <p class="text-xs text-fg-muted font-medium">
+                            {{ product.name }}
+                        </p>
                     </div>
                     <button
                         @click="closeDescriptionModal"
@@ -711,12 +765,21 @@ onMounted(() => {
                 <div class="p-6 overflow-y-auto flex-1">
                     <div
                         class="prose prose-sm sm:prose-base max-w-none text-fg-muted leading-relaxed prose-headings:text-fg prose-a:text-brand prose-strong:text-fg prose-ul:list-disc prose-ol:list-decimal"
-                        v-html="product.description || '<p class=\'italic text-fg-muted\'>Belum ada deskripsi untuk produk ini.</p>'"
+                        v-html="
+                            product.description ||
+                            '<p class=\'italic text-fg-muted\'>Belum ada deskripsi untuk produk ini.</p>'
+                        "
                     ></div>
                 </div>
 
-                <div class="border-t border-border/80 px-6 py-3 bg-muted/20 text-right">
-                    <Button size="sm" variant="secondary" @click="closeDescriptionModal">
+                <div
+                    class="border-t border-border/80 px-6 py-3 bg-muted/20 text-right"
+                >
+                    <Button
+                        size="sm"
+                        variant="secondary"
+                        @click="closeDescriptionModal"
+                    >
                         Tutup
                     </Button>
                 </div>

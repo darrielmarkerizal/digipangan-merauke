@@ -4,17 +4,29 @@ namespace Modules\User\Services;
 
 use App\Models\User;
 use App\Services\BaseService;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
+use Illuminate\Support\Collection as SupportCollection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Modules\User\Repositories\Contracts\UserRepositoryInterface;
 
 class UserService extends BaseService
 {
-    public function __construct(UserRepositoryInterface $repository)
+    public function __construct(private readonly UserRepositoryInterface $users)
     {
-        parent::__construct($repository);
+        parent::__construct($users);
+    }
+
+    public function listNameOptions(): Collection
+    {
+        return $this->users->listNameOptions();
+    }
+
+    public function availableRoleNames(): SupportCollection
+    {
+        return $this->users->availableRoleNames();
     }
 
     public function create(array $data): Model

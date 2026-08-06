@@ -78,6 +78,13 @@ const isActive = (href: string) =>
                     </Link>
                 </nav>
 
+                <Link
+                    href="/daftar"
+                    class="hidden shrink-0 items-center gap-1.5 rounded-full bg-brand px-4 py-1.5 text-sm font-semibold text-on-brand shadow-sm shadow-brand/30 transition-colors hover:bg-brand-strong lg:inline-flex"
+                >
+                    Daftar Petani
+                </Link>
+
                 <div class="flex items-center gap-1 lg:hidden">
                     <button
                         type="button"
@@ -130,6 +137,13 @@ const isActive = (href: string) =>
                             {{ item.label }}
                         </Link>
                     </div>
+                    <Link
+                        href="/daftar"
+                        class="mt-2 flex items-center justify-center gap-2 rounded-2xl bg-brand p-3 text-sm font-semibold text-on-brand shadow-sm shadow-brand/30"
+                        @click="isMobileMenuOpen = false"
+                    >
+                        Daftar sebagai Petani
+                    </Link>
                 </div>
             </Transition>
         </header>

@@ -4,7 +4,7 @@ namespace Modules\Page\Services;
 
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
-use Modules\Page\Models\SiteSetting;
+use Modules\Page\Repositories\Contracts\SiteSettingRepositoryInterface;
 
 class SiteSettingService
 {
@@ -20,9 +20,11 @@ class SiteSettingService
         'admin_contact_email' => 'email',
     ];
 
+    public function __construct(private readonly SiteSettingRepositoryInterface $settings) {}
+
     public function all(): Collection
     {
-        return SiteSetting::orderBy('key')->get();
+        return $this->settings->allOrderedByKey();
     }
 
     /**
@@ -37,10 +39,7 @@ class SiteSettingService
                     continue;
                 }
 
-                SiteSetting::updateOrCreate(
-                    ['key' => $key],
-                    ['value' => $value, 'type' => self::SCHEMA[$key]],
-                );
+                $this->settings->upsert($key, $value, self::SCHEMA[$key]);
             }
         });
 

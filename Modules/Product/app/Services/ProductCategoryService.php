@@ -4,13 +4,19 @@ namespace Modules\Product\Services;
 
 use App\Services\BaseService;
 use Modules\Product\Repositories\Contracts\ProductCategoryRepositoryInterface;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 class ProductCategoryService extends BaseService
 {
-    public function __construct(ProductCategoryRepositoryInterface $repository)
+    public function __construct(private readonly ProductCategoryRepositoryInterface $categories)
     {
-        parent::__construct($repository);
+        parent::__construct($categories);
+    }
+
+    public function orderedList(): Collection
+    {
+        return $this->categories->orderedList();
     }
 
     public function delete(Model $model): bool

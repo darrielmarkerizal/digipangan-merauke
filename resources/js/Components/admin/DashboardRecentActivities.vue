@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { Icon, Badge } from "@/Components/ui";
+import { Icon } from "@/Components/ui";
+
 import { Clock, MessageSquare, Box } from "@lucide/vue";
 
 defineProps<{

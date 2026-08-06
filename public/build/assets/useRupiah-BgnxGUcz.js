@@ -1,0 +1,1 @@
+import{n as e,t}from"./format-C99lXGvO.js";function n(){return{formatRupiah:e,formatAngka:t}}export{n as t};

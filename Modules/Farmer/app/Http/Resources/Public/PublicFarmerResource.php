@@ -37,7 +37,7 @@ class PublicFarmerResource extends JsonResource
                 'name' => $commodity->name,
                 'slug' => $commodity->slug,
             ])->all()),
-            'products' => $this->whenLoaded('products', fn () => PublicProductResource::collection($this->products)),
+            'products' => $this->whenLoaded('products', fn () => PublicProductResource::collection($this->products)->resolve()),
             'seo' => [
                 'title' => $this->name.' — DigiPangan Merauke',
                 'description' => 'Profil petani '.$this->name

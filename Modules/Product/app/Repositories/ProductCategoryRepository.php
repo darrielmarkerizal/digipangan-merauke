@@ -3,6 +3,7 @@
 namespace Modules\Product\Repositories;
 
 use App\Repositories\BaseRepository;
+use Illuminate\Database\Eloquent\Collection;
 use Modules\Product\Models\ProductCategory;
 use Modules\Product\Repositories\Contracts\ProductCategoryRepositoryInterface;
 use Spatie\QueryBuilder\AllowedFilter;
@@ -34,5 +35,13 @@ class ProductCategoryRepository extends BaseRepository implements ProductCategor
     protected function defaultSort(): string
     {
         return 'name';
+    }
+
+    /**
+     * Categories ordered for public display (homepage, catalog filters).
+     */
+    public function orderedList(): Collection
+    {
+        return $this->model->newQuery()->orderBy('sort_order')->get();
     }
 }

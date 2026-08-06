@@ -79,7 +79,7 @@ const alt = computed(() =>
         />
         <div
           v-else
-          class="flex size-full items-center justify-center bg-muted/60 text-brand/40"
+          class="flex size-full items-center justify-center bg-brand-weak/30 text-brand/30"
           aria-hidden="true"
         >
           <Icon :icon="Sprout" :size="variant === 'spotlight' ? 56 : 36" />

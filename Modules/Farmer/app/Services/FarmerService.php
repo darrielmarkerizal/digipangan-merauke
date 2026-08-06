@@ -3,6 +3,7 @@
 namespace Modules\Farmer\Services;
 
 use App\Services\BaseService;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
@@ -10,9 +11,14 @@ use Modules\Farmer\Repositories\Contracts\FarmerRepositoryInterface;
 
 class FarmerService extends BaseService
 {
-    public function __construct(FarmerRepositoryInterface $repository)
+    public function __construct(private readonly FarmerRepositoryInterface $farmers)
     {
-        parent::__construct($repository);
+        parent::__construct($farmers);
+    }
+
+    public function availableForGroup(int $regionId): Collection
+    {
+        return $this->farmers->availableForGroup($regionId);
     }
 
     public function create(array $data): Model

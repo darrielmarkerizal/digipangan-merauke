@@ -5,9 +5,12 @@ namespace Modules\Product\Services;
 use Illuminate\Http\Request;
 use Modules\Product\Models\Product;
 use Modules\Product\Models\ProductInteraction;
+use Modules\Product\Repositories\Contracts\ProductInteractionRepositoryInterface;
 
 class ProductInteractionService
 {
+    public function __construct(private readonly ProductInteractionRepositoryInterface $interactions) {}
+
     /**
      * Capture request context synchronously, then record the interaction after
      * the response is sent so page latency is unaffected. Recording failures are
@@ -38,11 +41,11 @@ class ProductInteractionService
     {
         $visitorHash = $this->visitorHash($ip, $userAgent);
 
-        if ($type === ProductInteraction::TYPE_VIEW && $this->alreadyViewedToday($productId, $visitorHash)) {
+        if ($type === ProductInteraction::TYPE_VIEW && $this->interactions->existsViewToday($productId, $visitorHash)) {
             return;
         }
 
-        ProductInteraction::create([
+        $this->interactions->create([
             'product_id' => $productId,
             'region_id' => $regionId,
             'type' => $type,
@@ -50,16 +53,6 @@ class ProductInteractionService
             'referrer_host' => $this->referrerHost($referrer),
             'occurred_at' => now(),
         ]);
-    }
-
-    private function alreadyViewedToday(int $productId, string $visitorHash): bool
-    {
-        return ProductInteraction::query()
-            ->where('product_id', $productId)
-            ->where('type', ProductInteraction::TYPE_VIEW)
-            ->where('visitor_hash', $visitorHash)
-            ->whereDate('occurred_at', now()->toDateString())
-            ->exists();
     }
 
     /**

@@ -6,4 +6,5 @@ use App\Repositories\Contracts\BaseRepositoryInterface;
 
 interface FarmerGroupRepositoryInterface extends BaseRepositoryInterface
 {
+    public function countAll(): int;
 }

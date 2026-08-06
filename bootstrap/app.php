@@ -28,7 +28,9 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->statefulApi();
         $middleware->redirectGuestsTo('/login');
-        $middleware->redirectUsersTo('/admin/dashboard');
+        $middleware->redirectUsersTo(
+            fn (Request $request) => $request->user()?->hasRole('farmer') ? '/petani/dashboard' : '/admin/dashboard'
+        );
         $middleware->web(append: [
             HandleInertiaRequests::class,
         ]);
