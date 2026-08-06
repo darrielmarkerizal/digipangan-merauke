@@ -14,14 +14,15 @@ echo "Menarik pembaruan terbaru dari GitHub..."
 git pull origin main
 
 echo "Menginstal library PHP (Composer)..."
-$COMPOSER_BIN install --no-dev --optimize-autoloader
+$COMPOSER_BIN install --no-dev --optimize-autoloader --no-scripts
 
 echo "Menyalin aset frontend (build & images)..."
-# Menggunakan rsync agar lebih bersih
-rsync -av --delete public/build/ $DOC_ROOT/build/
+rm -rf $DOC_ROOT/build
+cp -R public/build $DOC_ROOT/build
 
 if [ -d "public/images" ]; then
-    rsync -av --delete public/images/ $DOC_ROOT/images/
+    rm -rf $DOC_ROOT/images
+    cp -R public/images $DOC_ROOT/images
 fi
 
 echo "Menjalankan migrasi database..."
