@@ -15,7 +15,7 @@ class UpdateProfileRequest extends BaseFormRequest
                 'sometimes',
                 'email',
                 'max:150',
-                Rule::unique('users', 'email')->ignore($this->user()->id)->whereNull('deleted_at'),
+                Rule::unique('users', 'email')->ignore($this->user()->id),
             ],
             'password' => ['sometimes', 'nullable', 'string', 'min:8', 'confirmed'],
             'avatar_uuid' => ['sometimes', 'nullable', 'string', 'uuid'],

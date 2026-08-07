@@ -15,7 +15,7 @@ class UpdateUserRequest extends BaseFormRequest
                 'sometimes',
                 'email',
                 'max:150',
-                Rule::unique('users', 'email')->ignore($this->route('user'))->whereNull('deleted_at'),
+                Rule::unique('users', 'email')->ignore($this->route('user')),
             ],
             'password' => ['sometimes', 'nullable', 'string', 'min:8', 'confirmed'],
             'is_active' => ['sometimes', 'boolean'],

@@ -11,7 +11,7 @@ class StoreUserRequest extends BaseFormRequest
     {
         return [
             'name' => ['required', 'string', 'max:100'],
-            'email' => ['required', 'email', 'max:150', Rule::unique('users', 'email')->whereNull('deleted_at')],
+            'email' => ['required', 'email', 'max:150', Rule::unique('users', 'email')],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'is_active' => ['sometimes', 'boolean'],
             'roles' => ['sometimes', 'array'],

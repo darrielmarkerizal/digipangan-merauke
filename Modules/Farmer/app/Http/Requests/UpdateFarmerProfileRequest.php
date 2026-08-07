@@ -22,6 +22,7 @@ class UpdateFarmerProfileRequest extends FormRequest
             'commodities' => ['nullable', 'array'],
             'commodities.*' => ['integer', 'exists:commodities,id'],
             'photo' => ['nullable', 'string'],
+            'remove_photo' => ['sometimes', 'boolean'],
         ];
     }
 

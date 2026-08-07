@@ -24,11 +24,12 @@ class FarmerService extends BaseService
     public function create(array $data): Model
     {
         $photo = Arr::pull($data, 'photo');
+        $removePhoto = (bool) Arr::pull($data, 'remove_photo', false);
         $commodities = Arr::pull($data, 'commodities');
 
-        return DB::transaction(function () use ($data, $photo, $commodities) {
+        return DB::transaction(function () use ($data, $photo, $removePhoto, $commodities) {
             $farmer = $this->repository->create($data);
-            $this->syncRelations($farmer, $photo, $commodities);
+            $this->syncRelations($farmer, $photo, $removePhoto, $commodities);
 
             return $this->repository->findOrFail($farmer->getKey());
         });
@@ -37,18 +38,23 @@ class FarmerService extends BaseService
     public function update(Model $model, array $data): Model
     {
         $photo = Arr::pull($data, 'photo');
+        $removePhoto = (bool) Arr::pull($data, 'remove_photo', false);
         $commodities = Arr::pull($data, 'commodities');
 
-        return DB::transaction(function () use ($model, $data, $photo, $commodities) {
+        return DB::transaction(function () use ($model, $data, $photo, $removePhoto, $commodities) {
             $farmer = $this->repository->update($model, $data);
-            $this->syncRelations($farmer, $photo, $commodities);
+            $this->syncRelations($farmer, $photo, $removePhoto, $commodities);
 
             return $this->repository->findOrFail($farmer->getKey());
         });
     }
 
-    private function syncRelations(Model $farmer, ?string $photo, ?array $commodities): void
+    private function syncRelations(Model $farmer, ?string $photo, bool $removePhoto, ?array $commodities): void
     {
+        if ($removePhoto && ! $photo) {
+            $farmer->clearMediaCollection('photo');
+        }
+
         if ($photo) {
             $farmer->addMediaFromTemporaryUpload($photo, 'photo');
         }

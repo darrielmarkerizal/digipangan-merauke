@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Modules\Product\Repositories\Contracts\ProductRepositoryInterface;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class ProductService extends BaseService
 {
@@ -59,7 +60,11 @@ class ProductService extends BaseService
     /**
      * Sync the `photos` collection. When $retainedIds is an array, existing
      * media not listed are removed; when null, existing media are kept.
-     * New temporary uploads in $newFolders are always appended.
+     * New temporary uploads in $newFolders are appended.
+     *
+     * On edit ($retainedIds is an array) the gallery order the client sent is
+     * persisted: retained media follow the given order, then new uploads —
+     * so promoting a retained photo to cover (position 0) actually sticks.
      */
     private function syncPhotos(Model $product, ?array $newFolders, ?array $retainedIds): void
     {
@@ -69,8 +74,20 @@ class ProductService extends BaseService
                 ->each(fn ($media) => $media->delete());
         }
 
+        $newMediaIds = [];
         foreach ($newFolders ?? [] as $folder) {
-            $product->addMediaFromTemporaryUpload($folder, 'photos');
+            $media = $product->addMediaFromTemporaryUpload($folder, 'photos');
+            if ($media) {
+                $newMediaIds[] = $media->id;
+            }
+        }
+
+        if (is_array($retainedIds)) {
+            $ordered = array_merge(array_map('intval', $retainedIds), $newMediaIds);
+
+            if ($ordered !== []) {
+                Media::setNewOrder($ordered);
+            }
         }
     }
 }

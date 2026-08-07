@@ -266,3 +266,55 @@ describe('validasi unggah media', function () {
         ])->assertRedirect('/login');
     });
 });
+
+describe('pengelolaan foto petani', function () {
+    beforeEach(function () {
+        Storage::fake('local');
+        Storage::fake('public');
+    });
+
+    it('menghapus foto profil saat remove_photo dikirim', function () {
+        $region = fssRegion();
+        $user = fssFarmerUser($region);
+        $farmer = $user->farmer;
+        $farmer->addMedia(UploadedFile::fake()->image('foto.jpg'))->toMediaCollection('photo');
+
+        expect($farmer->getMedia('photo'))->toHaveCount(1);
+
+        $this->actingAs($user)->put('/petani/dashboard/profil', [
+            'name' => $farmer->name,
+            'phone' => $farmer->phone,
+            'region_id' => $region->id,
+            'remove_photo' => true,
+        ])->assertRedirect('/petani/dashboard/profil');
+
+        expect($farmer->fresh()->getMedia('photo'))->toHaveCount(0);
+    });
+
+    it('mempertahankan urutan galeri produk saat diedit', function () {
+        $user = fssFarmerUser();
+        $product = Product::create([
+            'product_category_id' => ProductCategory::create(['name' => 'Sayur'])->id,
+            'unit_id' => Unit::create(['name' => 'Kilogram', 'symbol' => 'kg'])->id,
+            'farmer_id' => $user->farmer->id,
+            'name' => 'Produk Galeri',
+            'price' => 5000,
+            'is_active' => true,
+        ]);
+
+        $a = $product->addMedia(UploadedFile::fake()->image('a.jpg'))->toMediaCollection('photos');
+        $b = $product->addMedia(UploadedFile::fake()->image('b.jpg'))->toMediaCollection('photos');
+
+        expect($product->getMedia('photos')->pluck('id')->all())->toBe([$a->id, $b->id]);
+
+        $this->actingAs($user)->put("/petani/dashboard/produk/{$product->id}", [
+            'product_category_id' => $product->product_category_id,
+            'unit_id' => $product->unit_id,
+            'name' => $product->name,
+            'price' => 5000,
+            'retained_photos' => [$b->id, $a->id],
+        ])->assertRedirect('/petani/dashboard/produk');
+
+        expect($product->fresh()->getMedia('photos')->pluck('id')->all())->toBe([$b->id, $a->id]);
+    });
+});

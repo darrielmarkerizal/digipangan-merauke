@@ -27,6 +27,7 @@ const form = useForm({
         (props.initialData?.farmer_group_id || ""),
     commodities: props.initialData?.commodities?.map((c: any) => c.id) || [],
     photo: null as string | null,
+    remove_photo: false,
 });
 
 const isUploadingPhoto = ref(false);
@@ -91,10 +92,15 @@ const handlePhotoChange = async (event: Event) => {
             headers: { "Content-Type": "multipart/form-data" },
         });
         form.photo = res.data.folder;
+        form.remove_photo = false;
         photoPreviewUrl.value = URL.createObjectURL(file);
         toast.success("Foto profil berhasil diunggah.");
-    } catch (error) {
-        toast.error("Gagal mengunggah foto.");
+    } catch (error: any) {
+        toast.error("Gagal mengunggah foto.", {
+            description:
+                error.response?.data?.message ||
+                "Pastikan berkas berupa gambar (JPG/PNG/WEBP/GIF) maksimal 8 MB.",
+        });
     } finally {
         isUploadingPhoto.value = false;
     }
@@ -102,6 +108,7 @@ const handlePhotoChange = async (event: Event) => {
 
 const removePhoto = () => {
     form.photo = null;
+    form.remove_photo = true;
     photoPreviewUrl.value = "";
     if (fileInputRef.value) {
         fileInputRef.value.value = "";
@@ -119,6 +126,7 @@ const handleSubmit = () => {
                 ? null
                 : Number(data.land_area_ha),
         photo: data.photo || null,
+        remove_photo: data.remove_photo,
     }));
 
     form.submit("put", "/petani/dashboard/profil", {
