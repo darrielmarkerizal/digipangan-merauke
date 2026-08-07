@@ -4,6 +4,7 @@ namespace Modules\Media\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Modules\Media\Http\Requests\StoreMediaUploadRequest;
 use Modules\Media\Services\TemporaryMediaService;
 
 class MediaUploadController extends Controller
@@ -12,18 +13,14 @@ class MediaUploadController extends Controller
         private TemporaryMediaService $service
     ) {}
 
-    public function store(Request $request)
+    public function store(StoreMediaUploadRequest $request)
     {
-        if ($request->hasFile('file')) {
-            $temporaryFile = $this->service->handleUpload($request->file('file'));
+        $temporaryFile = $this->service->handleUpload($request->file('file'));
 
-            return response()->json([
-                'folder' => $temporaryFile->folder,
-                'filename' => $temporaryFile->filename,
-            ], 200);
-        }
-
-        return response()->json(['error' => 'No file uploaded'], 400);
+        return response()->json([
+            'folder' => $temporaryFile->folder,
+            'filename' => $temporaryFile->filename,
+        ], 200);
     }
 
     public function destroy(Request $request)

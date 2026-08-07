@@ -5,15 +5,19 @@ namespace Modules\Farmer\Http\Requests;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use Modules\Farmer\Models\FarmerGroup;
+use Modules\Farmer\Http\Requests\Concerns\ValidatesFarmerLocation;
 
 class StoreFarmerRegistrationRequest extends FormRequest
 {
+    use ValidatesFarmerLocation;
+
     public function rules(): array
     {
         return [
             'name' => ['required', 'string', 'max:120'],
-            'email' => ['required', 'email', 'max:150', Rule::unique('users', 'email')->whereNull('deleted_at')],
+            // Plain unique (incl. soft-deleted rows) to match the physical
+            // unique index on users.email; a partial index does not exist.
+            'email' => ['required', 'email', 'max:150', Rule::unique('users', 'email')],
             'phone' => ['required', 'string', 'max:20'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'region_id' => ['required', 'integer', 'exists:regions,id'],
@@ -30,16 +34,6 @@ class StoreFarmerRegistrationRequest extends FormRequest
 
     public function withValidator(Validator $validator): void
     {
-        $validator->after(function (Validator $validator) {
-            if (! $this->filled('farmer_group_id')) {
-                return;
-            }
-
-            $group = FarmerGroup::find($this->input('farmer_group_id'));
-
-            if ($group && (int) $group->region_id !== (int) $this->input('region_id')) {
-                $validator->errors()->add('farmer_group_id', 'Kelompok tani yang dipilih tidak berada di wilayah yang sama.');
-            }
-        });
+        $this->validateFarmerLocationConsistency($validator);
     }
 }

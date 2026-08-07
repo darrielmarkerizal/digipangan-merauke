@@ -104,7 +104,7 @@ describe('profil', function () {
         $user = makeUser();
         $this->actingAs($user);
 
-        $upload = $this->postJson(route('api.media.upload'), [
+        $upload = $this->postJson(route('media.upload'), [
             'file' => UploadedFile::fake()->image('avatar.jpg', 600, 600),
         ]);
 
@@ -135,7 +135,7 @@ describe('profil', function () {
         $this->actingAs($user);
 
         foreach (['satu.jpg', 'dua.jpg'] as $name) {
-            $upload = $this->postJson(route('api.media.upload'), [
+            $upload = $this->postJson(route('media.upload'), [
                 'file' => UploadedFile::fake()->image($name, 400, 400),
             ]);
 

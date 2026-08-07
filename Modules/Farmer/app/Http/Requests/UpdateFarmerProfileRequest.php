@@ -4,10 +4,12 @@ namespace Modules\Farmer\Http\Requests;
 
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
-use Modules\Farmer\Models\FarmerGroup;
+use Modules\Farmer\Http\Requests\Concerns\ValidatesFarmerLocation;
 
 class UpdateFarmerProfileRequest extends FormRequest
 {
+    use ValidatesFarmerLocation;
+
     public function rules(): array
     {
         return [
@@ -30,16 +32,6 @@ class UpdateFarmerProfileRequest extends FormRequest
 
     public function withValidator(Validator $validator): void
     {
-        $validator->after(function (Validator $validator) {
-            if (! $this->filled('farmer_group_id')) {
-                return;
-            }
-
-            $group = FarmerGroup::find($this->input('farmer_group_id'));
-
-            if ($group && (int) $group->region_id !== (int) $this->input('region_id')) {
-                $validator->errors()->add('farmer_group_id', 'Kelompok tani yang dipilih tidak berada di wilayah yang sama.');
-            }
-        });
+        $this->validateFarmerLocationConsistency($validator);
     }
 }

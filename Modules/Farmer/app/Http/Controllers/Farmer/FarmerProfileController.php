@@ -40,8 +40,13 @@ class FarmerProfileController extends Controller
     public function update(UpdateFarmerProfileRequest $request): RedirectResponse
     {
         $farmer = $this->currentFarmer();
+        $data = $request->validated();
 
-        $this->service->update($farmer, $request->validated());
+        $this->service->update($farmer, $data);
+
+        // Keep the linked account's display name in sync with the profile
+        // name — the topbar/avatar reads users.name, not farmers.name.
+        $request->user()->update(['name' => $data['name']]);
 
         return redirect()->route('farmer.dashboard.profile.edit')
             ->with('success', 'Profil berhasil diperbarui.');

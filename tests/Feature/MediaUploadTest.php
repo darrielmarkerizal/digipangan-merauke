@@ -12,7 +12,7 @@ beforeEach(function () {
 });
 
 it('menolak unggahan dari tamu dengan 401', function () {
-    $this->postJson(route('api.media.upload'), [
+    $this->postJson(route('media.upload'), [
         'file' => UploadedFile::fake()->image('avatar.jpg'),
     ])->assertStatus(401);
 });
@@ -22,7 +22,7 @@ it('can upload temporary media', function () {
 
     $file = UploadedFile::fake()->image('avatar.jpg');
 
-    $response = $this->postJson(route('api.media.upload'), [
+    $response = $this->postJson(route('media.upload'), [
         'file' => $file,
     ]);
 
@@ -47,13 +47,13 @@ it('can delete temporary media', function () {
 
     $file = UploadedFile::fake()->image('avatar.jpg');
 
-    $uploadResponse = $this->postJson(route('api.media.upload'), [
+    $uploadResponse = $this->postJson(route('media.upload'), [
         'file' => $file,
     ]);
 
     $folder = $uploadResponse->json('folder');
 
-    $deleteResponse = $this->deleteJson(route('api.media.delete'), [
+    $deleteResponse = $this->deleteJson(route('media.delete'), [
         'folder' => $folder,
     ]);
 
@@ -73,7 +73,7 @@ it('can attach temporary media to a model using the trait', function () {
 
     $file = UploadedFile::fake()->image('logo.png');
 
-    $uploadResponse = $this->postJson(route('api.media.upload'), [
+    $uploadResponse = $this->postJson(route('media.upload'), [
         'file' => $file,
     ]);
 

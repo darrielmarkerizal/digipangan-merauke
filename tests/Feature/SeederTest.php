@@ -26,15 +26,15 @@ describe('wilayah dan kampung', function () {
     it('mengisi jumlah kampung sesuai data per distrik', function () {
         $jumlah = Region::withCount('villages')->pluck('villages_count', 'name');
 
-        expect($jumlah['Muting'])->toBe(11)
+        expect($jumlah['Muting'])->toBe(12)
             ->and($jumlah['Ulilin'])->toBe(11)
             ->and($jumlah['Elikobel'])->toBe(12)
-            ->and(Village::count())->toBe(34);
+            ->and(Village::count())->toBe(35);
     });
 
-    it('mengisi luas seluruh distrik namun populasi hanya untuk Ulilin yang terverifikasi', function () {
+    it('mengisi luas dan populasi seluruh distrik dengan nilai Ulilin terverifikasi', function () {
         expect(Region::whereNotNull('area_km2')->count())->toBe(3)
-            ->and(Region::whereNotNull('population')->count())->toBe(1);
+            ->and(Region::whereNotNull('population')->count())->toBe(3);
 
         $ulilin = Region::where('name', 'Ulilin')->first();
 
@@ -145,7 +145,7 @@ it('aman dijalankan dua kali', function () {
     $this->seed(DatabaseSeeder::class);
 
     expect(Region::count())->toBe(3)
-        ->and(Village::count())->toBe(34)
+        ->and(Village::count())->toBe(35)
         ->and(Commodity::count())->toBe(18)
         ->and(Unit::count())->toBe(8)
         ->and(Partner::count())->toBe(2)

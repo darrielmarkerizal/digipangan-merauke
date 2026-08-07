@@ -131,7 +131,7 @@ describe('membuat dan mengubah pengguna', function () {
         Storage::fake('public');
         Storage::fake('local');
 
-        $upload = $this->postJson(route('api.media.upload'), [
+        $upload = $this->postJson(route('media.upload'), [
             'file' => UploadedFile::fake()->image('foto.jpg', 300, 300)
         ]);
 
