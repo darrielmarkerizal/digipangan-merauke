@@ -4,6 +4,7 @@ namespace Modules\Page\Services;
 
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
+use Modules\Page\Enums\SiteSettingType;
 use Modules\Page\Repositories\Contracts\SiteSettingRepositoryInterface;
 
 class SiteSettingService
@@ -13,11 +14,11 @@ class SiteSettingService
      * application (not user-created); unknown keys are ignored on write.
      */
     private const SCHEMA = [
-        'about_background' => 'richtext',
-        'about_purpose' => 'richtext',
-        'admin_contact_name' => 'text',
-        'admin_contact_phone' => 'phone',
-        'admin_contact_email' => 'email',
+        'about_background' => SiteSettingType::RichText,
+        'about_purpose' => SiteSettingType::RichText,
+        'admin_contact_name' => SiteSettingType::Text,
+        'admin_contact_phone' => SiteSettingType::Phone,
+        'admin_contact_email' => SiteSettingType::Email,
     ];
 
     public function __construct(private readonly SiteSettingRepositoryInterface $settings) {}

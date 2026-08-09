@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 use Modules\Farmer\Models\Commodity;
 use Modules\Farmer\Models\Farmer;
 use Modules\Farmer\Models\FarmerGroup;
+use Modules\Post\Enums\PostStatus;
 use Modules\Post\Models\Post;
 use Modules\Post\Models\PostCategory;
 use Modules\Product\Models\Product;
@@ -46,7 +47,7 @@ class DemoDataSeeder extends Seeder
                     'post_category_id' => $category->id,
                     'author_id' => $author->id,
                     'body' => $post['body'],
-                    'status' => Post::STATUS_PUBLISHED,
+                    'status' => PostStatus::Published,
                     'published_at' => now()->subDays(($index + 1) * 3),
                 ],
             );

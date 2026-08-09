@@ -3,8 +3,8 @@
 namespace Modules\Product\Services;
 
 use Illuminate\Http\Request;
+use Modules\Product\Enums\ProductInteractionType;
 use Modules\Product\Models\Product;
-use Modules\Product\Models\ProductInteraction;
 use Modules\Product\Repositories\Contracts\ProductInteractionRepositoryInterface;
 
 class ProductInteractionService
@@ -16,7 +16,7 @@ class ProductInteractionService
      * the response is sent so page latency is unaffected. Recording failures are
      * swallowed (reported) so they can never break the visitor-facing request.
      */
-    public function recordDeferred(Product $product, string $type, Request $request): void
+    public function recordDeferred(Product $product, ProductInteractionType $type, Request $request): void
     {
         $productId = $product->id;
         $regionId = $product->region_id;
@@ -37,11 +37,11 @@ class ProductInteractionService
      * Persist a single interaction. `view` events are deduplicated per visitor
      * per day; `contact` events are always recorded (each click is a signal).
      */
-    public function record(int $productId, int $regionId, string $type, ?string $ip, ?string $userAgent, ?string $referrer): void
+    public function record(int $productId, int $regionId, ProductInteractionType $type, ?string $ip, ?string $userAgent, ?string $referrer): void
     {
         $visitorHash = $this->visitorHash($ip, $userAgent);
 
-        if ($type === ProductInteraction::TYPE_VIEW && $this->interactions->existsViewToday($productId, $visitorHash)) {
+        if ($type === ProductInteractionType::View && $this->interactions->existsViewToday($productId, $visitorHash)) {
             return;
         }
 

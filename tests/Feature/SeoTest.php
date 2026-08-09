@@ -3,6 +3,7 @@
 use App\Models\User;
 use App\Support\PublicUrl;
 use Modules\Farmer\Models\Farmer;
+use Modules\Post\Enums\PostStatus;
 use Modules\Post\Models\Post;
 use Modules\Post\Models\PostCategory;
 use Modules\Product\Models\Product;
@@ -29,7 +30,7 @@ function seo_graph(): array
         'author_id' => $author->id,
         'title' => 'Panen Raya Cabai',
         'body' => 'Isi berita panen raya.',
-        'status' => Post::STATUS_PUBLISHED,
+        'status' => PostStatus::Published,
         'published_at' => now(),
     ]);
 
@@ -55,7 +56,7 @@ describe('sitemap.xml', function () {
             'author_id' => $post->author_id,
             'title' => 'Draf Belum Terbit',
             'body' => 'x',
-            'status' => Post::STATUS_DRAFT,
+            'status' => PostStatus::Draft,
         ]);
 
         $response = $this->get('/sitemap.xml')->assertOk();

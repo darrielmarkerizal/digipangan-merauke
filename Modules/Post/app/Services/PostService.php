@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Modules\Post\Models\Post;
+use Modules\Post\Enums\PostStatus;
 use Modules\Post\Repositories\Contracts\PostRepositoryInterface;
 
 class PostService extends BaseService
@@ -52,7 +52,7 @@ class PostService extends BaseService
 
     private function applyPublishState(array $data): array
     {
-        if (($data['status'] ?? null) === Post::STATUS_PUBLISHED && empty($data['published_at'])) {
+        if (($data['status'] ?? null) === PostStatus::Published->value && empty($data['published_at'])) {
             $data['published_at'] = now();
         }
 

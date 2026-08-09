@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection as SupportCollection;
+use Modules\Product\Enums\ProductInteractionType;
 use Modules\Product\Models\Product;
-use Modules\Product\Models\ProductInteraction;
 use Modules\Product\Repositories\Contracts\ProductRepositoryInterface;
 use Spatie\QueryBuilder\AllowedFilter;
 
@@ -175,21 +175,21 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
     public function countContactedActive(): int
     {
         return $this->visibilityScope($this->model->newQuery())
-            ->whereHas('interactions', fn (Builder $query) => $query->where('type', ProductInteraction::TYPE_CONTACT))
+            ->whereHas('interactions', fn (Builder $query) => $query->where('type', ProductInteractionType::Contact))
             ->count();
     }
 
     public function countNeverContactedActive(): int
     {
         return $this->visibilityScope($this->model->newQuery())
-            ->whereDoesntHave('interactions', fn (Builder $query) => $query->where('type', ProductInteraction::TYPE_CONTACT))
+            ->whereDoesntHave('interactions', fn (Builder $query) => $query->where('type', ProductInteractionType::Contact))
             ->count();
     }
 
     public function paginateNeverContacted(int $perPage): LengthAwarePaginator
     {
         return $this->visibilityScope($this->model->newQuery())
-            ->whereDoesntHave('interactions', fn (Builder $query) => $query->where('type', ProductInteraction::TYPE_CONTACT))
+            ->whereDoesntHave('interactions', fn (Builder $query) => $query->where('type', ProductInteractionType::Contact))
             ->with('region')
             ->orderByDesc('created_at')
             ->paginate($perPage);
@@ -229,7 +229,7 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
     {
         return $this->visibilityScope($this->model->newQuery())
             ->with(['region:id,name'])
-            ->withCount(['interactions as contact_count' => fn (Builder $query) => $query->where('type', ProductInteraction::TYPE_CONTACT)])
+            ->withCount(['interactions as contact_count' => fn (Builder $query) => $query->where('type', ProductInteractionType::Contact)])
             ->orderByDesc('contact_count')
             ->take($limit)
             ->get();

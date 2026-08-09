@@ -4,7 +4,7 @@ namespace Modules\Post\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use Modules\Post\Models\Post;
+use Modules\Post\Enums\PostStatus;
 
 class UpdatePostRequest extends FormRequest
 {
@@ -14,7 +14,7 @@ class UpdatePostRequest extends FormRequest
             'post_category_id' => ['required', 'integer', 'exists:post_categories,id'],
             'title' => ['required', 'string', 'max:200'],
             'body' => ['required', 'string'],
-            'status' => ['nullable', Rule::in([Post::STATUS_DRAFT, Post::STATUS_PUBLISHED])],
+            'status' => ['nullable', Rule::enum(PostStatus::class)],
             'published_at' => ['nullable', 'date'],
             'cover' => ['nullable', 'string'],
         ];

@@ -4,6 +4,7 @@ use Illuminate\Database\QueryException;
 use Modules\Farmer\Models\Commodity;
 use Modules\Farmer\Models\Farmer;
 use Modules\Farmer\Models\FarmerGroup;
+use Modules\Product\Enums\ProductInteractionType;
 use Modules\Product\Models\Product;
 use Modules\Product\Models\ProductCategory;
 use Modules\Product\Models\ProductInteraction;
@@ -142,7 +143,7 @@ describe('integritas referensial', function () {
         ProductInteraction::create([
             'product_id' => $product->id,
             'region_id' => $product->region_id,
-            'type' => ProductInteraction::TYPE_CONTACT,
+            'type' => ProductInteractionType::Contact,
             'occurred_at' => now(),
         ]);
 

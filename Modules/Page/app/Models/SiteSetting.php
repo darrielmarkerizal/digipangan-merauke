@@ -4,6 +4,7 @@ namespace Modules\Page\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
+use Modules\Page\Enums\SiteSettingType;
 use OwenIt\Auditing\Auditable;
 use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
 
@@ -11,6 +12,13 @@ use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
 class SiteSetting extends Model implements AuditableContract
 {
     use Auditable;
+
+    protected function casts(): array
+    {
+        return [
+            'type' => SiteSettingType::class,
+        ];
+    }
 
     public function getRouteKeyName(): string
     {

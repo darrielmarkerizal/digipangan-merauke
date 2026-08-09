@@ -7,6 +7,7 @@ use Modules\Farmer\Repositories\Contracts\FarmerGroupRepositoryInterface;
 use Modules\Farmer\Repositories\Contracts\FarmerRepositoryInterface;
 use Modules\Page\Repositories\Contracts\FaqRepositoryInterface;
 use Modules\Post\Repositories\Contracts\PostRepositoryInterface;
+use Modules\Product\Enums\ProductInteractionType;
 use Modules\Product\Models\Product;
 use Modules\Product\Models\ProductInteraction;
 use Modules\Product\Repositories\Contracts\ProductInteractionRepositoryInterface;
@@ -30,7 +31,7 @@ class DashboardService
         return [
             'active_products' => $this->products->countActive(),
             'farmers_and_groups' => $this->farmers->countActive() + $this->farmerGroups->countAll(),
-            'wa_clicks' => $this->interactions->countByType(ProductInteraction::TYPE_CONTACT),
+            'wa_clicks' => $this->interactions->countByType(ProductInteractionType::Contact),
             'integrated_regions' => $this->regions->countActive(),
             'total_posts' => $this->posts->countPublished(),
             'active_faqs' => $this->faqs->countActive(),
@@ -58,7 +59,7 @@ class DashboardService
 
     public function getTrendData(): array
     {
-        $counts = $this->interactions->monthlyCountsByType(ProductInteraction::TYPE_CONTACT, $this->windowStart());
+        $counts = $this->interactions->monthlyCountsByType(ProductInteractionType::Contact, $this->windowStart());
 
         $trendData = [];
 

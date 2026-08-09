@@ -7,6 +7,7 @@ use Modules\Farmer\Models\FarmerGroup;
 use Modules\Page\Models\Faq;
 use Modules\Page\Models\Partner;
 use Modules\Page\Models\SiteSetting;
+use Modules\Post\Enums\PostStatus;
 use Modules\Post\Models\Post;
 use Modules\Post\Models\PostCategory;
 use Modules\Product\Models\Product;
@@ -134,7 +135,7 @@ describe('data contoh (demo)', function () {
     });
 
     it('menambah berita contoh yang berstatus terbit', function () {
-        expect(Post::where('status', Post::STATUS_PUBLISHED)->count())->toBeGreaterThanOrEqual(4);
+        expect(Post::where('status', PostStatus::Published)->count())->toBeGreaterThanOrEqual(4);
     });
 });
 

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Modules\Post\Enums\PostStatus;
 use OwenIt\Auditing\Auditable;
 use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
 use Spatie\Image\Enums\Fit;
@@ -30,13 +31,10 @@ class Post extends Model implements AuditableContract, HasMedia
 {
     use Auditable, HasSlug, InteractsWithMedia, TemporaryMediaTrait, SoftDeletes;
 
-    public const STATUS_DRAFT = 'draft';
-
-    public const STATUS_PUBLISHED = 'published';
-
     protected function casts(): array
     {
         return [
+            'status' => PostStatus::class,
             'published_at' => 'datetime',
         ];
     }
@@ -66,7 +64,7 @@ class Post extends Model implements AuditableContract, HasMedia
 
     public function scopePublished(Builder $query): Builder
     {
-        return $query->where('status', self::STATUS_PUBLISHED)
+        return $query->where('status', PostStatus::Published)
             ->whereNotNull('published_at')
             ->where('published_at', '<=', now());
     }

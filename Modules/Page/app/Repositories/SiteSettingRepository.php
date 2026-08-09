@@ -4,6 +4,7 @@ namespace Modules\Page\Repositories;
 
 use App\Repositories\BaseRepository;
 use Illuminate\Database\Eloquent\Collection;
+use Modules\Page\Enums\SiteSettingType;
 use Modules\Page\Models\SiteSetting;
 use Modules\Page\Repositories\Contracts\SiteSettingRepositoryInterface;
 
@@ -24,7 +25,7 @@ class SiteSettingRepository extends BaseRepository implements SiteSettingReposit
         return $this->model->newQuery()->orderBy('key')->get();
     }
 
-    public function upsert(string $key, string $value, string $type): void
+    public function upsert(string $key, string $value, SiteSettingType $type): void
     {
         $this->model->newQuery()->updateOrCreate(
             ['key' => $key],

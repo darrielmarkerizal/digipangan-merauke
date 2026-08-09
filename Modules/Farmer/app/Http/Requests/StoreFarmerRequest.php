@@ -2,10 +2,14 @@
 
 namespace Modules\Farmer\Http\Requests;
 
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Modules\Farmer\Http\Requests\Concerns\ValidatesFarmerLocation;
 
 class StoreFarmerRequest extends FormRequest
 {
+    use ValidatesFarmerLocation;
+
     public function rules(): array
     {
         return [
@@ -25,5 +29,10 @@ class StoreFarmerRequest extends FormRequest
     public function authorize(): bool
     {
         return true;
+    }
+
+    public function withValidator(Validator $validator): void
+    {
+        $this->validateFarmerLocationConsistency($validator);
     }
 }

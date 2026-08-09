@@ -6,6 +6,7 @@ use App\Repositories\BaseRepository;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Collection as SupportCollection;
+use Modules\Product\Enums\ProductInteractionType;
 use Modules\Product\Models\ProductInteraction;
 use Modules\Product\Repositories\Contracts\ProductInteractionRepositoryInterface;
 
@@ -20,13 +21,13 @@ class ProductInteractionRepository extends BaseRepository implements ProductInte
     {
         return $this->model->newQuery()
             ->where('product_id', $productId)
-            ->where('type', ProductInteraction::TYPE_VIEW)
+            ->where('type', ProductInteractionType::View)
             ->where('visitor_hash', $visitorHash)
             ->whereDate('occurred_at', now()->toDateString())
             ->exists();
     }
 
-    public function countByType(string $type): int
+    public function countByType(ProductInteractionType $type): int
     {
         return $this->model->newQuery()->where('type', $type)->count();
     }
@@ -35,7 +36,7 @@ class ProductInteractionRepository extends BaseRepository implements ProductInte
      * Interaction counts of a given type per calendar month, keyed 'Y-m',
      * for monthly trend charts.
      */
-    public function monthlyCountsByType(string $type, Carbon $since): SupportCollection
+    public function monthlyCountsByType(ProductInteractionType $type, Carbon $since): SupportCollection
     {
         return $this->model->newQuery()
             ->where('type', $type)
@@ -53,7 +54,7 @@ class ProductInteractionRepository extends BaseRepository implements ProductInte
     {
         return $this->model->newQuery()
             ->with(['product:id,name'])
-            ->where('type', ProductInteraction::TYPE_CONTACT)
+            ->where('type', ProductInteractionType::Contact)
             ->orderByDesc('occurred_at')
             ->take($limit)
             ->get();

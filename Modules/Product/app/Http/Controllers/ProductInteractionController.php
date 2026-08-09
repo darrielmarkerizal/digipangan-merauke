@@ -6,8 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Modules\Product\Enums\ProductInteractionType;
 use Modules\Product\Models\Product;
-use Modules\Product\Models\ProductInteraction;
 use Modules\Product\Services\ProductInteractionService;
 
 class ProductInteractionController extends Controller
@@ -18,15 +18,15 @@ class ProductInteractionController extends Controller
 
     public function view(Product $product, Request $request): JsonResponse
     {
-        return $this->track($product, ProductInteraction::TYPE_VIEW, $request);
+        return $this->track($product, ProductInteractionType::View, $request);
     }
 
     public function contact(Product $product, Request $request): JsonResponse
     {
-        return $this->track($product, ProductInteraction::TYPE_CONTACT, $request);
+        return $this->track($product, ProductInteractionType::Contact, $request);
     }
 
-    private function track(Product $product, string $type, Request $request): JsonResponse
+    private function track(Product $product, ProductInteractionType $type, Request $request): JsonResponse
     {
         abort_unless($product->is_active, 404);
 

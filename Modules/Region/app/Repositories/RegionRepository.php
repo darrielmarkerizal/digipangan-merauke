@@ -107,7 +107,7 @@ class RegionRepository extends BaseRepository implements RegionRepositoryInterfa
         return $this->model->newQuery()
             ->leftJoin('product_interactions as pi', function (\Illuminate\Database\Query\JoinClause $join) {
                 $join->on('pi.region_id', '=', 'regions.id')
-                    ->where('pi.type', '=', \Modules\Product\Models\ProductInteraction::TYPE_CONTACT);
+                    ->where('pi.type', '=', \Modules\Product\Enums\ProductInteractionType::Contact);
             })
             ->groupBy('regions.id', 'regions.name')
             ->orderBy('regions.name')

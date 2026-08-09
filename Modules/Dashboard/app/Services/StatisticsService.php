@@ -7,7 +7,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Modules\Farmer\Repositories\Contracts\FarmerRepositoryInterface;
-use Modules\Product\Models\ProductInteraction;
+use Modules\Product\Enums\ProductInteractionType;
 use Modules\Product\Repositories\Contracts\ProductInteractionRepositoryInterface;
 use Modules\Product\Repositories\Contracts\ProductRepositoryInterface;
 use Modules\Region\Repositories\Contracts\RegionRepositoryInterface;
@@ -24,8 +24,8 @@ class StatisticsService
 
     public function summary(): array
     {
-        $viewsTotal = $this->interactions->countByType(ProductInteraction::TYPE_VIEW);
-        $contactsTotal = $this->interactions->countByType(ProductInteraction::TYPE_CONTACT);
+        $viewsTotal = $this->interactions->countByType(ProductInteractionType::View);
+        $contactsTotal = $this->interactions->countByType(ProductInteractionType::Contact);
 
         return [
             // M-01 / M-02
@@ -57,7 +57,7 @@ class StatisticsService
 
     private function monthlyContacts(): array
     {
-        $counts = $this->interactions->monthlyCountsByType(ProductInteraction::TYPE_CONTACT, $this->windowStart());
+        $counts = $this->interactions->monthlyCountsByType(ProductInteractionType::Contact, $this->windowStart());
 
         return $this->zeroFilledSeries($counts);
     }

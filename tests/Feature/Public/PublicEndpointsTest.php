@@ -5,6 +5,7 @@ use Modules\Farmer\Models\Commodity;
 use Modules\Farmer\Models\Farmer;
 use Modules\Farmer\Models\FarmerGroup;
 use Modules\Page\Database\Seeders\PageDatabaseSeeder;
+use Modules\Post\Enums\PostStatus;
 use Modules\Post\Models\Post;
 use Modules\Post\Models\PostCategory;
 use Modules\Product\Models\Product;
@@ -109,7 +110,7 @@ describe('petani publik', function () {
 });
 
 describe('berita publik', function () {
-    function published_post(string $title, string $status = Post::STATUS_PUBLISHED): Post
+    function published_post(string $title, PostStatus $status = PostStatus::Published): Post
     {
         $author = User::factory()->create(['is_active' => true]);
 
@@ -119,13 +120,13 @@ describe('berita publik', function () {
             'title' => $title,
             'body' => 'Isi berita.',
             'status' => $status,
-            'published_at' => $status === Post::STATUS_PUBLISHED ? now() : null,
+            'published_at' => $status === PostStatus::Published ? now() : null,
         ]);
     }
 
     it('hanya menampilkan berita terbit', function () {
         published_post('Terbit');
-        published_post('Draf', Post::STATUS_DRAFT);
+        published_post('Draf', PostStatus::Draft);
 
         $response = $this->getJson(route('api.public.post.index'))->assertOk();
 
@@ -135,7 +136,7 @@ describe('berita publik', function () {
 
     it('menampilkan detail berita terbit dan menolak draf dengan 404', function () {
         $published = published_post('Panen Raya');
-        $draft = published_post('Belum Terbit', Post::STATUS_DRAFT);
+        $draft = published_post('Belum Terbit', PostStatus::Draft);
 
         $this->getJson(route('api.public.post.show', $published->slug))
             ->assertOk()

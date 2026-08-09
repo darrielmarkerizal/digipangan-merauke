@@ -5,6 +5,7 @@ namespace Modules\Product\Models;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Modules\Product\Enums\ProductInteractionType;
 use Modules\Region\Models\Region;
 
 #[Fillable([
@@ -17,15 +18,12 @@ use Modules\Region\Models\Region;
 ])]
 class ProductInteraction extends Model
 {
-    public const TYPE_VIEW = 'view';
-
-    public const TYPE_CONTACT = 'contact';
-
     public $timestamps = false;
 
     protected function casts(): array
     {
         return [
+            'type' => ProductInteractionType::class,
             'occurred_at' => 'datetime',
         ];
     }

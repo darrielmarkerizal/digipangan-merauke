@@ -18,11 +18,11 @@ class FarmerResource extends JsonResource
             'phone' => $this->phone,
             'land_area_ha' => $this->land_area_ha,
             'is_active' => $this->is_active,
-            'region' => $this->whenLoaded('region', fn () => [
+            'region' => $this->whenLoaded('region', fn () => $this->region ? [
                 'id' => $this->region->id,
                 'name' => $this->region->name,
                 'slug' => $this->region->slug,
-            ]),
+            ] : null),
             'village' => $this->whenLoaded('village', fn () => $this->village ? [
                 'id' => $this->village->id,
                 'name' => $this->village->name,

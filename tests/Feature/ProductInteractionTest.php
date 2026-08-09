@@ -1,6 +1,7 @@
 <?php
 
 use Modules\Farmer\Models\Farmer;
+use Modules\Product\Enums\ProductInteractionType;
 use Modules\Product\Models\Product;
 use Modules\Product\Models\ProductCategory;
 use Modules\Product\Models\ProductInteraction;
@@ -36,8 +37,8 @@ describe('ProductInteractionService', function () {
         $product = make_tracked_product();
         $service = app(ProductInteractionService::class);
 
-        $service->record($product->id, $product->region_id, 'view', '1.2.3.4', 'UA-Test', 'https://google.com/cari');
-        $service->record($product->id, $product->region_id, 'view', '1.2.3.4', 'UA-Test', null);
+        $service->record($product->id, $product->region_id, ProductInteractionType::View, '1.2.3.4', 'UA-Test', 'https://google.com/cari');
+        $service->record($product->id, $product->region_id, ProductInteractionType::View, '1.2.3.4', 'UA-Test', null);
 
         expect(ProductInteraction::where('type', 'view')->count())->toBe(1);
     });
@@ -46,8 +47,8 @@ describe('ProductInteractionService', function () {
         $product = make_tracked_product();
         $service = app(ProductInteractionService::class);
 
-        $service->record($product->id, $product->region_id, 'contact', '1.2.3.4', 'UA-Test', null);
-        $service->record($product->id, $product->region_id, 'contact', '1.2.3.4', 'UA-Test', null);
+        $service->record($product->id, $product->region_id, ProductInteractionType::Contact, '1.2.3.4', 'UA-Test', null);
+        $service->record($product->id, $product->region_id, ProductInteractionType::Contact, '1.2.3.4', 'UA-Test', null);
 
         expect(ProductInteraction::where('type', 'contact')->count())->toBe(2);
     });
@@ -56,7 +57,7 @@ describe('ProductInteractionService', function () {
         $product = make_tracked_product();
 
         app(ProductInteractionService::class)
-            ->record($product->id, $product->region_id, 'view', '9.9.9.9', 'UA-Test', 'https://facebook.com/x?y=1');
+            ->record($product->id, $product->region_id, ProductInteractionType::View, '9.9.9.9', 'UA-Test', 'https://facebook.com/x?y=1');
 
         $row = ProductInteraction::first();
 
@@ -70,8 +71,8 @@ describe('ProductInteractionService', function () {
         $product = make_tracked_product();
         $service = app(ProductInteractionService::class);
 
-        $service->record($product->id, $product->region_id, 'view', '1.1.1.1', 'UA-A', null);
-        $service->record($product->id, $product->region_id, 'view', '2.2.2.2', 'UA-B', null);
+        $service->record($product->id, $product->region_id, ProductInteractionType::View, '1.1.1.1', 'UA-A', null);
+        $service->record($product->id, $product->region_id, ProductInteractionType::View, '2.2.2.2', 'UA-B', null);
 
         expect(ProductInteraction::where('type', 'view')->count())->toBe(2);
     });
