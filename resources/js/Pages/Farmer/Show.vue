@@ -117,7 +117,7 @@ const waLink = computed(() => {
                         class="flex flex-col gap-5 sm:flex-row sm:items-end sm:gap-6"
                     >
                         <div
-                            class="-mt-14 size-28 shrink-0 overflow-hidden rounded-3xl border-4 border-white bg-brand-weak/40 shadow-lg sm:-mt-16 sm:size-32"
+                            class="relative z-10 -mt-14 size-28 shrink-0 overflow-hidden rounded-3xl border-4 border-white bg-brand-weak/40 shadow-lg sm:-mt-16 sm:size-32"
                         >
                             <img
                                 v-if="farmer.photo"

@@ -104,6 +104,23 @@ describe('pendaftaran mandiri petani', function () {
         expect(Farmer::where('name', 'Tani Mandiri')->first()->farmer_group_id)->toBeNull();
     });
 
+    it('menormalisasi nomor telepon dengan awalan 62', function () {
+        $region = fssRegion();
+
+        $this->post('/daftar', [
+            'name' => 'Petani 62',
+            'email' => 'petani62@contoh.test',
+            'phone' => '6281234567890',
+            'password' => 'rahasia123',
+            'password_confirmation' => 'rahasia123',
+            'region_id' => $region->id,
+        ])->assertRedirect('/petani/dashboard');
+
+        $farmer = Farmer::where('name', 'Petani 62')->first();
+        expect($farmer)->not->toBeNull()
+            ->and($farmer->phone)->toBe('6281234567890');
+    });
+
     it('menolak kelompok tani dari wilayah lain', function () {
         $region = fssRegion();
         $otherRegion = fssRegion();

@@ -24,6 +24,27 @@ const form = useForm({
 });
 
 const showPassword = ref(false);
+const showPasswordConfirmation = ref(false);
+const phoneLocal = ref("");
+
+const handlePhoneInput = (e: Event) => {
+    const target = e.target as HTMLInputElement;
+    let val = target.value.replace(/\D/g, "");
+
+    if (val.startsWith("62")) {
+        val = val.slice(2);
+    }
+    while (val.startsWith("0")) {
+        val = val.slice(1);
+    }
+    if (val.length > 13) {
+        val = val.slice(0, 13);
+    }
+
+    phoneLocal.value = val;
+    target.value = val;
+    form.phone = val ? `62${val}` : "";
+};
 
 const filteredVillages = computed(() => {
     if (!form.region_id) return [];
@@ -88,12 +109,26 @@ const submit = () => {
             </Field>
 
             <Field label="No. WhatsApp / Telepon" :error="form.errors.phone" required>
-                <Input
-                    v-model="form.phone"
-                    placeholder="Contoh: 081234567890"
-                    autocomplete="tel"
-                    :disabled="form.processing"
-                />
+                <div
+                    class="flex min-h-11 w-full rounded-control border border-border bg-card overflow-hidden transition-all duration-150 focus-within:border-brand focus-within:ring-2 focus-within:ring-brand/20"
+                    :class="{ 'border-danger': Boolean(form.errors.phone) }"
+                >
+                    <div
+                        class="flex items-center border-r border-border bg-muted/40 px-3 text-sm font-semibold text-fg-muted select-none"
+                    >
+                        <span>+62</span>
+                    </div>
+                    <input
+                        :value="phoneLocal"
+                        type="tel"
+                        inputmode="numeric"
+                        placeholder="81234567890"
+                        autocomplete="tel-national"
+                        :disabled="form.processing"
+                        class="w-full bg-transparent px-3 text-base text-fg placeholder:text-fg-muted focus:outline-hidden disabled:opacity-60"
+                        @input="handlePhoneInput"
+                    />
+                </div>
             </Field>
         </div>
 
@@ -134,13 +169,24 @@ const submit = () => {
                 :error="form.errors.password_confirmation"
                 required
             >
-                <Input
-                    v-model="form.password_confirmation"
-                    :type="showPassword ? 'text' : 'password'"
-                    placeholder="Ulangi kata sandi"
-                    autocomplete="new-password"
-                    :disabled="form.processing"
-                />
+                <div class="relative">
+                    <Input
+                        v-model="form.password_confirmation"
+                        :type="showPasswordConfirmation ? 'text' : 'password'"
+                        placeholder="Ulangi kata sandi"
+                        autocomplete="new-password"
+                        :disabled="form.processing"
+                        class="pr-11"
+                    />
+                    <button
+                        type="button"
+                        aria-label="Tampilkan konfirmasi kata sandi"
+                        class="absolute right-3 top-1/2 -translate-y-1/2 rounded-md p-1 text-fg-muted transition-colors hover:text-fg"
+                        @click="showPasswordConfirmation = !showPasswordConfirmation"
+                    >
+                        <Icon :icon="showPasswordConfirmation ? EyeOff : Eye" :size="18" />
+                    </button>
+                </div>
             </Field>
         </div>
 

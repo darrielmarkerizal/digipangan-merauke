@@ -10,6 +10,8 @@ use Modules\Farmer\Models\Farmer;
 use Modules\Farmer\Repositories\Contracts\FarmerRepositoryInterface;
 use Modules\User\Repositories\Contracts\UserRepositoryInterface;
 
+use Spatie\Permission\Models\Role;
+
 class FarmerRegistrationService
 {
     public function __construct(
@@ -27,7 +29,16 @@ class FarmerRegistrationService
                 'password' => Hash::make($data['password']),
                 'is_active' => true,
             ]);
+
+            Role::firstOrCreate(['name' => 'farmer', 'guard_name' => 'web']);
             $user->assignRole('farmer');
+
+            $phone = preg_replace('/\D/', '', (string) ($data['phone'] ?? ''));
+            if (str_starts_with($phone, '0')) {
+                $phone = '62' . substr($phone, 1);
+            } elseif (!str_starts_with($phone, '62') && !empty($phone)) {
+                $phone = '62' . $phone;
+            }
 
             $farmer = $this->farmers->create([
                 'user_id' => $user->id,
@@ -35,7 +46,7 @@ class FarmerRegistrationService
                 'village_id' => $data['village_id'] ?? null,
                 'farmer_group_id' => $data['farmer_group_id'] ?? null,
                 'name' => $data['name'],
-                'phone' => $data['phone'],
+                'phone' => $phone ?: $data['phone'],
                 'land_area_ha' => $data['land_area_ha'] ?? null,
                 'is_active' => true,
             ]);
