@@ -40,6 +40,7 @@ defineProps<{
                     v-for="region in regions"
                     :key="region.slug"
                     :region="region"
+                    layout="vertical"
                 />
             </div>
 
