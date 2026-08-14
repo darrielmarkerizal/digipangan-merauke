@@ -65,7 +65,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
         return '-created_at';
     }
 
-    protected function promoteSearchParameter(): void
+    protected function promoteSearchParameter(): \Illuminate\Http\Request
     {
         $request = request();
 
@@ -76,15 +76,24 @@ abstract class BaseRepository implements BaseRepositoryInterface
             $filter['search'] = $searchVal;
         }
 
-        if ($request->filled('kategori') && ! array_key_exists('category', $filter)) {
+        $allowedFilterNames = array_map(function ($allowedFilter) {
+            return $allowedFilter instanceof AllowedFilter 
+                ? $allowedFilter->getName() 
+                : $allowedFilter;
+        }, $this->allowedFilters());
+
+        if ($request->filled('kategori') && ! array_key_exists('category', $filter) && in_array('category', $allowedFilterNames, true)) {
             $filter['category'] = $request->input('kategori');
         }
 
-        if ($request->filled('region') && ! array_key_exists('region', $filter)) {
+        if ($request->filled('region') && ! array_key_exists('region', $filter) && in_array('region', $allowedFilterNames, true)) {
             $filter['region'] = $request->input('region');
         }
 
-        $request->merge(['filter' => $filter]);
+        $customRequest = $request->duplicate();
+        $customRequest->merge(['filter' => $filter]);
+
+        return $customRequest;
     }
 
     public function filtered(): QueryBuilder
@@ -99,9 +108,9 @@ abstract class BaseRepository implements BaseRepositoryInterface
 
     protected function buildFiltered(Builder $base): QueryBuilder
     {
-        $this->promoteSearchParameter();
+        $customRequest = $this->promoteSearchParameter();
 
-        return QueryBuilder::for($base)
+        return QueryBuilder::for($base, $customRequest)
             ->allowedFilters(...$this->resolvedFilters())
             ->allowedSorts(...$this->allowedSorts())
             ->allowedIncludes(...$this->allowedIncludes())
