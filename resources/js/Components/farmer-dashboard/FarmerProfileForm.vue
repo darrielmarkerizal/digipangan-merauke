@@ -141,7 +141,7 @@ const handleSubmit = () => {
 </script>
 
 <template>
-    <form @submit.prevent="handleSubmit" class="space-y-6">
+    <form @submit.prevent="handleSubmit" novalidate class="space-y-6">
         <div class="flex items-center justify-end gap-2">
             <Button
                 type="submit"
@@ -191,7 +191,7 @@ const handleSubmit = () => {
 
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                         <Field label="Distrik / Kawasan" :error="form.errors.region_id" required>
-                            <Select v-model="form.region_id" required>
+                            <Select v-model="form.region_id">
                                 <option value="">Pilih Distrik...</option>
                                 <option v-for="r in regions" :key="r.id" :value="r.id">
                                     {{ r.name }}

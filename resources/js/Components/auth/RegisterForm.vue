@@ -77,7 +77,7 @@ const submit = () => {
 </script>
 
 <template>
-    <form @submit.prevent="submit" class="space-y-5">
+    <form @submit.prevent="submit" novalidate class="space-y-5">
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Field label="Nama Lengkap" :error="form.errors.name" required>
                 <Input
@@ -160,7 +160,7 @@ const submit = () => {
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Field label="Distrik / Kawasan" :error="form.errors.region_id" required>
-                <Select v-model="form.region_id" required :disabled="form.processing">
+                <Select v-model="form.region_id" :disabled="form.processing">
                     <option value="">Pilih Distrik...</option>
                     <option v-for="r in regions" :key="r.id" :value="r.id">
                         {{ r.name }}

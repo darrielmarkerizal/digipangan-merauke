@@ -27,9 +27,26 @@ class StoreFarmerRegistrationRequest extends FormRequest
         ];
     }
 
-    public function authorize(): bool
+    public function messages(): array
     {
-        return true;
+        return [
+            'name.required' => 'Nama lengkap wajib diisi.',
+            'name.max' => 'Nama lengkap maksimal 120 karakter.',
+            'email.required' => 'Alamat email wajib diisi.',
+            'email.email' => 'Format alamat email tidak valid.',
+            'email.unique' => 'Alamat email ini sudah terdaftar. Silakan gunakan email lain atau masuk ke akun Anda.',
+            'phone.required' => 'Nomor WhatsApp / telepon wajib diisi.',
+            'phone.max' => 'Nomor telepon maksimal 20 karakter.',
+            'password.required' => 'Kata sandi wajib diisi.',
+            'password.min' => 'Kata sandi minimal terdiri dari 8 karakter.',
+            'password.confirmed' => 'Konfirmasi kata sandi tidak cocok.',
+            'region_id.required' => 'Distrik / kawasan wajib dipilih.',
+            'region_id.exists' => 'Distrik / kawasan yang dipilih tidak valid.',
+            'village_id.exists' => 'Desa / kampung yang dipilih tidak valid.',
+            'farmer_group_id.exists' => 'Kelompok tani yang dipilih tidak valid.',
+            'land_area_ha.numeric' => 'Luas lahan harus berupa angka.',
+            'land_area_ha.min' => 'Luas lahan tidak boleh kurang dari 0.',
+        ];
     }
 
     public function withValidator(Validator $validator): void

@@ -166,7 +166,7 @@ const handleSubmit = () => {
 </script>
 
 <template>
-    <form @submit.prevent="handleSubmit" class="space-y-6">
+    <form @submit.prevent="handleSubmit" novalidate class="space-y-6">
         <div
             class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-border/60 pb-5"
         >
@@ -237,7 +237,6 @@ const handleSubmit = () => {
                             <Input
                                 v-model="form.name"
                                 placeholder="Contoh: Pak Budi Santoso"
-                                required
                             />
                         </Field>
 
