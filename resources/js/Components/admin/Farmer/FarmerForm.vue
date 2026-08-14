@@ -12,7 +12,7 @@ import {
     Sprout,
 } from "@lucide/vue";
 import { toast } from "vue-sonner";
-import { Button, Field, Input, Select, Switch, Icon } from "@/Components/ui";
+import { Button, Field, Input, PhoneInput, Select, Switch, Icon } from "@/Components/ui";
 
 const props = defineProps<{
     initialData?: any;
@@ -246,10 +246,9 @@ const handleSubmit = () => {
                             :error="form.errors.phone"
                             required
                         >
-                            <Input
+                            <PhoneInput
                                 v-model="form.phone"
-                                placeholder="Contoh: 081234567890"
-                                required
+                                placeholder="81234567890"
                             />
                         </Field>
                     </div>

@@ -3,7 +3,7 @@ import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import { toast } from 'vue-sonner'
 import { Save, Info, Phone, Building2 } from '@lucide/vue'
-import { Field, Input, Button, Icon, Spinner } from '@/Components/ui'
+import { Field, Input, PhoneInput, Button, Icon, Spinner } from '@/Components/ui'
 import { QuillEditor } from "@vueup/vue-quill"
 import "@vueup/vue-quill/dist/vue-quill.snow.css"
 
@@ -136,11 +136,10 @@ onMounted(() => {
             </Field>
 
             <Field label="Nomor WhatsApp" :error="errors.admin_contact_phone?.[0]">
-              <Input
+              <PhoneInput
                 v-model="form.admin_contact_phone"
-                placeholder="Misal: +6281234567890"
+                placeholder="81234567890"
               />
-              <p class="text-xs text-fg-muted mt-1">Gunakan kode negara (misal +62) agar tombol chat berfungsi.</p>
             </Field>
 
             <Field label="Alamat Email" :error="errors.admin_contact_email?.[0]">

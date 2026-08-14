@@ -4,7 +4,7 @@ import { useForm } from "@inertiajs/vue3";
 import axios from "axios";
 import { Save, Check, Upload, User, MapPin, Sprout } from "@lucide/vue";
 import { toast } from "vue-sonner";
-import { Button, Field, Input, Select, Icon } from "@/Components/ui";
+import { Button, Field, Input, PhoneInput, Select, Icon } from "@/Components/ui";
 
 const props = defineProps<{
     initialData?: any;
@@ -168,7 +168,7 @@ const handleSubmit = () => {
                         </Field>
 
                         <Field label="No. WhatsApp / Telepon" :error="form.errors.phone" required>
-                            <Input v-model="form.phone" placeholder="Contoh: 081234567890" />
+                            <PhoneInput v-model="form.phone" placeholder="81234567890" />
                         </Field>
                     </div>
 

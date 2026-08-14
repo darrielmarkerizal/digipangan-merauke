@@ -3,7 +3,7 @@ import { ref, computed, watch } from "vue";
 import { useForm } from "@inertiajs/vue3";
 import { UserPlus, Eye, EyeOff } from "@lucide/vue";
 import { toast } from "vue-sonner";
-import { Button, Field, Input, Select, Icon } from "@/Components/ui";
+import { Button, Field, Input, PhoneInput, Select, Icon } from "@/Components/ui";
 
 const props = defineProps<{
     regions?: any[];
@@ -25,26 +25,6 @@ const form = useForm({
 
 const showPassword = ref(false);
 const showPasswordConfirmation = ref(false);
-const phoneLocal = ref("");
-
-const handlePhoneInput = (e: Event) => {
-    const target = e.target as HTMLInputElement;
-    let val = target.value.replace(/\D/g, "");
-
-    if (val.startsWith("62")) {
-        val = val.slice(2);
-    }
-    while (val.startsWith("0")) {
-        val = val.slice(1);
-    }
-    if (val.length > 13) {
-        val = val.slice(0, 13);
-    }
-
-    phoneLocal.value = val;
-    target.value = val;
-    form.phone = val ? `62${val}` : "";
-};
 
 const filteredVillages = computed(() => {
     if (!form.region_id) return [];
@@ -109,26 +89,12 @@ const submit = () => {
             </Field>
 
             <Field label="No. WhatsApp / Telepon" :error="form.errors.phone" required>
-                <div
-                    class="flex min-h-11 w-full rounded-control border border-border bg-card overflow-hidden transition-all duration-150 focus-within:border-brand focus-within:ring-2 focus-within:ring-brand/20"
-                    :class="{ 'border-danger': Boolean(form.errors.phone) }"
-                >
-                    <div
-                        class="flex items-center border-r border-border bg-muted/40 px-3 text-sm font-semibold text-fg-muted select-none"
-                    >
-                        <span>+62</span>
-                    </div>
-                    <input
-                        :value="phoneLocal"
-                        type="tel"
-                        inputmode="numeric"
-                        placeholder="81234567890"
-                        autocomplete="tel-national"
-                        :disabled="form.processing"
-                        class="w-full bg-transparent px-3 text-base text-fg placeholder:text-fg-muted focus:outline-hidden disabled:opacity-60"
-                        @input="handlePhoneInput"
-                    />
-                </div>
+                <PhoneInput
+                    v-model="form.phone"
+                    placeholder="81234567890"
+                    autocomplete="tel"
+                    :disabled="form.processing"
+                />
             </Field>
         </div>
 
