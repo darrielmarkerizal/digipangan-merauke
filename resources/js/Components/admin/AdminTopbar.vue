@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { Menu } from "@lucide/vue";
+import { Menu, MapPin } from "@lucide/vue";
 import { Icon, Breadcrumb } from "@/Components/ui";
 import AdminUserProfile from "./AdminUserProfile.vue";
+import { useAuthGuard } from "@/Composables/useAuthGuard";
 
 defineProps<{
     title?: string;
@@ -11,6 +12,8 @@ defineProps<{
 defineEmits<{
     (e: "toggle-sidebar"): void;
 }>();
+
+const { isDistrictAdmin, userRegion } = useAuthGuard();
 </script>
 
 <template>
@@ -35,6 +38,13 @@ defineEmits<{
         </div>
 
         <div class="flex items-center gap-3">
+            <div
+                v-if="isDistrictAdmin && userRegion"
+                class="hidden sm:flex items-center gap-1.5 rounded-full border border-brand/30 bg-brand-weak/40 px-3 py-1 text-xs font-semibold text-brand shadow-xs"
+            >
+                <Icon :icon="MapPin" :size="13" class="text-brand shrink-0" />
+                <span>Distrik {{ userRegion.name }}</span>
+            </div>
             <AdminUserProfile />
         </div>
     </header>

@@ -32,6 +32,11 @@ abstract class BaseService
         return $this->repository->paginateFiltered($perPage);
     }
 
+    public function paginateFilteredForDistrict(int $regionId, ?int $perPage = null, string $column = 'region_id'): LengthAwarePaginator
+    {
+        return $this->repository->paginateFilteredForDistrict($regionId, $perPage, $column);
+    }
+
     public function findOrFail(int|string $id, array $with = []): Model
     {
         return $this->repository->findOrFail($id, $with);

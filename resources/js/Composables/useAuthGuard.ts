@@ -9,6 +9,12 @@ export interface AuthUser {
   email: string
   phone?: string
   avatar_url?: string
+  region_id?: number | string | null
+  region?: {
+    id: number | string
+    name: string
+    slug: string
+  } | null
 }
 
 export function useAuthGuard() {
@@ -30,6 +36,18 @@ export function useAuthGuard() {
 
   const isSuperAdmin = computed(() => {
     return roles.value.includes('super_admin') || roles.value.includes('admin')
+  })
+
+  const isStrictSuperAdmin = computed(() => {
+    return roles.value.includes('super_admin')
+  })
+
+  const isDistrictAdmin = computed(() => {
+    return roles.value.includes('admin_distrik')
+  })
+
+  const userRegion = computed(() => {
+    return user.value?.region || null
   })
 
   const isFarmer = computed(() => {
@@ -84,6 +102,9 @@ export function useAuthGuard() {
     permissions,
     isAuthenticated,
     isSuperAdmin,
+    isStrictSuperAdmin,
+    isDistrictAdmin,
+    userRegion,
     isFarmer,
     hasRole,
     hasPermission,

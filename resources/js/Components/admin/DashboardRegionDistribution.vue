@@ -3,6 +3,7 @@ import { CheckCircle2 } from "@lucide/vue";
 import { Icon } from "@/Components/ui";
 
 const props = defineProps<{
+    isDistrictAdmin?: boolean;
     regionDistribution: Array<{
         name: string;
         count: number;
@@ -15,10 +16,10 @@ const props = defineProps<{
     <div class="rounded-xl border border-border/80 bg-white p-5 shadow-xs h-full flex flex-col">
         <div class="border-b border-border/80 pb-3">
             <h2 class="text-sm font-bold text-fg">
-                Sebaran per Wilayah
+                {{ isDistrictAdmin ? "Sebaran per Desa / Kampung" : "Sebaran per Wilayah" }}
             </h2>
             <p class="text-xs text-fg-muted">
-                Persentase komoditas di seluruh kawasan.
+                {{ isDistrictAdmin ? "Persentase komoditas di setiap kampung." : "Persentase komoditas di seluruh kawasan." }}
             </p>
         </div>
 

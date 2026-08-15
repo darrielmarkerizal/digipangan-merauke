@@ -9,6 +9,7 @@ const props = defineProps<{
   units?: any[]
   farmers?: any[]
   regions?: any[]
+  default_region_id?: number | string
 }>()
 </script>
 
@@ -25,6 +26,7 @@ const props = defineProps<{
         :units="units"
         :farmers="farmers"
         :regions="regions"
+        :default-region-id="default_region_id"
       />
     </div>
   </AdminLayout>

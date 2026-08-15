@@ -38,8 +38,21 @@ class FarmerGroupRepository extends BaseRepository implements FarmerGroupReposit
         return ['name', 'created_at'];
     }
 
-    public function countAll(): int
+    public function countAll(?int $regionId = null): int
     {
-        return $this->model->newQuery()->count();
+        $query = $this->model->newQuery();
+
+        if ($regionId !== null) {
+            $query->where('region_id', $regionId);
+        }
+
+        return $query->count();
+    }
+
+    public function listByRegion(int $regionId): \Illuminate\Database\Eloquent\Collection
+    {
+        return $this->model->newQuery()
+            ->where('region_id', $regionId)
+            ->get(['id', 'name', 'slug', 'region_id', 'village_id']);
     }
 }

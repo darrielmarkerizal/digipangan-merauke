@@ -4,6 +4,7 @@ import UserForm from "@/Components/admin/User/UserForm.vue";
 
 const props = defineProps<{
     roles: string[];
+    regions?: Array<{ id: number; name: string }>;
 }>();
 </script>
 
@@ -12,6 +13,6 @@ const props = defineProps<{
         title="Tambah Pengguna"
         subtitle="Buat akun admin baru dengan peran dan hak akses yang sesuai."
     >
-        <UserForm :roles="roles" />
+        <UserForm :roles="roles" :regions="regions" />
     </AdminLayout>
 </template>

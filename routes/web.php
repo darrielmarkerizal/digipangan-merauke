@@ -63,7 +63,7 @@ Route::middleware('guest')->group(function () {
 
 Route::post('/logout', [AuthAdminController::class, 'logout'])->name('logout');
 
-Route::middleware(['auth', 'role:admin|super_admin'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'role:admin|super_admin|admin_distrik'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [DashboardAdminController::class, 'index'])->name('dashboard.index');
 
     Route::get('/produk', [ProductAdminController::class, 'index'])->name('product.index');
@@ -73,21 +73,6 @@ Route::middleware(['auth', 'role:admin|super_admin'])->prefix('admin')->name('ad
     Route::get('/produk/{id}/edit', [ProductAdminController::class, 'edit'])->name('product.edit');
     Route::put('/produk/{id}', [ProductAdminController::class, 'update'])->name('product.update');
     Route::delete('/produk/{id}', [ProductAdminController::class, 'destroy'])->name('product.destroy');
-
-    Route::get('/kategori', [CategoryAdminController::class, 'index'])->name('category.index');
-    Route::post('/kategori', [CategoryAdminController::class, 'store'])->name('category.store');
-    Route::put('/kategori/{id}', [CategoryAdminController::class, 'update'])->name('category.update');
-    Route::delete('/kategori/{id}', [CategoryAdminController::class, 'destroy'])->name('category.destroy');
-
-    Route::get('/satuan', [UnitAdminController::class, 'index'])->name('unit.index');
-    Route::post('/satuan', [UnitAdminController::class, 'store'])->name('unit.store');
-    Route::put('/satuan/{id}', [UnitAdminController::class, 'update'])->name('unit.update');
-    Route::delete('/satuan/{id}', [UnitAdminController::class, 'destroy'])->name('unit.destroy');
-
-    Route::get('/komoditas', [CommodityAdminController::class, 'index'])->name('commodity.index');
-    Route::post('/komoditas', [CommodityAdminController::class, 'store'])->name('commodity.store');
-    Route::put('/komoditas/{id}', [CommodityAdminController::class, 'update'])->name('commodity.update');
-    Route::delete('/komoditas/{id}', [CommodityAdminController::class, 'destroy'])->name('commodity.destroy');
 
     Route::get('/petani', [FarmerAdminController::class, 'index'])->name('farmer.index');
     Route::get('/petani/create', [FarmerAdminController::class, 'create'])->name('farmer.create');
@@ -125,21 +110,40 @@ Route::middleware(['auth', 'role:admin|super_admin'])->prefix('admin')->name('ad
     Route::put('/berita/{id}', [PostAdminController::class, 'update'])->name('post.update');
     Route::delete('/berita/{id}', [PostAdminController::class, 'destroy'])->name('post.destroy');
 
+    Route::get('/kategori', [CategoryAdminController::class, 'index'])->name('category.index');
+    Route::post('/kategori', [CategoryAdminController::class, 'store'])->name('category.store');
+    Route::put('/kategori/{id}', [CategoryAdminController::class, 'update'])->name('category.update');
+    Route::delete('/kategori/{id}', [CategoryAdminController::class, 'destroy'])->name('category.destroy');
+
+    Route::get('/satuan', [UnitAdminController::class, 'index'])->name('unit.index');
+    Route::post('/satuan', [UnitAdminController::class, 'store'])->name('unit.store');
+    Route::put('/satuan/{id}', [UnitAdminController::class, 'update'])->name('unit.update');
+    Route::delete('/satuan/{id}', [UnitAdminController::class, 'destroy'])->name('unit.destroy');
+
+    Route::get('/komoditas', [CommodityAdminController::class, 'index'])->name('commodity.index');
+    Route::post('/komoditas', [CommodityAdminController::class, 'store'])->name('commodity.store');
+    Route::put('/komoditas/{id}', [CommodityAdminController::class, 'update'])->name('commodity.update');
+    Route::delete('/komoditas/{id}', [CommodityAdminController::class, 'destroy'])->name('commodity.destroy');
+
     Route::get('/faq', [FaqAdminController::class, 'index'])->name('faq.index');
     Route::get('/faq/tambah', [FaqAdminController::class, 'create'])->name('faq.create');
     Route::post('/faq', [FaqAdminController::class, 'store'])->name('faq.store');
     Route::get('/faq/{id}/edit', [FaqAdminController::class, 'edit'])->name('faq.edit');
     Route::put('/faq/{id}', [FaqAdminController::class, 'update'])->name('faq.update');
     Route::delete('/faq/{id}', [FaqAdminController::class, 'destroy'])->name('faq.destroy');
-    Route::get('/pengaturan', fn () => Inertia::render('Admin/Setting'))->name('setting.index');
-    Route::get('/user', [UserAdminController::class, 'index'])->name('user.index');
-    Route::get('/user/tambah', [UserAdminController::class, 'create'])->name('user.create');
-    Route::post('/user', [UserAdminController::class, 'store'])->name('user.store');
-    Route::get('/user/{id}', [UserAdminController::class, 'show'])->name('user.show');
-    Route::get('/user/{id}/edit', [UserAdminController::class, 'edit'])->name('user.edit');
-    Route::put('/user/{id}', [UserAdminController::class, 'update'])->name('user.update');
-    Route::delete('/user/{id}', [UserAdminController::class, 'destroy'])->name('user.destroy');
-    Route::get('/audit-log', [AuditLogAdminController::class, 'index'])->name('audit.index');
+
+    // Super Admin Only: User & Hak Akses, Pengaturan, Audit Log
+    Route::middleware(['role:super_admin'])->group(function () {
+        Route::get('/pengaturan', fn () => Inertia::render('Admin/Setting'))->name('setting.index');
+        Route::get('/user', [UserAdminController::class, 'index'])->name('user.index');
+        Route::get('/user/tambah', [UserAdminController::class, 'create'])->name('user.create');
+        Route::post('/user', [UserAdminController::class, 'store'])->name('user.store');
+        Route::get('/user/{id}', [UserAdminController::class, 'show'])->name('user.show');
+        Route::get('/user/{id}/edit', [UserAdminController::class, 'edit'])->name('user.edit');
+        Route::put('/user/{id}', [UserAdminController::class, 'update'])->name('user.update');
+        Route::delete('/user/{id}', [UserAdminController::class, 'destroy'])->name('user.destroy');
+        Route::get('/audit-log', [AuditLogAdminController::class, 'index'])->name('audit.index');
+    });
 });
 
 if (! app()->isProduction()) {

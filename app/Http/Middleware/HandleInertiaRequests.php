@@ -25,11 +25,19 @@ class HandleInertiaRequests extends Middleware
                     'name' => $request->user()->name,
                     'email' => $request->user()->email,
                     'avatar_url' => $request->user()->avatarUrl(),
+                    'region_id' => $request->user()->region_id,
+                    'region' => $request->user()->region ? [
+                        'id' => $request->user()->region->id,
+                        'name' => $request->user()->region->name,
+                        'slug' => $request->user()->region->slug,
+                    ] : null,
                 ] : null,
                 'roles' => fn () => $request->user()?->getRoleNames() ?? [],
                 'permissions' => fn () => $request->user()
                     ?->getAllPermissions()
                     ->pluck('name') ?? [],
+                'is_district_admin' => fn () => $request->user()?->isDistrictAdmin() ?? false,
+                'is_super_admin' => fn () => $request->user()?->isSuperAdmin() ?? false,
             ],
 
             'flash' => [

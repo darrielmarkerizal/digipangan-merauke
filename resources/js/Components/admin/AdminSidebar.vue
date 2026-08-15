@@ -20,105 +20,119 @@ import {
 } from "@lucide/vue";
 import { Icon } from "@/Components/ui";
 
-const page = usePage();
+import { useAuthGuard } from "@/Composables/useAuthGuard";
 
-const navGroups = [
-    {
-        title: "Utama",
-        items: [
-            {
-                label: "Dashboard & Dampak",
-                href: "/admin/dashboard",
-                icon: LayoutDashboard,
-            },
-        ],
-    },
-    {
-        title: "Katalog & Pangan",
-        items: [
-            {
-                label: "Produk Pangan",
-                href: "/admin/produk",
-                icon: ShoppingBasket,
-            },
-            {
-                label: "Kategori Produk",
-                href: "/admin/kategori",
-                icon: Tags,
-            },
-            {
-                label: "Satuan & Berat",
-                href: "/admin/satuan",
-                icon: Scale,
-            },
-            {
-                label: "Master Komoditas",
-                href: "/admin/komoditas",
-                icon: Sprout,
-            },
-        ],
-    },
-    {
-        title: "Komunitas & Kawasan",
-        items: [
-            {
-                label: "Profil Petani",
-                href: "/admin/petani",
-                icon: Users,
-            },
-            {
-                label: "Kelompok Tani",
-                href: "/admin/kelompok-tani",
-                icon: UserCheck,
-            },
-            {
-                label: "Kawasan Transmigrasi",
-                href: "/admin/wilayah",
-                icon: MapPin,
-            },
-            {
-                label: "Master Desa",
-                href: "/admin/desa",
-                icon: Home,
-            },
-        ],
-    },
-    {
-        title: "Konten & Edukasi",
-        items: [
-            {
-                label: "Berita",
-                href: "/admin/berita",
-                icon: Newspaper,
-            },
-            {
-                label: "Pusat Bantuan / FAQ",
-                href: "/admin/faq",
-                icon: HelpCircle,
-            },
-        ],
-    },
-    {
-        title: "Sistem & Keamanan",
-        items: [
-            {
-                label: "User & Hak Akses",
-                href: "/admin/user",
-                icon: Shield,
-            },
-            {
-                label: "Pengaturan Situs",
-                href: "/admin/pengaturan",
-                icon: Settings,
-            },
-            {
-                label: "Log Aktivitas (Audit)",
-                href: "/admin/audit-log",
-                icon: History,
-            },
-        ],
-    },
-];
+const page = usePage();
+const { isStrictSuperAdmin, isDistrictAdmin, userRegion, hasPermission } = useAuthGuard();
+
+const navGroups = computed(() => {
+    const groups = [
+        {
+            title: "Utama",
+            items: [
+                {
+                    label: isDistrictAdmin.value && userRegion.value
+                        ? `Dashboard (${userRegion.value.name})`
+                        : "Dashboard & Dampak",
+                    href: "/admin/dashboard",
+                    icon: LayoutDashboard,
+                },
+            ],
+        },
+        {
+            title: "Katalog & Pangan",
+            items: [
+                {
+                    label: "Produk Pangan",
+                    href: "/admin/produk",
+                    icon: ShoppingBasket,
+                },
+                ...(!isDistrictAdmin.value ? [
+                    {
+                        label: "Kategori Produk",
+                        href: "/admin/kategori",
+                        icon: Tags,
+                    },
+                    {
+                        label: "Satuan & Berat",
+                        href: "/admin/satuan",
+                        icon: Scale,
+                    },
+                    {
+                        label: "Master Komoditas",
+                        href: "/admin/komoditas",
+                        icon: Sprout,
+                    },
+                ] : []),
+            ],
+        },
+        {
+            title: "Komunitas & Kawasan",
+            items: [
+                {
+                    label: "Profil Petani",
+                    href: "/admin/petani",
+                    icon: Users,
+                },
+                {
+                    label: "Kelompok Tani",
+                    href: "/admin/kelompok-tani",
+                    icon: UserCheck,
+                },
+                {
+                    label: isDistrictAdmin.value ? "Profil Distrik Saya" : "Kawasan Transmigrasi",
+                    href: "/admin/wilayah",
+                    icon: MapPin,
+                },
+                {
+                    label: isDistrictAdmin.value ? "Desa / Kampung" : "Master Desa",
+                    href: "/admin/desa",
+                    icon: Home,
+                },
+            ],
+        },
+        {
+            title: "Konten & Edukasi",
+            items: [
+                {
+                    label: "Berita",
+                    href: "/admin/berita",
+                    icon: Newspaper,
+                },
+                {
+                    label: "Pusat Bantuan / FAQ",
+                    href: "/admin/faq",
+                    icon: HelpCircle,
+                },
+            ],
+        },
+    ];
+
+    if (isStrictSuperAdmin.value) {
+        groups.push({
+            title: "Sistem & Keamanan",
+            items: [
+                {
+                    label: "User & Hak Akses",
+                    href: "/admin/user",
+                    icon: Shield,
+                },
+                {
+                    label: "Pengaturan Situs",
+                    href: "/admin/pengaturan",
+                    icon: Settings,
+                },
+                {
+                    label: "Log Aktivitas (Audit)",
+                    href: "/admin/audit-log",
+                    icon: History,
+                },
+            ],
+        });
+    }
+
+    return groups;
+});
 
 const currentPath = computed(() => page.url.split("?")[0]);
 

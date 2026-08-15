@@ -7,6 +7,8 @@ use App\Support\InertiaQuery;
 use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Http\RedirectResponse;
+use App\Models\User;
+use Illuminate\Http\Request;
 use Modules\Farmer\Services\FarmerService;
 use Modules\Product\Http\Requests\StoreProductCategoryRequest;
 use Modules\Product\Http\Requests\StoreProductRequest;
@@ -29,70 +31,141 @@ class ProductAdminController extends Controller
         private readonly RegionService $regionService,
     ) {}
 
-    public function index(): Response
+    public function index(Request $request): Response
     {
+        $user = $request->user();
+        $isDistrictAdmin = $user?->isDistrictAdmin() ?? false;
+        $regionId = $isDistrictAdmin ? $user?->getAssignedRegionId() : null;
+
+        $paginator = $isDistrictAdmin && $regionId
+            ? $this->service->paginateFilteredForDistrict($regionId)
+            : $this->service->paginateFiltered();
+
+        $regions = $isDistrictAdmin && $user?->region
+            ? collect([['id' => $user->region->id, 'name' => $user->region->name]])
+            : $this->regionService->list();
+
         return InertiaQuery::render(
             'Admin/Product/Index',
-            $this->service->paginateFiltered(),
+            $paginator,
             ProductResource::class,
             [
                 'categories' => $this->categoryService->list(),
-                'regions'    => $this->regionService->list(),
+                'regions'    => $regions,
             ]
         );
     }
 
-    public function create(): Response
+    public function create(Request $request): Response
     {
+        $user = $request->user();
+        $isDistrictAdmin = $user?->isDistrictAdmin() ?? false;
+        $regionId = $isDistrictAdmin ? $user?->getAssignedRegionId() : null;
+
+        $farmers = $isDistrictAdmin && $regionId
+            ? $this->farmerService->listByRegion($regionId)
+            : $this->farmerService->list();
+
+        $regions = $isDistrictAdmin && $user?->region
+            ? collect([['id' => $user->region->id, 'name' => $user->region->name]])
+            : $this->regionService->list();
+
         return Inertia::render('Admin/Product/Create', [
             'categories' => $this->categoryService->list(),
             'units'      => $this->unitService->list(),
-            'farmers'    => $this->farmerService->list(),
-            'regions'    => $this->regionService->list(),
+            'farmers'    => $farmers,
+            'regions'    => $regions,
+            'default_region_id' => $regionId,
         ]);
     }
 
     public function store(StoreProductRequest $request): RedirectResponse
     {
-        $this->service->create($request->validated());
+        $data = $request->validated();
+        $user = $request->user();
+
+        if ($user?->isDistrictAdmin() && $user?->getAssignedRegionId()) {
+            $data['region_id'] = $user->getAssignedRegionId();
+        }
+
+        $this->service->create($data);
 
         return redirect()->route('admin.product.index')
             ->with('success', 'Produk berhasil ditambahkan.');
     }
 
-    public function show(int $id): Response
+    public function show(Request $request, int $id): Response
     {
+        $model = $this->service->findOrFail($id);
+        $this->authorizeDistrictAccess($request->user(), $model->region_id);
+
         return Inertia::render('Admin/Product/Show', [
-            'product' => (new ProductResource($this->service->findOrFail($id)))->resolve(),
+            'product' => (new ProductResource($model))->resolve(),
         ]);
     }
 
-    public function edit(int $id): Response
+    public function edit(Request $request, int $id): Response
     {
+        $model = $this->service->findOrFail($id);
+        $this->authorizeDistrictAccess($request->user(), $model->region_id);
+
+        $user = $request->user();
+        $isDistrictAdmin = $user?->isDistrictAdmin() ?? false;
+        $regionId = $isDistrictAdmin ? $user?->getAssignedRegionId() : null;
+
+        $farmers = $isDistrictAdmin && $regionId
+            ? $this->farmerService->listByRegion($regionId)
+            : $this->farmerService->list();
+
+        $regions = $isDistrictAdmin && $user?->region
+            ? collect([['id' => $user->region->id, 'name' => $user->region->name]])
+            : $this->regionService->list();
+
         return Inertia::render('Admin/Product/Edit', [
-            'product'    => (new ProductResource($this->service->findOrFail($id)))->resolve(),
+            'product'    => (new ProductResource($model))->resolve(),
             'categories' => $this->categoryService->list(),
             'units'      => $this->unitService->list(),
-            'farmers'    => $this->farmerService->list(),
-            'regions'    => $this->regionService->list(),
+            'farmers'    => $farmers,
+            'regions'    => $regions,
+            'default_region_id' => $regionId,
         ]);
     }
 
     public function update(UpdateProductRequest $request, int $id): RedirectResponse
     {
         $model = $this->service->findOrFail($id);
-        $this->service->update($model, $request->validated());
+        $this->authorizeDistrictAccess($request->user(), $model->region_id);
+
+        $data = $request->validated();
+        if ($request->user()?->isDistrictAdmin() && $request->user()?->getAssignedRegionId()) {
+            $data['region_id'] = $request->user()->getAssignedRegionId();
+        }
+
+        $this->service->update($model, $data);
 
         return redirect()->route('admin.product.index')
             ->with('success', 'Produk berhasil diperbarui.');
     }
 
-    public function destroy(int $id): RedirectResponse
+    public function destroy(Request $request, int $id): RedirectResponse
     {
         $model = $this->service->findOrFail($id);
+        $this->authorizeDistrictAccess($request->user(), $model->region_id);
+
         $this->service->delete($model);
 
         return redirect()->route('admin.product.index')
             ->with('success', 'Produk berhasil dihapus.');
+    }
+
+    private function authorizeDistrictAccess(?User $user, ?int $resourceRegionId): void
+    {
+        if ($user && $user->isDistrictAdmin()) {
+            abort_if(
+                (int) $resourceRegionId !== (int) $user->getAssignedRegionId(),
+                403,
+                'Akses ditolak: Anda hanya dapat mengelola produk pada distrik yang ditugaskan.'
+            );
+        }
     }
 }

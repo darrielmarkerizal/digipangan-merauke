@@ -9,6 +9,8 @@ import {
 import { Icon } from "@/Components/ui";
 
 const props = defineProps<{
+    isDistrictAdmin?: boolean;
+    districtName?: string;
     metrics: {
         active_products: number;
         farmers_and_groups: number;
@@ -22,28 +24,28 @@ const kpiCards = computed(() => [
         label: "Produk Aktif Tayang",
         value: props.metrics.active_products,
         unit: "Komoditas",
-        delta: "Total produk ter-publish",
+        delta: props.isDistrictAdmin ? "Komoditas distrik aktif" : "Total produk ter-publish",
         icon: ShoppingBasket,
     },
     {
         label: "Petani & Gapoktan Terdaftar",
         value: props.metrics.farmers_and_groups,
         unit: "Mitra",
-        delta: "Berdampak pada komunitas",
+        delta: props.isDistrictAdmin ? "Petani binaan di distrik" : "Berdampak pada komunitas",
         icon: Users,
     },
     {
         label: "Klik WA Hubungi Penjual",
         value: props.metrics.wa_clicks,
         unit: "Interaksi",
-        delta: "Kontak langsung WhatsApp",
+        delta: props.isDistrictAdmin ? "Pembeli kontak petani distrik" : "Kontak langsung WhatsApp",
         icon: MessageCircle,
     },
     {
-        label: "Kawasan Terintegrasi",
+        label: props.isDistrictAdmin ? "Kampung / Desa Terdata" : "Kawasan Terintegrasi",
         value: props.metrics.integrated_regions,
-        unit: "Kawasan",
-        delta: "Distrik/Wilayah aktif",
+        unit: props.isDistrictAdmin ? "Kampung" : "Kawasan",
+        delta: props.isDistrictAdmin ? `Kampung di Distrik ${props.districtName ?? ''}` : "Distrik/Wilayah aktif",
         icon: MapPin,
     },
 ]);

@@ -12,6 +12,7 @@ class UpdateProductRequest extends FormRequest
             'product_category_id' => ['required', 'integer', 'exists:product_categories,id'],
             'unit_id' => ['required', 'integer', 'exists:units,id'],
             'farmer_id' => ['required', 'integer', 'exists:farmers,id'],
+            'region_id' => ['nullable', 'integer', 'exists:regions,id'],
             'name' => ['required', 'string', 'max:150'],
             'description' => ['nullable', 'string'],
             'price' => ['required', 'numeric', 'min:0'],

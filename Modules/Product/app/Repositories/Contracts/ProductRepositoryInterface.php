@@ -23,7 +23,7 @@ interface ProductRepositoryInterface extends BaseRepositoryInterface
 
     public function publicSitemapEntries(): Collection;
 
-    public function countActive(): int;
+    public function countActive(?int $regionId = null): int;
 
     public function countContactedActive(): int;
 
@@ -33,7 +33,9 @@ interface ProductRepositoryInterface extends BaseRepositoryInterface
 
     public function activeCountByRegion(): SupportCollection;
 
-    public function recentWithFarmerAndRegion(int $limit = 5): Collection;
+    public function activeCountByVillage(int $regionId): SupportCollection;
 
-    public function popularByContacts(int $limit = 5): Collection;
+    public function recentWithFarmerAndRegion(int $limit = 5, ?int $regionId = null): Collection;
+
+    public function popularByContacts(int $limit = 5, ?int $regionId = null): Collection;
 }

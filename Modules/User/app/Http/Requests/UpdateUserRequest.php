@@ -21,6 +21,11 @@ class UpdateUserRequest extends BaseFormRequest
             'is_active' => ['sometimes', 'boolean'],
             'roles' => ['sometimes', 'array'],
             'roles.*' => ['string', Rule::exists('roles', 'name')],
+            'region_id' => [
+                'nullable',
+                Rule::requiredIf(fn () => in_array('admin_distrik', (array) $this->input('roles', []))),
+                Rule::exists('regions', 'id'),
+            ],
             'avatar_uuid' => ['sometimes', 'nullable', 'string', 'uuid'],
         ];
     }

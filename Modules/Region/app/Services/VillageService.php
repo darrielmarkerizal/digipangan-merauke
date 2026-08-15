@@ -13,6 +13,11 @@ class VillageService extends BaseService
         parent::__construct($repository);
     }
 
+    public function listByRegion(int $regionId): \Illuminate\Database\Eloquent\Collection
+    {
+        return $this->repository->listByRegion($regionId);
+    }
+
     public function delete(Model $model): bool
     {
         try {

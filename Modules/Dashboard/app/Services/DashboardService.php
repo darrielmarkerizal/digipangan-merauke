@@ -13,6 +13,7 @@ use Modules\Product\Models\ProductInteraction;
 use Modules\Product\Repositories\Contracts\ProductInteractionRepositoryInterface;
 use Modules\Product\Repositories\Contracts\ProductRepositoryInterface;
 use Modules\Region\Repositories\Contracts\RegionRepositoryInterface;
+use Modules\Region\Repositories\Contracts\VillageRepositoryInterface;
 
 class DashboardService
 {
@@ -21,13 +22,25 @@ class DashboardService
         private readonly FarmerRepositoryInterface $farmers,
         private readonly FarmerGroupRepositoryInterface $farmerGroups,
         private readonly RegionRepositoryInterface $regions,
+        private readonly VillageRepositoryInterface $villages,
         private readonly PostRepositoryInterface $posts,
         private readonly FaqRepositoryInterface $faqs,
         private readonly ProductInteractionRepositoryInterface $interactions,
     ) {}
 
-    public function getMetrics(): array
+    public function getMetrics(?int $regionId = null): array
     {
+        if ($regionId !== null) {
+            return [
+                'active_products' => $this->products->countActive($regionId),
+                'farmers_and_groups' => $this->farmers->countActive($regionId) + $this->farmerGroups->countAll($regionId),
+                'wa_clicks' => $this->interactions->countByType(ProductInteractionType::Contact, $regionId),
+                'integrated_regions' => $this->villages->countByRegion($regionId),
+                'total_posts' => $this->posts->countPublished(),
+                'active_faqs' => $this->faqs->countActive(),
+            ];
+        }
+
         return [
             'active_products' => $this->products->countActive(),
             'farmers_and_groups' => $this->farmers->countActive() + $this->farmerGroups->countAll(),
@@ -57,9 +70,28 @@ class DashboardService
         return $this->normalisePercentages($distribution);
     }
 
-    public function getTrendData(): array
+    public function getVillageDistribution(int $regionId): array
     {
-        $counts = $this->interactions->monthlyCountsByType(ProductInteractionType::Contact, $this->windowStart());
+        $totalActiveProducts = $this->products->countActive($regionId);
+        $divisor = max($totalActiveProducts, 1);
+        $counts = $this->products->activeCountByVillage($regionId);
+
+        $distribution = $this->villages->listByRegion($regionId)
+            ->map(fn ($village) => [
+                'name' => $village->name,
+                'count' => (int) ($counts[$village->id] ?? 0),
+                'percentage' => round(((int) ($counts[$village->id] ?? 0) / $divisor) * 100, 1),
+            ])
+            ->sortByDesc('count')
+            ->values()
+            ->all();
+
+        return $this->normalisePercentages($distribution);
+    }
+
+    public function getTrendData(?int $regionId = null): array
+    {
+        $counts = $this->interactions->monthlyCountsByType(ProductInteractionType::Contact, $this->windowStart(), $regionId);
 
         $trendData = [];
 
@@ -75,9 +107,9 @@ class DashboardService
         return $trendData;
     }
 
-    public function getRecentActivities(): array
+    public function getRecentActivities(?int $regionId = null): array
     {
-        $recentProducts = $this->products->recentWithFarmerAndRegion(5)
+        $recentProducts = $this->products->recentWithFarmerAndRegion(5, $regionId)
             ->map(fn (Product $p) => [
                 'id' => 'p_'.$p->id,
                 'type' => 'product',
@@ -88,7 +120,7 @@ class DashboardService
                 'date_human' => Carbon::parse($p->created_at)->locale('id')->diffForHumans(),
             ]);
 
-        $recentInteractions = $this->interactions->recentContactsWithProduct(5)
+        $recentInteractions = $this->interactions->recentContactsWithProduct(5, $regionId)
             ->map(fn (ProductInteraction $i) => [
                 'id' => 'i_'.$i->id,
                 'type' => 'interaction',
@@ -106,9 +138,9 @@ class DashboardService
             ->all();
     }
 
-    public function getPopularProducts(): array
+    public function getPopularProducts(?int $regionId = null): array
     {
-        return $this->products->popularByContacts(5)
+        return $this->products->popularByContacts(5, $regionId)
             ->map(fn (Product $p) => [
                 'id' => $p->id,
                 'name' => $p->name,

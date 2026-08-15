@@ -6,7 +6,7 @@ import { onClickOutside } from '@vueuse/core'
 import { Icon } from '@/Components/ui'
 import { useAuthGuard } from '@/Composables/useAuthGuard'
 
-const { user, logout } = useAuthGuard()
+const { user, logout, isStrictSuperAdmin, isDistrictAdmin, userRegion } = useAuthGuard()
 
 const isOpen = ref(false)
 const popoverRef = ref<HTMLElement | null>(null)
@@ -19,6 +19,16 @@ const handleLogout = () => {
   isOpen.value = false
   logout()
 }
+
+const roleBadgeLabel = computed(() => {
+  if (isDistrictAdmin.value && userRegion.value) {
+    return `Admin ${userRegion.value.name}`
+  }
+  if (isStrictSuperAdmin.value) {
+    return 'Super Admin'
+  }
+  return 'Administrator'
+})
 
 const initials = computed(() => {
   if (!user.value?.name) return 'SA'
@@ -71,7 +81,7 @@ const initials = computed(() => {
             <span
               class="mt-1.5 inline-flex items-center rounded-full bg-brand-weak px-2 py-0.5 text-[10px] font-bold text-brand uppercase tracking-wider"
             >
-              Administrator
+              {{ roleBadgeLabel }}
             </span>
           </div>
         </div>
@@ -88,6 +98,7 @@ const initials = computed(() => {
             <span>Lihat Situs Publik</span>
           </Link>
           <Link
+            v-if="isStrictSuperAdmin"
             href="/admin/pengaturan"
             class="flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-fg-muted transition-colors hover:bg-muted/60 hover:text-fg"
             @click="isOpen = false"

@@ -17,6 +17,7 @@ import { Button, Field, Input, PhoneInput, Select, Switch, Icon } from "@/Compon
 const props = defineProps<{
     initialData?: any;
     isEdit?: boolean;
+    defaultRegionId?: number | string;
     regions?: any[];
     villages?: any[];
     farmerGroups?: any[];
@@ -29,7 +30,7 @@ const form = useForm({
     land_area_ha: props.initialData?.land_area_ha ?? "",
     is_active: props.initialData?.is_active ?? true,
     region_id:
-        props.initialData?.region?.id ?? (props.initialData?.region_id || ""),
+        props.initialData?.region?.id ?? (props.initialData?.region_id || props.defaultRegionId || ""),
     village_id:
         props.initialData?.village?.id ?? (props.initialData?.village_id || ""),
     farmer_group_id:

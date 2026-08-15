@@ -22,4 +22,15 @@ enum Permission: string
     {
         return array_values(array_diff(self::values(), [self::ManageUsers->value]));
     }
+
+    public static function forDistrictAdmin(): array
+    {
+        return [
+            self::ManageProducts->value,
+            self::ManageFarmers->value,
+            self::ManageRegions->value,
+            self::ViewStatistics->value,
+            self::ManagePosts->value,
+        ];
+    }
 }

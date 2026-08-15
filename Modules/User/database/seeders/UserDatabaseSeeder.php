@@ -25,10 +25,12 @@ class UserDatabaseSeeder extends Seeder
 
         $superAdmin = Role::firstOrCreate(['name' => 'super_admin', 'guard_name' => 'web']);
         $admin = Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
+        $districtAdmin = Role::firstOrCreate(['name' => 'admin_distrik', 'guard_name' => 'web']);
         Role::firstOrCreate(['name' => 'farmer', 'guard_name' => 'web']);
 
         $superAdmin->syncPermissions(PermissionEnum::values());
         $admin->syncPermissions(PermissionEnum::forAdmin());
+        $districtAdmin->syncPermissions(PermissionEnum::forDistrictAdmin());
 
         $this->seedInitialAdmin();
     }

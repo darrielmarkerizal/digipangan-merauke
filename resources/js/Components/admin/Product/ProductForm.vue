@@ -59,6 +59,7 @@ export interface GalleryImage {
 const props = defineProps<{
   initialData?: ProductFormData
   isEdit?: boolean
+  defaultRegionId?: number | string
   categories?: Array<{ id: number | string; name: string }>
   units?: Array<{ id: number | string; name: string; symbol?: string }>
   farmers?: Array<{ id: number | string; name: string }>
@@ -69,7 +70,7 @@ const form = useForm({
   name: props.initialData?.name || '',
   product_category_id: props.initialData?.product_category_id || props.initialData?.category?.id || (props.categories?.[0]?.id ?? ''),
   farmer_id: props.initialData?.farmer_id || props.initialData?.farmer?.id || (props.farmers?.[0]?.id ?? ''),
-  region_id: props.initialData?.region_id || props.initialData?.region?.id || (props.regions?.[0]?.id ?? ''),
+  region_id: props.initialData?.region_id || props.initialData?.region?.id || props.defaultRegionId || (props.regions?.[0]?.id ?? ''),
   unit_id: props.initialData?.unit_id || props.initialData?.unit?.id || (props.units?.[0]?.id ?? ''),
   price: props.initialData?.price || '',
   weight_value: props.initialData?.weight_value || '',

@@ -17,6 +17,8 @@ interface BaseRepositoryInterface
 
     public function paginateFiltered(?int $perPage = null): LengthAwarePaginator;
 
+    public function paginateFilteredForDistrict(int $regionId, ?int $perPage = null, string $column = 'region_id'): LengthAwarePaginator;
+
     public function publicFiltered(): QueryBuilder;
 
     public function publicPaginateFiltered(?int $perPage = null): LengthAwarePaginator;

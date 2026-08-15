@@ -7,6 +7,7 @@ defineProps<{
   villages?: any[]
   farmerGroups?: any[]
   commodities?: any[]
+  default_region_id?: number | string
 }>()
 </script>
 
@@ -21,6 +22,7 @@ defineProps<{
         :villages="villages"
         :farmer-groups="farmerGroups"
         :commodities="commodities"
+        :default-region-id="default_region_id"
       />
     </div>
   </AdminLayout>

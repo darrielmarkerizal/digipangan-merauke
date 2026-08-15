@@ -11,6 +11,15 @@ class StoreFarmerGroupRequest extends FormRequest
 {
     use ValidatesFarmerLocation;
 
+    protected function prepareForValidation(): void
+    {
+        if ($this->user()?->isDistrictAdmin() && ! $this->filled('region_id')) {
+            $this->merge([
+                'region_id' => $this->user()->getAssignedRegionId(),
+            ]);
+        }
+    }
+
     public function rules(): array
     {
         return [

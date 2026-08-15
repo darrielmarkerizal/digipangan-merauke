@@ -167,9 +167,14 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
     /**
      * Dashboard/statistics counters — active product totals and reach.
      */
-    public function countActive(): int
+    public function countActive(?int $regionId = null): int
     {
-        return $this->visibilityScope($this->model->newQuery())->count();
+        $query = $this->visibilityScope($this->model->newQuery());
+        if ($regionId !== null) {
+            $query->where('region_id', $regionId);
+        }
+
+        return $query->count();
     }
 
     public function countContactedActive(): int
@@ -209,14 +214,35 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
     }
 
     /**
+     * Active product counts keyed by village_id (via farmer), for the district
+     * dashboard's village-distribution chart.
+     */
+    public function activeCountByVillage(int $regionId): SupportCollection
+    {
+        return $this->model->newQuery()
+            ->where('products.is_active', true)
+            ->where('products.region_id', $regionId)
+            ->whereHas('farmer', fn (Builder $query) => $query->whereNotNull('village_id'))
+            ->join('farmers', 'products.farmer_id', '=', 'farmers.id')
+            ->groupBy('farmers.village_id')
+            ->selectRaw('farmers.village_id, COUNT(products.id) as aggregate')
+            ->pluck('aggregate', 'farmers.village_id');
+    }
+
+    /**
      * Most recently created products with just enough relations for the
      * dashboard's recent-activity feed.
      */
-    public function recentWithFarmerAndRegion(int $limit = 5): Collection
+    public function recentWithFarmerAndRegion(int $limit = 5, ?int $regionId = null): Collection
     {
-        return $this->model->newQuery()
-            ->with(['farmer:id,name', 'region:id,name'])
-            ->orderByDesc('created_at')
+        $query = $this->model->newQuery()
+            ->with(['farmer:id,name', 'region:id,name']);
+
+        if ($regionId !== null) {
+            $query->where('region_id', $regionId);
+        }
+
+        return $query->orderByDesc('created_at')
             ->take($limit)
             ->get();
     }
@@ -225,12 +251,17 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
      * Active products ranked by contact-click count, for the dashboard's
      * popular-products widget.
      */
-    public function popularByContacts(int $limit = 5): Collection
+    public function popularByContacts(int $limit = 5, ?int $regionId = null): Collection
     {
-        return $this->visibilityScope($this->model->newQuery())
+        $query = $this->visibilityScope($this->model->newQuery())
             ->with(['region:id,name'])
-            ->withCount(['interactions as contact_count' => fn (Builder $query) => $query->where('type', ProductInteractionType::Contact)])
-            ->orderByDesc('contact_count')
+            ->withCount(['interactions as contact_count' => fn (Builder $query) => $query->where('type', ProductInteractionType::Contact)]);
+
+        if ($regionId !== null) {
+            $query->where('region_id', $regionId);
+        }
+
+        return $query->orderByDesc('contact_count')
             ->take($limit)
             ->get();
     }

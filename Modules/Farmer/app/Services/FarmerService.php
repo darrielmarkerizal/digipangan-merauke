@@ -21,6 +21,11 @@ class FarmerService extends BaseService
         return $this->farmers->availableForGroup($regionId);
     }
 
+    public function listByRegion(int $regionId): Collection
+    {
+        return $this->farmers->listByRegion($regionId);
+    }
+
     public function create(array $data): Model
     {
         $photo = Arr::pull($data, 'photo');

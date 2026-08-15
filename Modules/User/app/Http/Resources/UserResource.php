@@ -15,6 +15,12 @@ class UserResource extends JsonResource
             'email' => $this->email,
             'is_active' => $this->is_active,
             'avatar_url' => $this->avatarUrl(),
+            'region_id' => $this->region_id,
+            'region' => $this->whenLoaded('region', fn () => $this->region ? [
+                'id' => $this->region->id,
+                'name' => $this->region->name,
+                'slug' => $this->region->slug,
+            ] : null),
             'roles' => $this->whenLoaded('roles', fn () => $this->roles->pluck('name')),
             'permissions' => $this->when(
                 $request->routeIs('api.auth.profile*'),

@@ -18,12 +18,18 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
         parent::__construct($model);
     }
 
+    public function query(): \Illuminate\Database\Eloquent\Builder
+    {
+        return parent::query()->with(['roles', 'media', 'region']);
+    }
+
     protected function allowedFilters(): array
     {
         return [
             AllowedFilter::partial('name'),
             AllowedFilter::partial('email'),
             AllowedFilter::exact('is_active'),
+            AllowedFilter::exact('region_id'),
             AllowedFilter::callback('role', fn ($query, $value) => $query->whereHas(
                 'roles',
                 fn ($q) => $q->whereIn('name', (array) $value)
@@ -43,7 +49,7 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
 
     protected function allowedIncludes(): array
     {
-        return ['roles', 'media'];
+        return ['roles', 'media', 'region'];
     }
 
 

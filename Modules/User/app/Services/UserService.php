@@ -37,11 +37,12 @@ class UserService extends BaseService
                 'email' => $data['email'],
                 'password' => Hash::make($data['password']),
                 'is_active' => $data['is_active'] ?? true,
+                'region_id' => $data['region_id'] ?? null,
             ]);
 
             $this->persistRelations($user, $data);
 
-            return $this->repository->findOrFail($user->id, ['roles']);
+            return $this->repository->findOrFail($user->id, ['roles', 'region']);
         });
     }
 
@@ -57,6 +58,10 @@ class UserService extends BaseService
                 $attributes['is_active'] = $data['is_active'];
             }
 
+            if (array_key_exists('region_id', $data)) {
+                $attributes['region_id'] = $data['region_id'];
+            }
+
             if (! empty($data['password'])) {
                 $attributes['password'] = Hash::make($data['password']);
             }
@@ -67,7 +72,7 @@ class UserService extends BaseService
 
             $this->persistRelations($model, $data);
 
-            return $this->repository->findOrFail($model->id, ['roles']);
+            return $this->repository->findOrFail($model->id, ['roles', 'region']);
         });
     }
 

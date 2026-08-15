@@ -27,20 +27,32 @@ class ProductInteractionRepository extends BaseRepository implements ProductInte
             ->exists();
     }
 
-    public function countByType(ProductInteractionType $type): int
+    public function countByType(ProductInteractionType $type, ?int $regionId = null): int
     {
-        return $this->model->newQuery()->where('type', $type)->count();
+        $query = $this->model->newQuery()->where('type', $type);
+
+        if ($regionId !== null) {
+            $query->whereHas('product', fn (\Illuminate\Database\Eloquent\Builder $q) => $q->where('region_id', $regionId));
+        }
+
+        return $query->count();
     }
 
     /**
      * Interaction counts of a given type per calendar month, keyed 'Y-m',
      * for monthly trend charts.
      */
-    public function monthlyCountsByType(ProductInteractionType $type, Carbon $since): SupportCollection
+    public function monthlyCountsByType(ProductInteractionType $type, Carbon $since, ?int $regionId = null): SupportCollection
     {
-        return $this->model->newQuery()
+        $query = $this->model->newQuery()
             ->where('type', $type)
-            ->where('occurred_at', '>=', $since)
+            ->where('occurred_at', '>=', $since);
+
+        if ($regionId !== null) {
+            $query->whereHas('product', fn (\Illuminate\Database\Eloquent\Builder $q) => $q->where('region_id', $regionId));
+        }
+
+        return $query
             ->selectRaw("DATE_FORMAT(occurred_at, '%Y-%m') as ym, COUNT(*) as aggregate")
             ->groupBy('ym')
             ->pluck('aggregate', 'ym');
@@ -50,11 +62,17 @@ class ProductInteractionRepository extends BaseRepository implements ProductInte
      * Most recent contact-click interactions with their product, for the
      * dashboard's recent-activity feed.
      */
-    public function recentContactsWithProduct(int $limit = 5): Collection
+    public function recentContactsWithProduct(int $limit = 5, ?int $regionId = null): Collection
     {
-        return $this->model->newQuery()
+        $query = $this->model->newQuery()
             ->with(['product:id,name'])
-            ->where('type', ProductInteractionType::Contact)
+            ->where('type', ProductInteractionType::Contact);
+
+        if ($regionId !== null) {
+            $query->whereHas('product', fn (\Illuminate\Database\Eloquent\Builder $q) => $q->where('region_id', $regionId));
+        }
+
+        return $query
             ->orderByDesc('occurred_at')
             ->take($limit)
             ->get();

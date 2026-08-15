@@ -7,6 +7,8 @@ use App\Support\InertiaQuery;
 use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Http\RedirectResponse;
+use App\Models\User;
+use Illuminate\Http\Request;
 use Modules\Farmer\Http\Requests\StoreFarmerRequest;
 use Modules\Farmer\Http\Requests\UpdateFarmerRequest;
 use Modules\Farmer\Http\Resources\FarmerResource;
@@ -26,72 +28,159 @@ class FarmerAdminController extends Controller
         private readonly CommodityService $commodityService,
     ) {}
 
-    public function index(): Response
+    public function index(Request $request): Response
     {
+        $user = $request->user();
+        $isDistrictAdmin = $user?->isDistrictAdmin() ?? false;
+        $regionId = $isDistrictAdmin ? $user?->getAssignedRegionId() : null;
+
+        $paginator = $isDistrictAdmin && $regionId
+            ? $this->service->paginateFilteredForDistrict($regionId)
+            : $this->service->paginateFiltered();
+
+        $regions = $isDistrictAdmin && $user?->region
+            ? collect([['id' => $user->region->id, 'name' => $user->region->name]])
+            : $this->regionService->list();
+
+        $villages = $isDistrictAdmin && $regionId
+            ? $this->villageService->listByRegion($regionId)
+            : $this->villageService->list();
+
+        $farmerGroups = $isDistrictAdmin && $regionId
+            ? $this->farmerGroupService->listByRegion($regionId)
+            : $this->farmerGroupService->list();
+
         return InertiaQuery::render(
             'Admin/Farmer/Index',
-            $this->service->paginateFiltered(),
+            $paginator,
             FarmerResource::class,
             [
-                'regions'      => $this->regionService->list(),
-                'villages'     => $this->villageService->list(),
-                'farmerGroups' => $this->farmerGroupService->list(),
+                'regions'      => $regions,
+                'villages'     => $villages,
+                'farmerGroups' => $farmerGroups,
             ],
             'farmers'
         );
     }
 
-    public function create(): Response
+    public function create(Request $request): Response
     {
+        $user = $request->user();
+        $isDistrictAdmin = $user?->isDistrictAdmin() ?? false;
+        $regionId = $isDistrictAdmin ? $user?->getAssignedRegionId() : null;
+
+        $regions = $isDistrictAdmin && $user?->region
+            ? collect([['id' => $user->region->id, 'name' => $user->region->name]])
+            : $this->regionService->list();
+
+        $villages = $isDistrictAdmin && $regionId
+            ? $this->villageService->listByRegion($regionId)
+            : $this->villageService->list();
+
+        $farmerGroups = $isDistrictAdmin && $regionId
+            ? $this->farmerGroupService->listByRegion($regionId)
+            : $this->farmerGroupService->list();
+
         return Inertia::render('Admin/Farmer/Create', [
-            'regions'      => $this->regionService->list(),
-            'villages'     => $this->villageService->list(),
-            'farmerGroups' => $this->farmerGroupService->list(),
+            'regions'      => $regions,
+            'villages'     => $villages,
+            'farmerGroups' => $farmerGroups,
             'commodities'  => $this->commodityService->list(),
+            'default_region_id' => $regionId,
         ]);
     }
 
     public function store(StoreFarmerRequest $request): RedirectResponse
     {
-        $this->service->create($request->validated());
+        $data = $request->validated();
+        $user = $request->user();
+
+        if ($user?->isDistrictAdmin() && $user?->getAssignedRegionId()) {
+            $data['region_id'] = $user->getAssignedRegionId();
+        }
+
+        $this->service->create($data);
 
         return redirect()->route('admin.farmer.index')
             ->with('success', 'Petani berhasil ditambahkan.');
     }
 
-    public function show(int $id): Response
+    public function show(Request $request, int $id): Response
     {
+        $model = $this->service->findOrFail($id);
+        $this->authorizeDistrictAccess($request->user(), $model->region_id);
+
         return Inertia::render('Admin/Farmer/Show', [
-            'farmer' => (new FarmerResource($this->service->findOrFail($id)))->resolve(),
+            'farmer' => (new FarmerResource($model))->resolve(),
         ]);
     }
 
-    public function edit(int $id): Response
+    public function edit(Request $request, int $id): Response
     {
+        $model = $this->service->findOrFail($id);
+        $this->authorizeDistrictAccess($request->user(), $model->region_id);
+
+        $user = $request->user();
+        $isDistrictAdmin = $user?->isDistrictAdmin() ?? false;
+        $regionId = $isDistrictAdmin ? $user?->getAssignedRegionId() : null;
+
+        $regions = $isDistrictAdmin && $user?->region
+            ? collect([['id' => $user->region->id, 'name' => $user->region->name]])
+            : $this->regionService->list();
+
+        $villages = $isDistrictAdmin && $regionId
+            ? $this->villageService->listByRegion($regionId)
+            : $this->villageService->list();
+
+        $farmerGroups = $isDistrictAdmin && $regionId
+            ? $this->farmerGroupService->listByRegion($regionId)
+            : $this->farmerGroupService->list();
+
         return Inertia::render('Admin/Farmer/Edit', [
-            'farmer'       => (new FarmerResource($this->service->findOrFail($id)))->resolve(),
-            'regions'      => $this->regionService->list(),
-            'villages'     => $this->villageService->list(),
-            'farmerGroups' => $this->farmerGroupService->list(),
+            'farmer'       => (new FarmerResource($model))->resolve(),
+            'regions'      => $regions,
+            'villages'     => $villages,
+            'farmerGroups' => $farmerGroups,
             'commodities'  => $this->commodityService->list(),
+            'default_region_id' => $regionId,
         ]);
     }
 
     public function update(UpdateFarmerRequest $request, int $id): RedirectResponse
     {
         $model = $this->service->findOrFail($id);
-        $this->service->update($model, $request->validated());
+        $this->authorizeDistrictAccess($request->user(), $model->region_id);
+
+        $data = $request->validated();
+        if ($request->user()?->isDistrictAdmin() && $request->user()?->getAssignedRegionId()) {
+            $data['region_id'] = $request->user()->getAssignedRegionId();
+        }
+
+        $this->service->update($model, $data);
 
         return redirect()->route('admin.farmer.index')
             ->with('success', 'Petani berhasil diperbarui.');
     }
 
-    public function destroy(int $id): RedirectResponse
+    public function destroy(Request $request, int $id): RedirectResponse
     {
         $model = $this->service->findOrFail($id);
+        $this->authorizeDistrictAccess($request->user(), $model->region_id);
+
         $this->service->delete($model);
 
         return redirect()->back()
             ->with('success', 'Petani berhasil dihapus.');
+    }
+
+    private function authorizeDistrictAccess(?User $user, ?int $resourceRegionId): void
+    {
+        if ($user && $user->isDistrictAdmin()) {
+            abort_if(
+                (int) $resourceRegionId !== (int) $user->getAssignedRegionId(),
+                403,
+                'Akses ditolak: Anda hanya dapat mengelola data petani pada distrik yang ditugaskan.'
+            );
+        }
     }
 }

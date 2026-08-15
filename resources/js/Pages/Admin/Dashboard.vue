@@ -7,6 +7,8 @@ import DashboardRecentActivities from "@/Components/admin/DashboardRecentActivit
 import DashboardPopularProducts from "@/Components/admin/DashboardPopularProducts.vue";
 
 const props = defineProps<{
+    is_district_admin?: boolean;
+    district_name?: string;
     metrics: {
         active_products: number;
         farmers_and_groups: number;
@@ -44,10 +46,12 @@ const props = defineProps<{
 
 <template>
     <AdminLayout
-        title="Dashboard Statistik & Dampak Program"
-        subtitle="Pusat pembuktian dampak ekonomi komunitas, efektivitas kontak langsung WhatsApp, dan pemantauan sebaran panen per distrik transmigrasi."
+        :title="props.is_district_admin ? `Dashboard Distrik ${props.district_name ?? ''}` : 'Dashboard Statistik & Dampak Program'"
+        :subtitle="props.is_district_admin
+            ? `Pusat pemantauan komoditas pangan, petani, interaksi pembeli WhatsApp, dan sebaran per kampung di Distrik ${props.district_name ?? ''}.`
+            : 'Pusat pembuktian dampak ekonomi komunitas, efektivitas kontak langsung WhatsApp, dan pemantauan sebaran panen per distrik transmigrasi.'"
     >
-        <DashboardKpiCards :metrics="props.metrics" />
+        <DashboardKpiCards :metrics="props.metrics" :is-district-admin="props.is_district_admin" :district-name="props.district_name" />
 
         <div class="mt-4 grid grid-cols-1 gap-5 lg:grid-cols-12">
             <div class="lg:col-span-8 flex flex-col gap-5">
@@ -57,6 +61,7 @@ const props = defineProps<{
             <div class="lg:col-span-4 flex flex-col gap-5">
                 <DashboardRegionDistribution
                     :region-distribution="props.region_distribution"
+                    :is-district-admin="props.is_district_admin"
                 />
             </div>
 

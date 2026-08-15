@@ -116,8 +116,21 @@ class FarmerRepository extends BaseRepository implements FarmerRepositoryInterfa
         return $this->visibilityScope($this->model->newQuery())->get(['slug', 'updated_at']);
     }
 
-    public function countActive(): int
+    public function countActive(?int $regionId = null): int
     {
-        return $this->visibilityScope($this->model->newQuery())->count();
+        $query = $this->visibilityScope($this->model->newQuery());
+
+        if ($regionId !== null) {
+            $query->where('region_id', $regionId);
+        }
+
+        return $query->count();
+    }
+
+    public function listByRegion(int $regionId): Collection
+    {
+        return $this->model->newQuery()
+            ->where('region_id', $regionId)
+            ->get(['id', 'name', 'slug', 'region_id', 'village_id', 'farmer_group_id']);
     }
 }

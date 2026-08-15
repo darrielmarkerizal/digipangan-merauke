@@ -18,6 +18,7 @@ const props = defineProps<{
 const roleLabel: Record<string, string> = {
     super_admin: "Super Admin",
     admin: "Admin",
+    admin_distrik: "Admin Distrik",
 };
 
 const executeDelete = (id: number) => {
@@ -51,7 +52,7 @@ const executeDelete = (id: number) => {
                             />
                         </div>
                     </th>
-                    <th scope="col" class="px-4 py-3.5">Peran</th>
+                    <th scope="col" class="px-4 py-3.5">Peran & Penugasan</th>
                     <th scope="col" class="px-4 py-3.5">Status</th>
                     <th
                         scope="col"
@@ -98,15 +99,22 @@ const executeDelete = (id: number) => {
                         </div>
                     </td>
                     <td class="px-4 py-4">
-                        <div class="flex flex-wrap gap-1">
+                        <div class="flex flex-wrap items-center gap-1.5">
                             <span
                                 v-for="role in (item.roles ?? [])"
                                 :key="role"
                                 class="inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full"
-                                :class="role === 'super_admin' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'"
+                                :class="
+                                    role === 'super_admin'
+                                        ? 'bg-purple-100 text-purple-700'
+                                        : role === 'admin_distrik'
+                                        ? 'bg-emerald-100 text-emerald-800'
+                                        : 'bg-blue-100 text-blue-700'
+                                "
                             >
                                 <Icon :icon="ShieldCheck" :size="10" />
-                                {{ roleLabel[role] ?? role }}
+                                <span v-if="role === 'admin_distrik' && item.region">Admin {{ item.region.name }}</span>
+                                <span v-else>{{ roleLabel[role] ?? role }}</span>
                             </span>
                             <span v-if="!item.roles || item.roles.length === 0" class="text-xs text-fg-muted/60 italic">Tanpa peran</span>
                         </div>

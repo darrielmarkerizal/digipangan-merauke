@@ -83,4 +83,9 @@ class Region extends Model implements AuditableContract, HasMedia
     {
         return $this->hasMany(Product::class);
     }
+
+    public function districtAdmins(): HasMany
+    {
+        return $this->hasMany(\App\Models\User::class);
+    }
 }

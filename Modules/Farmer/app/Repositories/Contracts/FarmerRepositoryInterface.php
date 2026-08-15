@@ -17,5 +17,7 @@ interface FarmerRepositoryInterface extends BaseRepositoryInterface
 
     public function publicSitemapEntries(): Collection;
 
-    public function countActive(): int;
+    public function countActive(?int $regionId = null): int;
+
+    public function listByRegion(int $regionId): Collection;
 }

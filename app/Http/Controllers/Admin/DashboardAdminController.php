@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Modules\Dashboard\Services\DashboardService;
 
@@ -12,14 +13,23 @@ class DashboardAdminController extends Controller
     {
     }
 
-    public function index()
+    public function index(Request $request)
     {
+        $user = $request->user();
+        $isDistrictAdmin = $user?->isDistrictAdmin() ?? false;
+        $regionId = $isDistrictAdmin ? $user?->getAssignedRegionId() : null;
+        $districtName = $isDistrictAdmin ? $user?->region?->name : null;
+
         return Inertia::render('Admin/Dashboard', [
-            'metrics' => $this->dashboardService->getMetrics(),
-            'region_distribution' => $this->dashboardService->getRegionDistribution(),
-            'trend_data' => $this->dashboardService->getTrendData(),
-            'recent_activities' => $this->dashboardService->getRecentActivities(),
-            'popular_products' => $this->dashboardService->getPopularProducts(),
+            'is_district_admin' => $isDistrictAdmin,
+            'district_name' => $districtName,
+            'metrics' => $this->dashboardService->getMetrics($regionId),
+            'region_distribution' => $regionId
+                ? $this->dashboardService->getVillageDistribution($regionId)
+                : $this->dashboardService->getRegionDistribution(),
+            'trend_data' => $this->dashboardService->getTrendData($regionId),
+            'recent_activities' => $this->dashboardService->getRecentActivities($regionId),
+            'popular_products' => $this->dashboardService->getPopularProducts($regionId),
         ]);
     }
 }

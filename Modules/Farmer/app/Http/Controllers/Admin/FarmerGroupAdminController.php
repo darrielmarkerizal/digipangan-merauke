@@ -7,6 +7,8 @@ use App\Support\InertiaQuery;
 use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Http\RedirectResponse;
+use App\Models\User;
+use Illuminate\Http\Request;
 use Modules\Farmer\Http\Requests\AttachFarmerToGroupRequest;
 use Modules\Farmer\Http\Requests\DetachFarmerFromGroupRequest;
 use Modules\Farmer\Http\Requests\StoreFarmerGroupRequest;
@@ -25,35 +27,64 @@ class FarmerGroupAdminController extends Controller
         private readonly FarmerService $farmerService,
     ) {}
 
-    public function index(): Response
+    public function index(Request $request): Response
     {
+        $user = $request->user();
+        $isDistrictAdmin = $user?->isDistrictAdmin() ?? false;
+        $regionId = $isDistrictAdmin ? $user?->getAssignedRegionId() : null;
+
+        $paginator = $isDistrictAdmin && $regionId
+            ? $this->service->paginateFilteredForDistrict($regionId)
+            : $this->service->paginateFiltered();
+
+        $regions = $isDistrictAdmin && $user?->region
+            ? collect([['id' => $user->region->id, 'name' => $user->region->name]])
+            : $this->regionService->list();
+
         return InertiaQuery::render(
             'Admin/FarmerGroup/Index',
-            $this->service->paginateFiltered(),
+            $paginator,
             FarmerGroupResource::class,
-            ['regions' => $this->regionService->list()],
+            ['regions' => $regions],
             'farmerGroups'
         );
     }
 
-    public function create(): Response
+    public function create(Request $request): Response
     {
+        $user = $request->user();
+        $isDistrictAdmin = $user?->isDistrictAdmin() ?? false;
+        $regionId = $isDistrictAdmin ? $user?->getAssignedRegionId() : null;
+
+        $regions = $isDistrictAdmin && $user?->region
+            ? collect([['id' => $user->region->id, 'name' => $user->region->name]])
+            : $this->regionService->list();
+
         return Inertia::render('Admin/FarmerGroup/Create', [
-            'regions' => $this->regionService->list(),
+            'regions' => $regions,
+            'default_region_id' => $regionId,
         ]);
     }
 
     public function store(StoreFarmerGroupRequest $request): RedirectResponse
     {
-        $this->service->create($request->validated());
+        $data = $request->validated();
+        $user = $request->user();
+
+        if ($user?->isDistrictAdmin() && $user?->getAssignedRegionId()) {
+            $data['region_id'] = $user->getAssignedRegionId();
+        }
+
+        $this->service->create($data);
 
         return redirect()->route('admin.farmer-group.index')
             ->with('success', 'Kelompok tani berhasil ditambahkan.');
     }
 
-    public function show(int $id): Response
+    public function show(Request $request, int $id): Response
     {
         $group = $this->service->findOrFail($id);
+        $this->authorizeDistrictAccess($request->user(), $group->region_id);
 
         return Inertia::render('Admin/FarmerGroup/Show', [
             'farmerGroup' => (new FarmerGroupResource($group))->resolve(),
@@ -61,31 +92,51 @@ class FarmerGroupAdminController extends Controller
         ]);
     }
 
-    public function edit(int $id): Response
+    public function edit(Request $request, int $id): Response
     {
-        $group           = $this->service->findOrFail($id);
+        $group = $this->service->findOrFail($id);
+        $this->authorizeDistrictAccess($request->user(), $group->region_id);
+
+        $user = $request->user();
+        $isDistrictAdmin = $user?->isDistrictAdmin() ?? false;
+        $regionId = $isDistrictAdmin ? $user?->getAssignedRegionId() : null;
+
+        $regions = $isDistrictAdmin && $user?->region
+            ? collect([['id' => $user->region->id, 'name' => $user->region->name]])
+            : $this->regionService->list();
+
         $availableFarmers = $this->farmerService->availableForGroup($group->region_id);
 
         return Inertia::render('Admin/FarmerGroup/Edit', [
-            'farmerGroup'     => (new FarmerGroupResource($group))->resolve(),
-            'regions'         => $this->regionService->list(),
-            'members'         => FarmerResource::collection($group->farmers()->get())->resolve(),
+            'farmerGroup'      => (new FarmerGroupResource($group))->resolve(),
+            'regions'          => $regions,
+            'members'          => FarmerResource::collection($group->farmers()->get())->resolve(),
             'availableFarmers' => FarmerResource::collection($availableFarmers)->resolve(),
+            'default_region_id' => $regionId,
         ]);
     }
 
     public function update(UpdateFarmerGroupRequest $request, int $id): RedirectResponse
     {
         $model = $this->service->findOrFail($id);
-        $this->service->update($model, $request->validated());
+        $this->authorizeDistrictAccess($request->user(), $model->region_id);
+
+        $data = $request->validated();
+        if ($request->user()?->isDistrictAdmin() && $request->user()?->getAssignedRegionId()) {
+            $data['region_id'] = $request->user()->getAssignedRegionId();
+        }
+
+        $this->service->update($model, $data);
 
         return redirect()->route('admin.farmer-group.index')
             ->with('success', 'Kelompok tani berhasil diperbarui.');
     }
 
-    public function destroy(int $id): RedirectResponse
+    public function destroy(Request $request, int $id): RedirectResponse
     {
         $model = $this->service->findOrFail($id);
+        $this->authorizeDistrictAccess($request->user(), $model->region_id);
+
         $this->service->delete($model);
 
         return redirect()->back()
@@ -95,6 +146,8 @@ class FarmerGroupAdminController extends Controller
     public function attachFarmer(AttachFarmerToGroupRequest $request, int $id): RedirectResponse
     {
         $group  = $this->service->findOrFail($id);
+        $this->authorizeDistrictAccess($request->user(), $group->region_id);
+
         $farmer = $this->farmerService->findOrFail($request->validated('farmer_id'));
 
         if ($farmer->region_id !== $group->region_id) {
@@ -110,6 +163,8 @@ class FarmerGroupAdminController extends Controller
     public function detachFarmer(DetachFarmerFromGroupRequest $request, int $id): RedirectResponse
     {
         $group  = $this->service->findOrFail($id);
+        $this->authorizeDistrictAccess($request->user(), $group->region_id);
+
         $farmer = $this->farmerService->findOrFail($request->validated('farmer_id'));
 
         if ($farmer->farmer_group_id !== $group->id) {
@@ -120,5 +175,16 @@ class FarmerGroupAdminController extends Controller
 
         return redirect()->back()
             ->with('success', 'Petani berhasil dikeluarkan dari kelompok.');
+    }
+
+    private function authorizeDistrictAccess(?User $user, ?int $resourceRegionId): void
+    {
+        if ($user && $user->isDistrictAdmin()) {
+            abort_if(
+                (int) $resourceRegionId !== (int) $user->getAssignedRegionId(),
+                403,
+                'Akses ditolak: Anda hanya dapat mengelola kelompok tani pada distrik yang ditugaskan.'
+            );
+        }
     }
 }

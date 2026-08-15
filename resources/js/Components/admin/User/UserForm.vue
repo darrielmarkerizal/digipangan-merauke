@@ -11,12 +11,14 @@ interface UserData {
     name?: string;
     email?: string;
     is_active?: boolean;
+    region_id?: number | null;
     roles?: string[];
 }
 
 const props = defineProps<{
     user?: UserData;
     roles: string[];
+    regions?: Array<{ id: number; name: string }>;
     isEdit?: boolean;
 }>();
 
@@ -29,6 +31,7 @@ const form = useForm({
     password: "",
     password_confirmation: "",
     is_active: props.user?.is_active ?? true,
+    region_id: props.user?.region_id ?? null,
     roles: props.user?.roles ?? [],
 });
 
@@ -38,6 +41,9 @@ const toggleRole = (role: string) => {
         form.roles.push(role);
     } else {
         form.roles.splice(idx, 1);
+        if (role === 'admin_distrik') {
+            form.region_id = null;
+        }
     }
 };
 
@@ -52,6 +58,7 @@ const submit = () => {
 const roleLabel: Record<string, string> = {
     super_admin: "Super Admin",
     admin: "Admin",
+    admin_distrik: "Admin Distrik",
 };
 </script>
 
@@ -161,6 +168,24 @@ const roleLabel: Record<string, string> = {
                             </label>
                         </div>
                         <p v-if="form.errors.roles" class="text-xs text-danger mt-1">{{ form.errors.roles }}</p>
+                    </div>
+
+                    <!-- Distrik Penugasan (Only when Admin Distrik selected) -->
+                    <div v-if="form.roles.includes('admin_distrik')" class="pt-2 border-t border-border/60 space-y-2">
+                        <Field :error="form.errors.region_id">
+                            <Label required>Distrik Penugasan</Label>
+                            <select
+                                v-model="form.region_id"
+                                class="flex h-10 w-full rounded-xl border border-border/80 bg-white px-3 py-2 text-sm ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                            >
+                                <option :value="null" disabled>Pilih Distrik Penugasan</option>
+                                <option v-for="r in (regions ?? [])" :key="r.id" :value="r.id">
+                                    {{ r.name }}
+                                </option>
+                            </select>
+                            <p class="text-[11px] text-fg-muted mt-1">Admin ini hanya dapat mengakses dan mengelola data pada distrik yang dipilih.</p>
+                            <p v-if="form.errors.region_id" class="text-xs text-danger mt-1">{{ form.errors.region_id }}</p>
+                        </Field>
                     </div>
 
                     <div class="flex items-center justify-between pt-2 border-t border-border/60">

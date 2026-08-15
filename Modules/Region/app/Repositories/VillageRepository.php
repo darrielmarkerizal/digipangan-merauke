@@ -42,4 +42,16 @@ class VillageRepository extends BaseRepository implements VillageRepositoryInter
     {
         return ['name', 'created_at'];
     }
+
+    public function countByRegion(int $regionId): int
+    {
+        return $this->model->newQuery()->where('region_id', $regionId)->count();
+    }
+
+    public function listByRegion(int $regionId): \Illuminate\Database\Eloquent\Collection
+    {
+        return $this->model->newQuery()
+            ->where('region_id', $regionId)
+            ->get(['id', 'name', 'slug', 'region_id']);
+    }
 }

@@ -131,6 +131,21 @@ abstract class BaseRepository implements BaseRepositoryInterface
         return $this->paginateQuery($this->filtered(), $perPage);
     }
 
+    public function paginateFilteredForDistrict(int $regionId, ?int $perPage = null, string $column = 'region_id'): LengthAwarePaginator
+    {
+        $baseQuery = $this->query();
+        if ($this->model instanceof \Modules\Region\Models\Region) {
+            $baseQuery->where('id', $regionId);
+        } else {
+            $baseQuery->where($this->model->qualifyColumn($column), $regionId);
+        }
+
+        return $this->paginateQuery(
+            $this->buildFiltered($baseQuery),
+            $perPage
+        );
+    }
+
     public function publicPaginateFiltered(?int $perPage = null): LengthAwarePaginator
     {
         return $this->paginateQuery($this->publicFiltered(), $perPage);

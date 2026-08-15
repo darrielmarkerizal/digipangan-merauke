@@ -12,9 +12,9 @@ interface ProductInteractionRepositoryInterface extends BaseRepositoryInterface
 {
     public function existsViewToday(int $productId, string $visitorHash): bool;
 
-    public function countByType(ProductInteractionType $type): int;
+    public function countByType(ProductInteractionType $type, ?int $regionId = null): int;
 
-    public function monthlyCountsByType(ProductInteractionType $type, Carbon $since): SupportCollection;
+    public function monthlyCountsByType(ProductInteractionType $type, Carbon $since, ?int $regionId = null): SupportCollection;
 
-    public function recentContactsWithProduct(int $limit = 5): Collection;
+    public function recentContactsWithProduct(int $limit = 5, ?int $regionId = null): Collection;
 }
