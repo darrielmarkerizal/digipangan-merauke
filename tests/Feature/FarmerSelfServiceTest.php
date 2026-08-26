@@ -53,7 +53,7 @@ function fssAdminUser(): User
         'password' => Hash::make('rahasia123'),
         'is_active' => true,
     ]);
-    $user->assignRole('admin');
+    $user->assignRole('super_admin');
 
     return $user->fresh();
 }

@@ -17,7 +17,7 @@ defineEmits<{
     <header
         class="sticky top-0 z-30 flex h-14 w-full items-center justify-between border-b border-border/80 bg-white/90 px-4 backdrop-blur-xl md:px-6"
     >
-        <div class="flex items-center gap-4">
+        <div class="flex min-w-0 flex-1 items-center gap-2 sm:gap-4">
             <button
                 type="button"
                 class="flex size-9 items-center justify-center rounded-xl border border-border/80 text-fg-muted transition-colors hover:bg-muted/60 hover:text-fg lg:hidden"
@@ -34,7 +34,7 @@ defineEmits<{
             />
         </div>
 
-        <div class="flex items-center gap-3">
+        <div class="flex shrink-0 items-center gap-2 sm:gap-3">
             <FarmerUserProfile />
         </div>
     </header>

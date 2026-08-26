@@ -29,9 +29,9 @@ const props = defineProps<{
             </div>
             
             <div v-for="region in regionDistribution" :key="region.name" class="space-y-1.5">
-                <div class="flex justify-between text-xs font-semibold">
-                    <span class="text-fg">{{ region.name }}</span>
-                    <span class="font-bold tabular-nums text-brand">{{ region.percentage }}%</span>
+                <div class="flex justify-between gap-3 text-xs font-semibold">
+                    <span class="min-w-0 truncate text-fg">{{ region.name }}</span>
+                    <span class="shrink-0 font-bold tabular-nums text-brand">{{ region.percentage }}%</span>
                 </div>
                 <div class="h-2 w-full overflow-hidden rounded-full bg-muted">
                     <div

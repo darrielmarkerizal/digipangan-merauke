@@ -2,11 +2,11 @@
 
 namespace Modules\Media\Services;
 
-use Modules\Media\Repositories\TemporaryFileRepositoryInterface;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Modules\Media\Models\TemporaryFile;
+use Modules\Media\Repositories\TemporaryFileRepositoryInterface;
 
 class TemporaryMediaService
 {
@@ -16,10 +16,10 @@ class TemporaryMediaService
 
     public function handleUpload(UploadedFile $file): TemporaryFile
     {
-        $filename = $file->getClientOriginalName();
+        $filename = $file->hashName();
         $folder = (string) Str::uuid();
 
-        $file->storeAs('temp/' . $folder, $filename);
+        $file->storeAs('temp/'.$folder, $filename);
 
         return $this->repository->create([
             'folder' => $folder,
@@ -32,7 +32,8 @@ class TemporaryMediaService
         $temporaryFile = $this->repository->findByFolder($folder);
 
         if ($temporaryFile) {
-            Storage::deleteDirectory('temp/' . $temporaryFile->folder);
+            Storage::deleteDirectory('temp/'.$temporaryFile->folder);
+
             return $this->repository->delete($temporaryFile);
         }
 
@@ -44,12 +45,12 @@ class TemporaryMediaService
         $temporaryFile = $this->repository->findByFolder($folderUuid);
 
         if ($temporaryFile) {
-            $path = Storage::disk('local')->path('temp/' . $temporaryFile->folder . '/' . $temporaryFile->filename);
-            
+            $path = Storage::disk('local')->path('temp/'.$temporaryFile->folder.'/'.$temporaryFile->filename);
+
             if (file_exists($path)) {
                 $media = $model->addMedia($path)->toMediaCollection($collectionName);
-                
-                Storage::deleteDirectory('temp/' . $temporaryFile->folder);
+
+                Storage::deleteDirectory('temp/'.$temporaryFile->folder);
                 $this->repository->delete($temporaryFile);
 
                 return $media;
@@ -63,9 +64,9 @@ class TemporaryMediaService
     {
         $files = $this->repository->getExpiredFiles($hours);
         $count = 0;
-        
+
         foreach ($files as $file) {
-            Storage::deleteDirectory('temp/' . $file->folder);
+            Storage::deleteDirectory('temp/'.$file->folder);
             $this->repository->delete($file);
             $count++;
         }

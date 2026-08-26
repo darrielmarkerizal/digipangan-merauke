@@ -196,7 +196,7 @@ const executeDelete = () => {
         </div>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
         <div class="rounded-2xl border border-border/80 bg-white p-5 shadow-xs space-y-3">
           <div class="flex items-center gap-2.5 border-b border-border/60 pb-3">
             <span class="flex size-8 items-center justify-center rounded-lg bg-brand-weak text-brand">

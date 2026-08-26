@@ -3,6 +3,7 @@
 namespace Modules\User\Database\Seeders;
 
 use App\Enums\Permission as PermissionEnum;
+use App\Enums\UserRole;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -23,13 +24,11 @@ class UserDatabaseSeeder extends Seeder
             Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'web']);
         }
 
-        $superAdmin = Role::firstOrCreate(['name' => 'super_admin', 'guard_name' => 'web']);
-        $admin = Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
-        $districtAdmin = Role::firstOrCreate(['name' => 'admin_distrik', 'guard_name' => 'web']);
-        Role::firstOrCreate(['name' => 'farmer', 'guard_name' => 'web']);
+        $superAdmin = Role::firstOrCreate(['name' => UserRole::SuperAdmin->value, 'guard_name' => 'web']);
+        $districtAdmin = Role::firstOrCreate(['name' => UserRole::DistrictAdmin->value, 'guard_name' => 'web']);
+        Role::firstOrCreate(['name' => UserRole::Farmer->value, 'guard_name' => 'web']);
 
         $superAdmin->syncPermissions(PermissionEnum::values());
-        $admin->syncPermissions(PermissionEnum::forAdmin());
         $districtAdmin->syncPermissions(PermissionEnum::forDistrictAdmin());
 
         $this->seedInitialAdmin();
@@ -41,7 +40,7 @@ class UserDatabaseSeeder extends Seeder
         $password = config('digipangan.admin.password');
 
         if (blank($email) || blank($password)) {
-            $this->command?->warn('ADMIN_EMAIL atau ADMIN_PASSWORD kosong, akun admin dilewati.');
+            $this->command?->warn('ADMIN_EMAIL atau ADMIN_PASSWORD kosong, akun pengelola dilewati.');
 
             return;
         }
@@ -52,18 +51,18 @@ class UserDatabaseSeeder extends Seeder
             );
         }
 
-        $admin = User::withTrashed()->firstOrNew(['email' => $email]);
+        $initialUser = User::withTrashed()->firstOrNew(['email' => $email]);
 
-        if ($admin->exists) {
-            $this->command?->info("Akun admin {$email} sudah ada, tidak diubah.");
+        if ($initialUser->exists) {
+            $this->command?->info("Akun pengelola {$email} sudah ada, tidak diubah.");
         } else {
-            $admin->fill([
+            $initialUser->fill([
                 'name' => config('digipangan.admin.name'),
                 'password' => Hash::make($password),
                 'is_active' => true,
             ])->save();
         }
 
-        $admin->syncRoles(['super_admin']);
+        $initialUser->syncRoles([UserRole::SuperAdmin->value]);
     }
 }

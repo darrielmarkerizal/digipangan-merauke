@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { computed } from "vue";
 import { useForm, Link } from "@inertiajs/vue3";
 import { Button, Field, Input, Label, Switch } from "@/Components/ui";
 import { Icon } from "@/Components/ui";
@@ -35,15 +34,11 @@ const form = useForm({
     roles: props.user?.roles ?? [],
 });
 
-const toggleRole = (role: string) => {
-    const idx = form.roles.indexOf(role);
-    if (idx === -1) {
-        form.roles.push(role);
-    } else {
-        form.roles.splice(idx, 1);
-        if (role === 'admin_distrik') {
-            form.region_id = null;
-        }
+const selectRole = (role: string) => {
+    form.roles = form.roles[0] === role ? [] : [role];
+
+    if (role !== 'admin_distrik') {
+        form.region_id = null;
     }
 };
 
@@ -57,14 +52,14 @@ const submit = () => {
 
 const roleLabel: Record<string, string> = {
     super_admin: "Super Admin",
-    admin: "Admin",
     admin_distrik: "Admin Distrik",
+    farmer: "Petani",
 };
 </script>
 
 <template>
     <form @submit.prevent="submit" class="space-y-6">
-        <div class="flex items-center justify-between">
+        <div class="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-between">
             <Link
                 href="/admin/user"
                 class="inline-flex items-center gap-2 text-sm font-medium text-fg-muted transition-colors hover:text-fg"
@@ -72,7 +67,7 @@ const roleLabel: Record<string, string> = {
                 <Icon :icon="ArrowLeft" :size="16" />
                 <span>Kembali ke Daftar User</span>
             </Link>
-            <Button type="submit" :disabled="form.processing" class="gap-2 font-semibold">
+            <Button type="submit" :disabled="form.processing" class="self-end gap-2 font-semibold sm:self-auto">
                 <Icon v-if="form.processing" :icon="Loader2" :size="15" class="animate-spin" />
                 <Icon v-else :icon="Save" :size="15" />
                 {{ isEdit ? "Simpan Perubahan" : "Tambah Pengguna" }}
@@ -159,10 +154,10 @@ const roleLabel: Record<string, string> = {
                                 :class="form.roles.includes(role) ? 'border-brand/40 bg-brand-weak/20' : ''"
                             >
                                 <input
-                                    type="checkbox"
+                                    type="radio"
                                     :checked="form.roles.includes(role)"
-                                    @change="toggleRole(role)"
-                                    class="rounded border-border text-brand focus:ring-brand"
+                                    @change="selectRole(role)"
+                                    class="border-border text-brand focus:ring-brand"
                                 />
                                 <span class="text-sm font-medium text-fg">{{ roleLabel[role] ?? role }}</span>
                             </label>
@@ -170,7 +165,6 @@ const roleLabel: Record<string, string> = {
                         <p v-if="form.errors.roles" class="text-xs text-danger mt-1">{{ form.errors.roles }}</p>
                     </div>
 
-                    <!-- Distrik Penugasan (Only when Admin Distrik selected) -->
                     <div v-if="form.roles.includes('admin_distrik')" class="pt-2 border-t border-border/60 space-y-2">
                         <Field :error="form.errors.region_id">
                             <Label required>Distrik Penugasan</Label>
@@ -183,7 +177,7 @@ const roleLabel: Record<string, string> = {
                                     {{ r.name }}
                                 </option>
                             </select>
-                            <p class="text-[11px] text-fg-muted mt-1">Admin ini hanya dapat mengakses dan mengelola data pada distrik yang dipilih.</p>
+                            <p class="text-[11px] text-fg-muted mt-1">Pengguna ini hanya dapat mengakses dan mengelola data pada distrik yang dipilih.</p>
                             <p v-if="form.errors.region_id" class="text-xs text-danger mt-1">{{ form.errors.region_id }}</p>
                         </Field>
                     </div>

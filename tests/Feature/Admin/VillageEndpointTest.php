@@ -30,8 +30,8 @@ describe('Village CRUD', function () {
         $this->getJson(route('api.village.index'))->assertStatus(401);
     });
 
-    it('mengizinkan admin mengakses daftar', function () {
-        $this->actingAs(actor_village('admin'))->getJson(route('api.village.index'))->assertOk();
+    it('mengizinkan Super Admin mengakses daftar', function () {
+        $this->actingAs(actor_village('super_admin'))->getJson(route('api.village.index'))->assertOk();
     });
 
     it('menolak pengguna tanpa izin kelola master data dengan 403', function () {

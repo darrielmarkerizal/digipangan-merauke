@@ -4,8 +4,10 @@ namespace Modules\Region\Http\Controllers;
 
 use App\Enums\Permission;
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Modules\Region\Http\Requests\StoreRegionRequest;
 use Modules\Region\Http\Requests\UpdateRegionRequest;
@@ -23,17 +25,25 @@ class RegionController extends Controller implements HasMiddleware
         return ['permission:'.Permission::ManageRegions->value];
     }
 
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
-        $paginator = $this->service->paginateFiltered();
+        $user = $request->user();
+        $this->ensureDistrictAssignment($user);
+        $regionId = $user?->isDistrictAdmin() ? $user->getAssignedRegionId() : null;
+
+        $paginator = $regionId !== null
+            ? $this->service->paginateFilteredForDistrict($regionId)
+            : $this->service->paginateFiltered();
 
         return $this->paginatedResponse(
             $paginator->setCollection(RegionResource::collection($paginator->getCollection())->collection)
         );
     }
 
-    public function show(int $id): JsonResponse
+    public function show(Request $request, int $id): JsonResponse
     {
+        $this->authorizeDistrictAccess($request->user(), $id);
+
         return $this->successResponse(
             new RegionResource($this->service->findOrFail($id))
         );
@@ -41,6 +51,8 @@ class RegionController extends Controller implements HasMiddleware
 
     public function store(StoreRegionRequest $request): JsonResponse
     {
+        $this->ensureGlobalManagement($request->user());
+
         return $this->successResponse(
             new RegionResource($this->service->create($request->validated())),
             'Wilayah berhasil dibuat.',
@@ -50,6 +62,7 @@ class RegionController extends Controller implements HasMiddleware
 
     public function update(UpdateRegionRequest $request, int $id): JsonResponse
     {
+        $this->authorizeDistrictAccess($request->user(), $id);
         $model = $this->service->findOrFail($id);
 
         return $this->successResponse(
@@ -58,11 +71,42 @@ class RegionController extends Controller implements HasMiddleware
         );
     }
 
-    public function destroy(int $id): JsonResponse
+    public function destroy(Request $request, int $id): JsonResponse
     {
+        $this->ensureGlobalManagement($request->user());
         $model = $this->service->findOrFail($id);
         $this->service->delete($model);
 
         return $this->successResponse(null, 'Wilayah berhasil dihapus.');
+    }
+
+    private function authorizeDistrictAccess(?User $user, int $regionId): void
+    {
+        if ($user?->isDistrictAdmin()) {
+            abort_if(
+                $user->getAssignedRegionId() === null
+                    || $user->getAssignedRegionId() !== $regionId,
+                403,
+                'Akses ditolak: Anda hanya dapat mengelola data pada distrik Anda.'
+            );
+        }
+    }
+
+    private function ensureDistrictAssignment(?User $user): void
+    {
+        abort_if(
+            $user?->isDistrictAdmin() && $user->getAssignedRegionId() === null,
+            403,
+            'Akun admin distrik belum memiliki distrik yang ditugaskan.'
+        );
+    }
+
+    private function ensureGlobalManagement(?User $user): void
+    {
+        abort_if(
+            $user?->isDistrictAdmin(),
+            403,
+            'Akses ditolak: Hanya Super Admin yang dapat melakukan tindakan ini.'
+        );
     }
 }

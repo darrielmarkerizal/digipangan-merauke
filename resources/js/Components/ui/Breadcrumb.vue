@@ -23,12 +23,12 @@ withDefaults(
 </script>
 
 <template>
-  <nav aria-label="Breadcrumb" class="flex items-center text-sm">
-    <ol v-if="items && items.length > 0" class="flex flex-wrap items-center gap-1.5 sm:gap-2">
+  <nav aria-label="Breadcrumb" class="flex min-w-0 items-center text-sm">
+    <ol v-if="items && items.length > 0" class="flex min-w-0 flex-wrap items-center gap-1.5 sm:gap-2">
       <li
         v-for="(item, index) in items"
         :key="index"
-        class="inline-flex items-center gap-1.5 sm:gap-2"
+        class="inline-flex min-w-0 items-center gap-1.5 sm:gap-2"
       >
         <span
           v-if="index > 0"
@@ -47,20 +47,20 @@ withDefaults(
         <Link
           v-if="item.href && index !== items.length - 1"
           :href="item.href"
-          class="inline-flex items-center gap-1.5 font-medium text-fg-muted transition-colors hover:text-fg"
+          class="inline-flex min-w-0 items-center gap-1.5 font-medium text-fg-muted transition-colors hover:text-fg"
         >
           <Icon v-if="item.icon" :icon="item.icon" :size="15" />
-          <span>{{ item.label }}</span>
+          <span class="max-w-[8rem] truncate sm:max-w-[16rem] lg:max-w-none">{{ item.label }}</span>
         </Link>
 
         <span
           v-else
-          class="inline-flex items-center gap-1.5"
+          class="inline-flex min-w-0 items-center gap-1.5"
           :class="index === items.length - 1 ? 'font-semibold text-fg' : 'font-medium text-fg-muted'"
           :aria-current="index === items.length - 1 ? 'page' : undefined"
         >
           <Icon v-if="item.icon" :icon="item.icon" :size="15" />
-          <span>{{ item.label }}</span>
+          <span class="max-w-[10rem] truncate sm:max-w-[20rem] lg:max-w-none">{{ item.label }}</span>
         </span>
       </li>
     </ol>

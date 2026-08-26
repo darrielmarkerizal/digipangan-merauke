@@ -135,9 +135,9 @@ const waLink = computed(() => {
                         </div>
 
                         <div class="flex-1">
-                            <div class="flex items-center gap-2">
+                            <div class="flex flex-wrap items-center gap-2 lg:flex-nowrap">
                                 <h1
-                                    class="text-2xl font-extrabold tracking-tight text-fg sm:text-3xl"
+                                    class="min-w-0 break-words text-2xl font-extrabold tracking-tight text-fg sm:text-3xl"
                                 >
                                     {{ farmer.name }}
                                 </h1>
@@ -266,8 +266,8 @@ const waLink = computed(() => {
         </section>
 
         <section class="mx-auto max-w-[90rem] px-4 py-8 sm:px-6 lg:px-8">
-            <div class="mb-6 flex items-center justify-between gap-4">
-                <div class="flex items-center gap-3">
+            <div class="mb-6 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div class="flex min-w-0 items-center gap-3">
                     <div
                         class="flex size-10 items-center justify-center rounded-lg bg-brand-weak text-brand"
                     >
@@ -283,7 +283,7 @@ const waLink = computed(() => {
                     </div>
                 </div>
                 <span
-                    class="rounded-md bg-brand-weak px-2.5 py-1 text-sm font-semibold text-brand"
+                    class="shrink-0 rounded-md bg-brand-weak px-2.5 py-1 text-sm font-semibold text-brand"
                 >
                     {{ products.length }} Produk
                 </span>

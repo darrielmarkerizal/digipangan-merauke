@@ -36,9 +36,9 @@ defineProps<{
                     </div>
                 </div>
                 <div class="flex-1">
-                    <div class="flex items-center justify-between">
-                        <p class="text-sm font-semibold text-fg">{{ activity.title }}</p>
-                        <span class="text-xs text-fg-muted flex items-center gap-1">
+                    <div class="flex flex-col items-start gap-1 sm:flex-row sm:items-center sm:justify-between">
+                        <p class="min-w-0 text-sm font-semibold text-fg">{{ activity.title }}</p>
+                        <span class="shrink-0 text-xs text-fg-muted flex items-center gap-1">
                             <Icon :icon="Clock" :size="12" />
                             {{ activity.date_human }}
                         </span>

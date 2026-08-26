@@ -47,8 +47,8 @@ describe('ProductCategory CRUD', function () {
         $this->getJson(route('api.product_category.index'))->assertStatus(401);
     });
 
-    it('mengizinkan admin mengakses daftar', function () {
-        $this->actingAs(actor_product_category('admin'))->getJson(route('api.product_category.index'))->assertOk();
+    it('mengizinkan Super Admin mengakses daftar', function () {
+        $this->actingAs(actor_product_category('super_admin'))->getJson(route('api.product_category.index'))->assertOk();
     });
 
     it('menolak pengguna tanpa izin kelola master data dengan 403', function () {

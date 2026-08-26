@@ -82,8 +82,8 @@ const chartSeries = computed(() => [{
 
 <template>
     <div class="rounded-xl border border-border/80 bg-white p-5 shadow-xs h-full flex flex-col">
-        <div class="flex items-center justify-between border-b border-border/80 pb-3">
-            <div>
+        <div class="flex flex-col items-start gap-2 border-b border-border/80 pb-3 sm:flex-row sm:items-center sm:justify-between">
+            <div class="min-w-0">
                 <h2 class="text-sm font-bold text-fg">
                     Tren Kontak Pembeli via WhatsApp (12 Bulan)
                 </h2>
@@ -91,7 +91,7 @@ const chartSeries = computed(() => [{
                     Pencatatan interaksi langsung tombol Hubungi Penjual.
                 </p>
             </div>
-            <span class="rounded-full bg-brand-weak px-2.5 py-1 text-[11px] font-bold text-brand">
+            <span class="shrink-0 rounded-full bg-brand-weak px-2.5 py-1 text-[11px] font-bold text-brand">
                 Live Metric
             </span>
         </div>

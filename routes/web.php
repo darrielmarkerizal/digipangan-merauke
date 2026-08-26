@@ -63,7 +63,7 @@ Route::middleware('guest')->group(function () {
 
 Route::post('/logout', [AuthAdminController::class, 'logout'])->name('logout');
 
-Route::middleware(['auth', 'role:admin|super_admin|admin_distrik'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'role:super_admin|admin_distrik'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [DashboardAdminController::class, 'index'])->name('dashboard.index');
 
     Route::get('/produk', [ProductAdminController::class, 'index'])->name('product.index');

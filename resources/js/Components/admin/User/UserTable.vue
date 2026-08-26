@@ -17,8 +17,8 @@ const props = defineProps<{
 
 const roleLabel: Record<string, string> = {
     super_admin: "Super Admin",
-    admin: "Admin",
     admin_distrik: "Admin Distrik",
+    farmer: "Petani",
 };
 
 const executeDelete = (id: number) => {
@@ -76,7 +76,7 @@ const executeDelete = (id: number) => {
                     <td colspan="5" class="px-5 py-12 text-center">
                         <EmptyState
                             title="Belum ada pengguna"
-                            description="Tambahkan akun admin untuk mengelola sistem DigiPangan."
+                            description="Tambahkan akun pengguna untuk mengelola sistem DigiPangan."
                             :icon="Users"
                         />
                     </td>

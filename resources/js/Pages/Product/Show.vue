@@ -275,7 +275,7 @@ onMounted(() => {
 
                 <div class="lg:col-span-6 flex flex-col">
                     <div class="mb-6">
-                        <div class="flex items-center gap-2 mb-2">
+                        <div class="mb-2 flex flex-wrap items-center gap-2">
                             <span
                                 v-if="product.category"
                                 class="inline-flex items-center gap-1 rounded-full bg-brand/10 px-2.5 py-0.5 text-xs font-bold text-brand"
@@ -634,7 +634,7 @@ onMounted(() => {
             v-if="relatedProducts && relatedProducts.length > 0"
             class="mx-auto max-w-[90rem] px-3 py-8 sm:px-5 lg:px-6 border-t border-border/60 mt-8"
         >
-            <div class="mb-6 flex items-center justify-between">
+            <div class="mb-6 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                     <h2 class="text-xl sm:text-2xl font-extrabold text-fg">
                         Komoditas Sejenis
@@ -743,9 +743,9 @@ onMounted(() => {
                 class="w-full max-w-2xl max-h-[85vh] overflow-hidden rounded-2xl bg-white shadow-2xl flex flex-col animate-in fade-in zoom-in-95 duration-200"
             >
                 <div
-                    class="flex items-center justify-between border-b border-border/80 px-6 py-4 bg-muted/20"
+                    class="flex items-start justify-between gap-3 border-b border-border/80 bg-muted/20 px-4 py-4 sm:items-center sm:px-6"
                 >
-                    <div>
+                    <div class="min-w-0">
                         <h3 class="text-base font-extrabold text-fg">
                             Deskripsi Lengkap Produk
                         </h3>
@@ -762,7 +762,7 @@ onMounted(() => {
                     </button>
                 </div>
 
-                <div class="p-6 overflow-y-auto flex-1">
+                <div class="flex-1 overflow-y-auto p-4 sm:p-6">
                     <div
                         class="prose prose-sm sm:prose-base max-w-none text-fg-muted leading-relaxed prose-headings:text-fg prose-a:text-brand prose-strong:text-fg prose-ul:list-disc prose-ol:list-decimal"
                         v-html="
@@ -773,7 +773,7 @@ onMounted(() => {
                 </div>
 
                 <div
-                    class="border-t border-border/80 px-6 py-3 bg-muted/20 text-right"
+                    class="border-t border-border/80 bg-muted/20 px-4 py-3 text-right sm:px-6"
                 >
                     <Button
                         size="sm"

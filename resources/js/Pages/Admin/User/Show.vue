@@ -23,7 +23,8 @@ const props = defineProps<{
 
 const roleLabel: Record<string, string> = {
     super_admin: "Super Admin",
-    admin: "Admin",
+    admin_distrik: "Admin Distrik",
+    farmer: "Petani",
 };
 </script>
 
@@ -60,9 +61,9 @@ const roleLabel: Record<string, string> = {
                                 <img v-if="user.avatar_url" :src="user.avatar_url" :alt="user.name" class="size-full object-cover" />
                                 <span v-else class="text-brand font-bold text-2xl">{{ user.name?.charAt(0)?.toUpperCase() }}</span>
                             </div>
-                            <div>
-                                <h2 class="text-xl font-bold text-fg">{{ user.name }}</h2>
-                                <p class="text-sm text-fg-muted flex items-center gap-1.5 mt-1">
+                            <div class="min-w-0">
+                                <h2 class="break-words text-xl font-bold text-fg">{{ user.name }}</h2>
+                                <p class="mt-1 flex items-center gap-1.5 break-all text-sm text-fg-muted sm:break-normal">
                                     <Icon :icon="Mail" :size="14" />
                                     {{ user.email }}
                                 </p>

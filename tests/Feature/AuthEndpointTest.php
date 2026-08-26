@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Modules\User\Database\Seeders\UserDatabaseSeeder;
 
-function makeUser(array $overrides = [], string $role = 'admin'): User
+function makeUser(array $overrides = [], string $role = 'super_admin'): User
 {
     $user = User::create(array_merge([
         'name' => 'Admin Satu',
@@ -38,7 +38,7 @@ describe('login', function () {
             ->assertOk()
             ->assertJsonPath('success', true)
             ->assertJsonPath('data.email', 'admin.satu@digipangan.test')
-            ->assertJsonPath('data.roles.0', 'admin');
+            ->assertJsonPath('data.roles.0', 'super_admin');
 
         expect(auth()->check())->toBeTrue();
     });
@@ -86,7 +86,7 @@ describe('profil', function () {
         $this->actingAs(makeUser())
             ->getJson(route('api.auth.profile'))
             ->assertOk()
-            ->assertJsonPath('data.roles.0', 'admin')
+            ->assertJsonPath('data.roles.0', 'super_admin')
             ->assertJsonPath('data.avatar_url', null)
             ->assertJsonFragment(['produk.kelola']);
     });

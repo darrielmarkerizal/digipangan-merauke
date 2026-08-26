@@ -211,7 +211,7 @@ const handleSubmit = async () => {
 
 <template>
   <form @submit.prevent="handleSubmit" class="space-y-6">
-    <div class="flex items-center justify-between gap-4">
+    <div class="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-between">
       <Link
         href="/petani/dashboard/produk"
         class="inline-flex items-center gap-2 text-sm font-medium text-fg-muted transition-colors hover:text-fg"
@@ -220,7 +220,7 @@ const handleSubmit = async () => {
         <span>Kembali ke Produk Saya</span>
       </Link>
 
-      <div class="flex items-center gap-3">
+      <div class="flex items-center justify-end gap-3">
         <Link href="/petani/dashboard/produk">
           <Button variant="secondary" size="sm" type="button">Batal</Button>
         </Link>
@@ -308,12 +308,12 @@ const handleSubmit = async () => {
 
       <div class="space-y-6">
         <div class="rounded-2xl border border-border/80 bg-white p-5 md:p-6 shadow-xs space-y-4">
-          <div class="flex items-center justify-between border-b border-border/60 pb-3">
-            <div class="flex items-center gap-2.5">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-border/60 pb-3">
+            <div class="flex min-w-0 items-center gap-2.5">
               <span class="flex size-8 items-center justify-center rounded-lg bg-brand-weak text-brand">
                 <Icon :icon="ImageIcon" :size="18" />
               </span>
-              <div>
+              <div class="min-w-0">
                 <h2 class="text-base font-bold text-fg">Foto &amp; Galeri Produk</h2>
                 <p class="text-xs text-fg-muted">Gambar 1 otomatis menjadi Cover Utama</p>
               </div>
@@ -347,7 +347,7 @@ const handleSubmit = async () => {
             </div>
 
             <div class="space-y-2">
-              <div class="flex items-center justify-between">
+              <div class="flex items-center justify-between gap-3">
                 <span class="text-xs font-bold text-fg">Galeri Foto</span>
                 <span class="text-[11px] text-fg-muted">Klik ★ untuk set Cover</span>
               </div>

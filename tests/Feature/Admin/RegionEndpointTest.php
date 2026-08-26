@@ -27,8 +27,97 @@ describe('Region CRUD', function () {
         $this->getJson(route('api.region.index'))->assertStatus(401);
     });
 
-    it('mengizinkan admin mengakses daftar', function () {
-        $this->actingAs(actor_region('admin'))->getJson(route('api.region.index'))->assertOk();
+    it('mengizinkan Super Admin mengakses daftar', function () {
+        $this->actingAs(actor_region('super_admin'))->getJson(route('api.region.index'))->assertOk();
+    });
+
+    it('mengizinkan super admin mengakses seluruh wilayah', function () {
+        Region::create(['name' => 'Ulilin']);
+        Region::create(['name' => 'Muting']);
+
+        $response = $this->actingAs(actor_region('super_admin'))
+            ->getJson(route('api.region.index'));
+
+        expect($response->json('data'))->toHaveCount(2);
+    });
+
+    it('membatasi admin distrik pada wilayah yang ditugaskan', function () {
+        $assignedRegion = Region::create(['name' => 'Ulilin']);
+        $otherRegion = Region::create(['name' => 'Muting']);
+        $districtAdmin = actor_region('admin_distrik');
+        $districtAdmin->update(['region_id' => $assignedRegion->id]);
+
+        $this->actingAs($districtAdmin)
+            ->getJson(route('api.region.index'))
+            ->assertOk()
+            ->assertJsonCount(1, 'data')
+            ->assertJsonPath('data.0.id', $assignedRegion->id);
+
+        $this->actingAs($districtAdmin)
+            ->getJson(route('api.region.show', $otherRegion->id))
+            ->assertForbidden();
+
+        $this->actingAs($districtAdmin)
+            ->putJson(route('api.region.update', $otherRegion->id), ['name' => 'Hacked'])
+            ->assertForbidden();
+
+        $this->actingAs($districtAdmin)
+            ->deleteJson(route('api.region.destroy', $otherRegion->id))
+            ->assertForbidden();
+
+        $this->actingAs($districtAdmin)
+            ->postJson(route('api.region.store'), ['name' => 'Tidak Diizinkan'])
+            ->assertForbidden();
+    });
+
+    it('mengizinkan admin distrik mengunggah cover untuk wilayahnya sendiri', function () {
+        Storage::fake('local');
+        Storage::fake('public');
+
+        $assignedRegion = Region::create(['name' => 'Ulilin']);
+        $districtAdmin = actor_region('admin_distrik');
+        $districtAdmin->update(['region_id' => $assignedRegion->id]);
+
+        $folder = $this->actingAs($districtAdmin)
+            ->postJson(route('media.upload'), [
+                'file' => UploadedFile::fake()->image('ulilin.jpg'),
+            ])
+            ->assertOk()
+            ->json('folder');
+
+        $this->actingAs($districtAdmin)
+            ->putJson(route('api.region.update', $assignedRegion->id), [
+                'name' => $assignedRegion->name,
+                'cover' => $folder,
+            ])
+            ->assertOk();
+
+        expect($assignedRegion->fresh()->getFirstMedia('cover'))->not->toBeNull();
+    });
+
+    it('menolak farmer mengelola wilayah', function () {
+        $farmer = actor_region('farmer');
+        $region = Region::create(['name' => 'Ulilin']);
+
+        $this->actingAs($farmer)
+            ->getJson(route('api.region.index'))
+            ->assertForbidden();
+
+        $this->actingAs($farmer)
+            ->get(route('admin.region.show', $region->id))
+            ->assertForbidden();
+    });
+
+    it('menolak admin distrik tanpa penugasan wilayah', function () {
+        $districtAdmin = actor_region('admin_distrik');
+
+        $this->actingAs($districtAdmin)
+            ->getJson(route('api.region.index'))
+            ->assertForbidden();
+
+        $this->actingAs($districtAdmin)
+            ->get(route('admin.region.index'))
+            ->assertForbidden();
     });
 
     it('menolak pengguna tanpa izin kelola wilayah dengan 403', function () {

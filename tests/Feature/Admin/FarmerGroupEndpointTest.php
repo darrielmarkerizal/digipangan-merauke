@@ -30,8 +30,8 @@ describe('FarmerGroup CRUD', function () {
         $this->getJson(route('api.farmer_group.index'))->assertStatus(401);
     });
 
-    it('mengizinkan admin mengakses daftar', function () {
-        $this->actingAs(actor_farmer_group('admin'))->getJson(route('api.farmer_group.index'))->assertOk();
+    it('mengizinkan Super Admin mengakses daftar', function () {
+        $this->actingAs(actor_farmer_group('super_admin'))->getJson(route('api.farmer_group.index'))->assertOk();
     });
 
     it('menolak pengguna tanpa izin kelola master data dengan 403', function () {

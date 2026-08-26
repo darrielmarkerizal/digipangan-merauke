@@ -11,7 +11,7 @@ const props = defineProps<{
 <template>
     <AdminLayout
         title="Tambah Pengguna"
-        subtitle="Buat akun admin baru dengan peran dan hak akses yang sesuai."
+        subtitle="Buat akun pengguna baru dengan peran dan hak akses yang sesuai."
     >
         <UserForm :roles="roles" :regions="regions" />
     </AdminLayout>

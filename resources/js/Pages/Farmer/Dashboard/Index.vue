@@ -61,7 +61,7 @@ const statCards = [
         <div
           v-for="card in statCards"
           :key="card.key"
-          class="rounded-2xl border border-border/80 bg-white p-5 shadow-xs flex items-center gap-4"
+          class="rounded-2xl border border-border/80 bg-white p-4 shadow-xs flex items-center gap-3 sm:gap-4 sm:p-5"
         >
           <span class="flex size-11 items-center justify-center rounded-xl bg-brand-weak text-brand shrink-0">
             <Icon :icon="card.icon" :size="20" />
@@ -101,7 +101,7 @@ const statCards = [
       </div>
 
       <div class="rounded-2xl border border-border/80 bg-white shadow-xs">
-        <div class="flex items-center justify-between border-b border-border/60 p-5">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-border/60 p-5">
           <h3 class="text-sm font-bold text-fg">Produk Terbaru</h3>
           <Link href="/petani/dashboard/produk" class="text-xs font-semibold text-brand hover:text-brand-strong">
             Lihat Semua
@@ -120,13 +120,13 @@ const statCards = [
           <div
             v-for="product in recent_products"
             :key="product.id"
-            class="flex items-center justify-between gap-4 p-4 px-5"
+            class="flex flex-col items-start gap-2 p-4 px-5 sm:flex-row sm:items-center sm:justify-between"
           >
-            <div>
-              <p class="text-sm font-bold text-fg">{{ product.name }}</p>
+            <div class="min-w-0">
+              <p class="break-words text-sm font-bold text-fg">{{ product.name }}</p>
               <p class="text-xs text-fg-muted">{{ product.category?.name || 'Umum' }}</p>
             </div>
-            <div class="flex items-center gap-2">
+            <div class="flex flex-wrap items-center gap-2 sm:justify-end">
               <Badge :variant="product.is_active ? 'brand' : 'neutral'">
                 {{ product.is_active ? 'Aktif' : 'Nonaktif' }}
               </Badge>

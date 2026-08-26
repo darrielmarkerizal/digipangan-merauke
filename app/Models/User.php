@@ -14,23 +14,23 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Modules\Farmer\Models\Farmer;
+use Modules\Media\Traits\InteractsWithTemporaryMedia as TemporaryMediaTrait;
 use Modules\Post\Models\Post;
 use Modules\Region\Models\Region;
+use OwenIt\Auditing\Auditable;
+use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
 use Spatie\Image\Enums\Fit;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
-use Modules\Media\Traits\InteractsWithTemporaryMedia as TemporaryMediaTrait;
 use Spatie\Permission\Traits\HasRoles;
-use OwenIt\Auditing\Auditable;
-use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
 
 #[Fillable(['name', 'email', 'password', 'is_active', 'region_id'])]
 #[Hidden(['password', 'remember_token'])]
-class User extends Authenticatable implements HasMedia, AuditableContract
+class User extends Authenticatable implements AuditableContract, HasMedia
 {
     /** @use HasFactory<UserFactory> */
-    use HasApiTokens, HasFactory, HasRoles, InteractsWithMedia, TemporaryMediaTrait, Notifiable, SoftDeletes, Auditable;
+    use Auditable, HasApiTokens, HasFactory, HasRoles, InteractsWithMedia, Notifiable, SoftDeletes, TemporaryMediaTrait;
 
     /**
      * Get the attributes that should be cast.
@@ -90,6 +90,8 @@ class User extends Authenticatable implements HasMedia, AuditableContract
 
     public function getAssignedRegionId(): ?int
     {
-        return $this->region_id ? (int) $this->region_id : null;
+        $regionId = $this->getAttributes()['region_id'] ?? null;
+
+        return $regionId !== null ? (int) $regionId : null;
     }
 }

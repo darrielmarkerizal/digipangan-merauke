@@ -70,15 +70,15 @@ const closeSidebar = () => {
       </div>
     </transition>
 
-    <div class="flex flex-1 flex-col overflow-hidden">
+    <div class="flex min-w-0 flex-1 flex-col overflow-hidden">
       <FarmerTopbar
         :title="title"
         :subtitle="subtitle"
         @toggle-sidebar="toggleSidebar"
       />
 
-      <main class="flex-1 overflow-y-auto bg-bg py-4 md:py-6">
-        <div class="w-full px-4 md:px-6 space-y-5">
+      <main class="min-w-0 flex-1 overflow-y-auto bg-bg py-4 md:py-6">
+        <div class="w-full min-w-0 space-y-5 px-4 md:px-6">
           <header v-if="title || subtitle" class="flex flex-col justify-between gap-3 border-b border-border/80 pb-4 sm:flex-row sm:items-end">
             <div class="space-y-1">
               <h1 class="text-xl font-extrabold tracking-tight text-fg sm:text-2xl">

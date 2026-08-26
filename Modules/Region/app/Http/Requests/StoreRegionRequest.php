@@ -15,9 +15,9 @@ class StoreRegionRequest extends FormRequest
             'area_km2' => ['nullable', 'numeric', 'min:0'],
             'population' => ['nullable', 'integer', 'min:0'],
             'is_active' => ['boolean'],
-            'cover' => ['nullable', 'string'],
+            'cover' => ['nullable', 'uuid'],
             'gallery' => ['nullable', 'array'],
-            'gallery.*' => ['string'],
+            'gallery.*' => ['uuid'],
         ];
     }
 

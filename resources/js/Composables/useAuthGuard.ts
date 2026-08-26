@@ -35,7 +35,7 @@ export function useAuthGuard() {
   const isAuthenticated = computed(() => !!user.value)
 
   const isSuperAdmin = computed(() => {
-    return roles.value.includes('super_admin') || roles.value.includes('admin')
+    return roles.value.includes('super_admin')
   })
 
   const isStrictSuperAdmin = computed(() => {

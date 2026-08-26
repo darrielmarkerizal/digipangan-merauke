@@ -1,8 +1,13 @@
 <script setup lang="ts">
+import { ref } from "vue";
 import { Link, useForm } from "@inertiajs/vue3";
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 import { ArrowLeft, Save } from "@lucide/vue";
 import { Icon, Input, Button, Label, Textarea } from "@/Components/ui";
+import RegionMediaForm from "@/Components/admin/Region/RegionMediaForm.vue";
+
+const mediaForm = ref<{ prepareUpload: () => Promise<boolean> } | null>(null);
+const isSubmitting = ref(false);
 
 const form = useForm({
     name: "",
@@ -11,11 +16,27 @@ const form = useForm({
     area_km2: "" as string | number,
     population: "" as string | number,
     is_active: true,
+    cover: null as string | null,
+    gallery: [] as string[],
+    retained_gallery: [] as (number | string)[],
 });
 
-const handleSubmit = () => {
+const handleSubmit = async () => {
+    if (isSubmitting.value || form.processing) return;
+
+    isSubmitting.value = true;
+    const uploaded = await mediaForm.value?.prepareUpload();
+
+    if (uploaded === false) {
+        isSubmitting.value = false;
+        return;
+    }
+
     form.post("/admin/wilayah", {
         preserveScroll: true,
+        onFinish: () => {
+            isSubmitting.value = false;
+        },
     });
 };
 </script>
@@ -28,12 +49,12 @@ const handleSubmit = () => {
         <template #actions>
             <Button
                 @click="handleSubmit"
-                :disabled="form.processing"
+                :disabled="form.processing || isSubmitting"
                 class="gap-1.5 font-semibold"
             >
                 <Icon :icon="Save" :size="16" />
                 <span>{{
-                    form.processing ? "Menyimpan..." : "Simpan Wilayah"
+                    isSubmitting ? "Mengunggah & Menyimpan..." : "Simpan Wilayah"
                 }}</span>
             </Button>
         </template>
@@ -179,6 +200,10 @@ const handleSubmit = () => {
                         </div>
                     </div>
                 </form>
+            </div>
+
+            <div class="max-w-3xl">
+                <RegionMediaForm ref="mediaForm" :form="form" />
             </div>
         </div>
     </AdminLayout>

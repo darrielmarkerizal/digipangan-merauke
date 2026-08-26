@@ -35,8 +35,8 @@ describe('PostCategory CRUD', function () {
         $this->getJson(route('api.post_category.index'))->assertStatus(401);
     });
 
-    it('mengizinkan admin mengakses daftar', function () {
-        $this->actingAs(actor_post_category('admin'))->getJson(route('api.post_category.index'))->assertOk();
+    it('mengizinkan Super Admin mengakses daftar', function () {
+        $this->actingAs(actor_post_category('super_admin'))->getJson(route('api.post_category.index'))->assertOk();
     });
 
     it('menolak pengguna tanpa izin kelola master data dengan 403', function () {

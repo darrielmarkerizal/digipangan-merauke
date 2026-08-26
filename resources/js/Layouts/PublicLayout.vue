@@ -203,19 +203,23 @@ const isActive = (href: string) =>
                             Kolaborasi Strategis
                         </h3>
                         <div
-                            class="inline-flex flex-wrap items-center gap-4 sm:gap-6 rounded-2xl border border-border/80 bg-white px-4 py-3 sm:px-6 sm:py-4 shadow-sm max-w-full"
+                            class="flex w-full flex-col items-stretch gap-3 rounded-2xl border border-border/80 bg-white px-4 py-4 shadow-sm sm:flex-row sm:items-center sm:gap-6 sm:px-6 sm:py-4"
                         >
-                            <img
-                                src="/images/logos/logo-ugm-horizontal.png"
-                                alt="Universitas Gadjah Mada"
-                                class="h-8 sm:h-10 w-auto object-contain shrink-0"
-                            />
-                            <div class="h-8 sm:h-10 w-px bg-slate-200" />
-                            <img
-                                src="/images/logos/logotext-kementerian-transmigrasi.png"
-                                alt="Kementerian Transmigrasi RI"
-                                class="h-12 sm:h-16 w-auto object-contain shrink-0"
-                            />
+                            <div class="flex min-w-0 flex-1 items-center justify-center sm:justify-start">
+                                <img
+                                    src="/images/logos/logo-ugm-horizontal.png"
+                                    alt="Universitas Gadjah Mada"
+                                    class="h-8 w-auto max-w-full object-contain sm:h-10"
+                                />
+                            </div>
+                            <div class="h-px w-full shrink-0 bg-slate-200 sm:h-10 sm:w-px" />
+                            <div class="flex min-w-0 flex-1 items-center justify-center sm:justify-start">
+                                <img
+                                    src="/images/logos/logotext-kementerian-transmigrasi.png"
+                                    alt="Kementerian Transmigrasi RI"
+                                    class="h-12 w-auto max-w-full object-contain sm:h-16"
+                                />
+                            </div>
                         </div>
                         <p class="text-xs text-fg-muted">
                             Sinergi Universitas Gadjah Mada &amp; Kementerian

@@ -22,8 +22,8 @@ describe('FAQ CRUD', function () {
         $this->getJson(route('api.faq.index'))->assertStatus(401);
     });
 
-    it('mengizinkan admin mengakses daftar', function () {
-        $this->actingAs(actor_faq('admin'))->getJson(route('api.faq.index'))->assertOk();
+    it('mengizinkan Super Admin mengakses daftar', function () {
+        $this->actingAs(actor_faq('super_admin'))->getJson(route('api.faq.index'))->assertOk();
     });
 
     it('menolak pengguna tanpa izin kelola tentang dengan 403', function () {

@@ -152,7 +152,7 @@ function resetFilters() {
     <div
       v-if="isOpen"
       ref="panelRef"
-      class="absolute right-0 z-30 mt-2 w-80 sm:w-96 rounded-2xl border border-border/80 bg-white p-5 shadow-xl transition-all"
+      class="absolute right-0 z-30 mt-2 w-[calc(100vw-2rem)] max-w-80 rounded-2xl border border-border/80 bg-white p-5 shadow-xl transition-all sm:w-96"
     >
       <div class="flex items-center justify-between border-b border-border/60 pb-3">
         <div class="flex items-center gap-2">
@@ -195,7 +195,7 @@ function resetFilters() {
           <Select v-model="filters.role" class="!min-h-9 text-xs">
             <option value="">Semua Peran</option>
             <option v-for="role in roles" :key="role" :value="role">
-              {{ role === 'super_admin' ? 'Super Admin' : 'Admin' }}
+              {{ role === 'super_admin' ? 'Super Admin' : role === 'admin_distrik' ? 'Admin Distrik' : 'Petani' }}
             </option>
           </Select>
         </div>

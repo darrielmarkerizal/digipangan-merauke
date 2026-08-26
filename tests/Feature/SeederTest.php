@@ -108,8 +108,8 @@ describe('halaman tentang dan peran', function () {
             ->and(Faq::where('is_active', true)->count())->toBe(5);
     });
 
-    it('mengisi peran super_admin, admin, dan farmer', function () {
-        expect(Role::pluck('name')->sort()->values()->all())->toBe(['admin', 'farmer', 'super_admin']);
+    it('mengisi peran super_admin, admin_distrik, dan farmer', function () {
+        expect(Role::pluck('name')->sort()->values()->all())->toBe(['admin_distrik', 'farmer', 'super_admin']);
     });
 });
 

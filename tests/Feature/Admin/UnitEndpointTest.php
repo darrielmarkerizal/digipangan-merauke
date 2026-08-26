@@ -47,8 +47,8 @@ describe('Unit CRUD', function () {
         $this->getJson(route('api.unit.index'))->assertStatus(401);
     });
 
-    it('mengizinkan admin mengakses daftar', function () {
-        $this->actingAs(actor_unit('admin'))->getJson(route('api.unit.index'))->assertOk();
+    it('mengizinkan Super Admin mengakses daftar', function () {
+        $this->actingAs(actor_unit('super_admin'))->getJson(route('api.unit.index'))->assertOk();
     });
 
     it('menolak pengguna tanpa izin kelola master data dengan 403', function () {

@@ -15,11 +15,11 @@ class UpdateRegionRequest extends FormRequest
             'area_km2' => ['nullable', 'numeric', 'min:0'],
             'population' => ['nullable', 'integer', 'min:0'],
             'is_active' => ['boolean'],
-            'cover' => ['nullable', 'string'],
+            'cover' => ['nullable', 'uuid'],
             'gallery' => ['nullable', 'array'],
-            'gallery.*' => ['string'],
+            'gallery.*' => ['uuid'],
             'retained_gallery' => ['nullable', 'array'],
-            'retained_gallery.*' => ['integer'],
+            'retained_gallery.*' => ['integer', 'distinct'],
         ];
     }
 

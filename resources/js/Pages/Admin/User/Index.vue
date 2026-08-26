@@ -28,7 +28,7 @@ const userList = computed(() => {
 </script>
 
 <template>
-    <AdminLayout title="User & Hak Akses" subtitle="Kelola akun pengguna admin dan pengaturan peran serta hak akses sistem.">
+    <AdminLayout title="User & Hak Akses" subtitle="Kelola akun pengguna dan pengaturan peran serta hak akses sistem.">
         <template #actions>
             <Link href="/admin/user/tambah">
                 <Button class="gap-2 font-semibold shadow-sm">

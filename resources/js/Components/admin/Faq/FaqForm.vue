@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
 import { useForm } from "@inertiajs/vue3";
 import { Button, Field, Input, Label, Switch, Textarea } from "@/Components/ui";
 import { Icon } from "@/Components/ui";

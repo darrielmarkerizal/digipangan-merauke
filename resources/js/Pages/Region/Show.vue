@@ -132,24 +132,24 @@ defineOptions({ layout: PublicLayout });
 
 
         <div
-            class="mx-auto max-w-[90rem] px-4 sm:px-6 lg:px-8 pt-0 pb-12 -mt-20 relative z-20"
+            class="mx-auto max-w-[90rem] px-4 sm:px-6 lg:px-8 pt-4 lg:pt-0 pb-12 mt-0 lg:-mt-20 relative z-20"
         >
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 lg:gap-6">
 
                 <div
-                    class="bg-white/80 backdrop-blur-md border border-border/80 rounded-2xl p-6 shadow-soft transition-transform hover:-translate-y-1"
+                    class="bg-white/80 backdrop-blur-md border border-border/80 rounded-2xl p-4 shadow-soft transition-transform hover:-translate-y-1 sm:p-5 lg:p-6"
                 >
                     <div
-                        class="size-12 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center mb-4"
+                        class="mb-3 flex size-10 items-center justify-center rounded-xl bg-orange-100 text-orange-600 sm:mb-4 sm:size-12"
                     >
                         <Icon :icon="MapPin" :size="24" />
                     </div>
-                    <dt class="text-sm font-medium text-fg-muted mb-1">
+                    <dt class="mb-1 text-xs font-medium text-fg-muted sm:text-sm">
                         Luas Wilayah
                     </dt>
-                    <dd class="text-3xl lg:text-4xl font-black text-fg tracking-tight mt-1">
+                    <dd class="mt-1 text-2xl font-black tracking-tight text-fg sm:text-3xl lg:text-4xl">
                         {{ region.area_km2 }}
-                        <span class="text-base font-semibold text-fg-muted"
+                        <span class="text-xs font-semibold text-fg-muted sm:text-base"
                             >km²</span
                         >
                     </dd>
@@ -157,19 +157,19 @@ defineOptions({ layout: PublicLayout });
 
 
                 <div
-                    class="bg-white/80 backdrop-blur-md border border-border/80 rounded-2xl p-6 shadow-soft transition-transform hover:-translate-y-1"
+                    class="bg-white/80 backdrop-blur-md border border-border/80 rounded-2xl p-4 shadow-soft transition-transform hover:-translate-y-1 sm:p-5 lg:p-6"
                 >
                     <div
-                        class="size-12 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center mb-4"
+                        class="mb-3 flex size-10 items-center justify-center rounded-xl bg-blue-100 text-blue-600 sm:mb-4 sm:size-12"
                     >
                         <Icon :icon="Users" :size="24" />
                     </div>
-                    <dt class="text-sm font-medium text-fg-muted mb-1">
+                    <dt class="mb-1 text-xs font-medium text-fg-muted sm:text-sm">
                         Populasi
                     </dt>
-                    <dd class="text-3xl lg:text-4xl font-black text-fg tracking-tight mt-1">
+                    <dd class="mt-1 text-2xl font-black tracking-tight text-fg sm:text-3xl lg:text-4xl">
                         {{ formatAngka(region.population) }}
-                        <span class="text-base font-semibold text-fg-muted"
+                        <span class="text-xs font-semibold text-fg-muted sm:text-base"
                             >jiwa</span
                         >
                     </dd>
@@ -240,8 +240,8 @@ defineOptions({ layout: PublicLayout });
 
 
                 <section>
-                    <div class="flex items-center justify-between gap-3 mb-6">
-                        <div class="flex items-center gap-3">
+                    <div class="mb-6 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
+                        <div class="flex min-w-0 items-center gap-3">
                             <div
                                 class="size-10 rounded-lg bg-brand-weak text-brand flex items-center justify-center"
                             >
@@ -253,7 +253,7 @@ defineOptions({ layout: PublicLayout });
                         </div>
                         <span
                             v-if="region.farmers.length > 0"
-                            class="text-sm font-semibold bg-brand-weak text-brand px-2.5 py-1 rounded-md"
+                            class="shrink-0 rounded-md bg-brand-weak px-2.5 py-1 text-sm font-semibold text-brand"
                         >
                             {{ region.farmers.length }} Petani
                         </span>

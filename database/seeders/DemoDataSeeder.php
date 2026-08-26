@@ -126,7 +126,7 @@ class DemoDataSeeder extends Seeder
             'password' => Hash::make(Str::random(24)),
             'is_active' => true,
         ]);
-        $author->assignRole('admin');
+        $author->assignRole('super_admin');
 
         return $author;
     }

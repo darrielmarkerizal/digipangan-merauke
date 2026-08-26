@@ -27,7 +27,7 @@ function seedUsers(int $count = 3): void
             'email' => "petugas{$i}@digipangan.test",
             'password' => Hash::make('rahasia123'),
             'is_active' => $i % 2 === 1,
-        ])->assignRole('admin');
+        ])->assignRole('farmer');
     }
 }
 
@@ -42,8 +42,8 @@ describe('otorisasi', function () {
         $this->getJson(route('api.user.index'))->assertStatus(401);
     });
 
-    it('menolak admin biasa dengan 403', function () {
-        $this->actingAs(actor('admin'))
+    it('menolak admin distrik dari pengelolaan pengguna dengan 403', function () {
+        $this->actingAs(actor('admin_distrik'))
             ->getJson(route('api.user.index'))
             ->assertStatus(403)
             ->assertJsonPath('success', false);
@@ -132,7 +132,7 @@ describe('membuat dan mengubah pengguna', function () {
         Storage::fake('local');
 
         $upload = $this->postJson(route('media.upload'), [
-            'file' => UploadedFile::fake()->image('foto.jpg', 300, 300)
+            'file' => UploadedFile::fake()->image('foto.jpg', 300, 300),
         ]);
 
         $this->postJson(route('api.user.store'), [
@@ -140,12 +140,12 @@ describe('membuat dan mengubah pengguna', function () {
             'email' => 'baru@digipangan.test',
             'password' => 'rahasia123',
             'password_confirmation' => 'rahasia123',
-            'roles' => ['admin'],
+            'roles' => ['super_admin'],
             'avatar_uuid' => $upload->json('folder'),
         ])
             ->assertStatus(201)
             ->assertJsonPath('data.name', 'Petugas Baru')
-            ->assertJsonPath('data.roles.0', 'admin');
+            ->assertJsonPath('data.roles.0', 'super_admin');
 
         $created = User::where('email', 'baru@digipangan.test')->first();
 
@@ -171,6 +171,16 @@ describe('membuat dan mengubah pengguna', function () {
             'password' => 'rahasia123',
             'password_confirmation' => 'berbeda',
         ])->assertStatus(422)->assertJsonValidationErrors('password');
+    });
+
+    it('menolak role legacy admin', function () {
+        $this->postJson(route('api.user.store'), [
+            'name' => 'Role Legacy',
+            'email' => 'legacy@digipangan.test',
+            'password' => 'rahasia123',
+            'password_confirmation' => 'rahasia123',
+            'roles' => ['admin'],
+        ])->assertStatus(422)->assertJsonValidationErrors('roles.0');
     });
 
     it('mengubah nama tanpa menyentuh kata sandi', function () {

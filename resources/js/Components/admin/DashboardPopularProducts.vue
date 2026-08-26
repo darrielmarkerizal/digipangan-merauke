@@ -22,17 +22,17 @@ defineProps<{
         </div>
 
         <div class="space-y-3">
-            <div v-for="(product, index) in popularProducts" :key="product.id" class="flex items-center justify-between p-3 border border-border/50 rounded-xl bg-muted/10 transition-colors hover:bg-muted/20">
-                <div class="flex items-center gap-3">
+            <div v-for="(product, index) in popularProducts" :key="product.id" class="flex items-start justify-between gap-3 p-3 border border-border/50 rounded-xl bg-muted/10 transition-colors hover:bg-muted/20 sm:items-center">
+                <div class="flex min-w-0 flex-1 items-center gap-3">
                     <div class="flex h-6 w-6 items-center justify-center rounded-full bg-brand text-white text-xs font-bold shadow-sm">
                         {{ Number(index) + 1 }}
                     </div>
-                    <div>
-                        <p class="text-sm font-semibold text-fg">{{ product.name }}</p>
-                        <p class="text-xs text-fg-muted">{{ product.region }}</p>
+                    <div class="min-w-0">
+                        <p class="line-clamp-2 text-sm font-semibold text-fg">{{ product.name }}</p>
+                        <p class="truncate text-xs text-fg-muted">{{ product.region }}</p>
                     </div>
                 </div>
-                <div class="text-right flex items-center gap-1.5 bg-green-50 text-green-700 px-2.5 py-1 rounded-md shadow-sm border border-green-200">
+                <div class="shrink-0 text-right flex items-center gap-1.5 bg-green-50 text-green-700 px-2.5 py-1 rounded-md shadow-sm border border-green-200">
                     <Icon :icon="MessageCircle" :size="14" />
                     <span class="text-xs font-bold">{{ product.contact_count }}</span>
                 </div>

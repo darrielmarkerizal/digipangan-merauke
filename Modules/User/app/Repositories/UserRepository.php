@@ -2,10 +2,11 @@
 
 namespace Modules\User\Repositories;
 
+use App\Enums\UserRole;
 use App\Models\User;
 use App\Repositories\BaseRepository;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection as SupportCollection;
 use Modules\User\Repositories\Contracts\UserRepositoryInterface;
 use Spatie\Permission\Models\Role;
@@ -18,7 +19,7 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
         parent::__construct($model);
     }
 
-    public function query(): \Illuminate\Database\Eloquent\Builder
+    public function query(): Builder
     {
         return parent::query()->with(['roles', 'media', 'region']);
     }
@@ -52,8 +53,6 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
         return ['roles', 'media', 'region'];
     }
 
-
-
     public function clearAvatar(User $user): void
     {
         $user->clearMediaCollection('avatar');
@@ -79,6 +78,9 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
      */
     public function availableRoleNames(): SupportCollection
     {
-        return Role::pluck('name');
+        return Role::query()
+            ->whereIn('name', UserRole::values())
+            ->orderBy('name')
+            ->pluck('name');
     }
 }

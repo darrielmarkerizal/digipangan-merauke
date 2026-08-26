@@ -25,8 +25,8 @@ describe('Partner CRUD', function () {
         $this->getJson(route('api.partner.index'))->assertStatus(401);
     });
 
-    it('mengizinkan admin mengakses daftar', function () {
-        $this->actingAs(actor_partner('admin'))->getJson(route('api.partner.index'))->assertOk();
+    it('mengizinkan Super Admin mengakses daftar', function () {
+        $this->actingAs(actor_partner('super_admin'))->getJson(route('api.partner.index'))->assertOk();
     });
 
     it('menolak pengguna tanpa izin kelola tentang dengan 403', function () {

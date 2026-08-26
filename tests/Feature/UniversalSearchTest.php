@@ -4,7 +4,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Modules\User\Database\Seeders\UserDatabaseSeeder;
 
-function makeSearchUser(string $name, string $email, string $role = 'admin'): User
+function makeSearchUser(string $name, string $email, string $role = 'farmer'): User
 {
     $user = User::create([
         'name' => $name,

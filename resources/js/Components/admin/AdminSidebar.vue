@@ -12,7 +12,6 @@ import {
     MapPin,
     Home,
     Newspaper,
-    Handshake,
     HelpCircle,
     Shield,
     Settings,
@@ -23,7 +22,7 @@ import { Icon } from "@/Components/ui";
 import { useAuthGuard } from "@/Composables/useAuthGuard";
 
 const page = usePage();
-const { isStrictSuperAdmin, isDistrictAdmin, userRegion, hasPermission } = useAuthGuard();
+const { isStrictSuperAdmin, isDistrictAdmin, userRegion } = useAuthGuard();
 
 const navGroups = computed(() => {
     const groups = [
