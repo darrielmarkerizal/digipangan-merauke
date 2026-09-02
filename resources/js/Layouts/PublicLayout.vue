@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { usePage, Link } from "@inertiajs/vue3";
 import {
     House,
@@ -18,6 +18,16 @@ import { useFlashToast } from "@/Composables/useFlashToast";
 
 const page = usePage();
 useFlashToast();
+
+const auth = computed(() => (page.props as any).auth ?? {});
+const isAuthenticated = computed(() => Boolean(auth.value.user));
+const isFarmer = computed(() => (auth.value.roles ?? []).includes("farmer"));
+const dashboardHref = computed(() =>
+    isFarmer.value ? "/petani/dashboard" : "/admin/dashboard",
+);
+const dashboardLabel = computed(() =>
+    isFarmer.value ? "Dashboard Petani" : "Dashboard",
+);
 
 const isMobileMenuOpen = ref(false);
 
@@ -79,10 +89,10 @@ const isActive = (href: string) =>
                 </nav>
 
                 <Link
-                    href="/daftar"
+                    :href="isAuthenticated ? dashboardHref : '/daftar'"
                     class="hidden shrink-0 items-center gap-1.5 rounded-full bg-brand px-4 py-1.5 text-sm font-semibold text-on-brand shadow-sm shadow-brand/30 transition-colors hover:bg-brand-strong lg:inline-flex"
                 >
-                    Daftar Petani
+                    {{ isAuthenticated ? dashboardLabel : "Daftar Petani" }}
                 </Link>
 
                 <div class="flex items-center gap-1 lg:hidden">
@@ -138,11 +148,11 @@ const isActive = (href: string) =>
                         </Link>
                     </div>
                     <Link
-                        href="/daftar"
+                        :href="isAuthenticated ? dashboardHref : '/daftar'"
                         class="mt-2 flex items-center justify-center gap-2 rounded-2xl bg-brand p-3 text-sm font-semibold text-on-brand shadow-sm shadow-brand/30"
                         @click="isMobileMenuOpen = false"
                     >
-                        Daftar sebagai Petani
+                        {{ isAuthenticated ? dashboardLabel : "Daftar sebagai Petani" }}
                     </Link>
                 </div>
             </Transition>

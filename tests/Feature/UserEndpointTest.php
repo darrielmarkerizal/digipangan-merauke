@@ -4,6 +4,8 @@ use App\Models\User;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Modules\Farmer\Models\Farmer;
+use Modules\Region\Models\Region;
 use Modules\User\Database\Seeders\UserDatabaseSeeder;
 
 function actor(string $role = 'super_admin'): User
@@ -151,6 +153,55 @@ describe('membuat dan mengubah pengguna', function () {
 
         expect($created->getFirstMedia('avatar'))->not->toBeNull()
             ->and(Hash::check('rahasia123', $created->password))->toBeTrue();
+    });
+
+    it('membuat profil petani terhubung saat akun petani dibuat admin', function () {
+        $region = Region::create(['name' => 'Distrik Akun Petani']);
+
+        $response = $this->postJson(route('api.user.store'), [
+            'name' => 'Petani Baru',
+            'email' => 'petani.baru@digipangan.test',
+            'password' => 'rahasia123',
+            'password_confirmation' => 'rahasia123',
+            'roles' => ['farmer'],
+            'region_id' => $region->id,
+            'phone' => '081234567890',
+        ])
+            ->assertStatus(201)
+            ->assertJsonPath('data.roles.0', 'farmer')
+            ->assertJsonPath('data.farmer.phone', '081234567890');
+
+        $created = User::where('email', 'petani.baru@digipangan.test')->firstOrFail();
+
+        expect($created->farmer)->not->toBeNull()
+            ->and($created->farmer->user_id)->toBe($created->id)
+            ->and($created->farmer->region_id)->toBe($region->id);
+
+        $this->actingAs($created)->get('/petani/dashboard')->assertOk();
+    });
+
+    it('dapat memperbaiki akun petani lama yang belum memiliki profil', function () {
+        $region = Region::create(['name' => 'Distrik Repair Petani']);
+        $target = User::create([
+            'name' => 'Petani Lama',
+            'email' => 'petani.lama@digipangan.test',
+            'password' => Hash::make('rahasia123'),
+            'is_active' => true,
+        ]);
+        $target->assignRole('farmer');
+
+        expect(Farmer::where('user_id', $target->id)->exists())->toBeFalse();
+
+        $this->putJson(route('api.user.update', $target), [
+            'name' => 'Petani Lama',
+            'roles' => ['farmer'],
+            'region_id' => $region->id,
+            'phone' => '081298765432',
+        ])->assertOk()->assertJsonPath('data.farmer.region_id', $region->id);
+
+        expect($target->fresh()->farmer)->not->toBeNull();
+
+        $this->actingAs($target->fresh())->get('/petani/dashboard')->assertOk();
     });
 
     it('menolak email duplikat', function () {

@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { useForm, Link } from "@inertiajs/vue3";
-import { Button, Field, Input, Label, Switch } from "@/Components/ui";
+import { Button, Field, Input, Label, PhoneInput, Switch } from "@/Components/ui";
 import { Icon } from "@/Components/ui";
 import { Save, ArrowLeft, Loader2, Eye, EyeOff } from "@lucide/vue";
-import { ref } from "vue";
+import { computed, ref, watch } from "vue";
 
 interface UserData {
     id?: number;
@@ -12,12 +12,21 @@ interface UserData {
     is_active?: boolean;
     region_id?: number | null;
     roles?: string[];
+    farmer?: {
+        region_id?: number | null;
+        village_id?: number | null;
+        farmer_group_id?: number | null;
+        phone?: string;
+        land_area_ha?: number | string | null;
+    } | null;
 }
 
 const props = defineProps<{
     user?: UserData;
     roles: string[];
     regions?: Array<{ id: number; name: string }>;
+    villages?: Array<{ id: number; name: string; region_id: number }>;
+    farmerGroups?: Array<{ id: number; name: string; region_id: number }>;
     isEdit?: boolean;
 }>();
 
@@ -30,19 +39,64 @@ const form = useForm({
     password: "",
     password_confirmation: "",
     is_active: props.user?.is_active ?? true,
-    region_id: props.user?.region_id ?? null,
+    region_id: props.user?.farmer?.region_id ?? props.user?.region_id ?? null,
+    phone: props.user?.farmer?.phone ?? "",
+    village_id: props.user?.farmer?.village_id ?? null,
+    farmer_group_id: props.user?.farmer?.farmer_group_id ?? null,
+    land_area_ha: props.user?.farmer?.land_area_ha ?? "",
     roles: props.user?.roles ?? [],
+});
+
+const isFarmer = computed(() => form.roles.includes("farmer"));
+
+const filteredVillages = computed(() => {
+    if (!form.region_id) return props.villages ?? [];
+
+    return (props.villages ?? []).filter(
+        (village) => Number(village.region_id) === Number(form.region_id),
+    );
+});
+
+const filteredFarmerGroups = computed(() => {
+    if (!form.region_id) return props.farmerGroups ?? [];
+
+    return (props.farmerGroups ?? []).filter(
+        (group) => Number(group.region_id) === Number(form.region_id),
+    );
 });
 
 const selectRole = (role: string) => {
     form.roles = form.roles[0] === role ? [] : [role];
 
-    if (role !== 'admin_distrik') {
+    if (role !== 'admin_distrik' && role !== 'farmer') {
         form.region_id = null;
     }
 };
 
+watch(
+    () => form.region_id,
+    (newRegionId, oldRegionId) => {
+        if (oldRegionId === undefined || newRegionId === oldRegionId) return;
+
+        if (!filteredVillages.value.some((village) => Number(village.id) === Number(form.village_id))) {
+            form.village_id = null;
+        }
+
+        if (!filteredFarmerGroups.value.some((group) => Number(group.id) === Number(form.farmer_group_id))) {
+            form.farmer_group_id = null;
+        }
+    },
+);
+
 const submit = () => {
+    form.transform((data) => ({
+        ...data,
+        phone: isFarmer.value ? data.phone : null,
+        village_id: isFarmer.value ? data.village_id : null,
+        farmer_group_id: isFarmer.value ? data.farmer_group_id : null,
+        land_area_ha: isFarmer.value ? data.land_area_ha : null,
+    }));
+
     if (props.isEdit && props.user?.id) {
         form.submit('put', `/admin/user/${props.user.id}`, { preserveScroll: true });
     } else {
@@ -90,6 +144,73 @@ const roleLabel: Record<string, string> = {
                         <Input v-model="form.email" type="email" placeholder="nama@email.com" class="w-full" />
                         <p v-if="form.errors.email" class="text-xs text-danger mt-1">{{ form.errors.email }}</p>
                     </Field>
+
+                    <template v-if="isFarmer">
+                        <div class="border-t border-border/60 pt-5">
+                            <h3 class="text-sm font-bold text-fg">Profil Petani</h3>
+                            <p class="mt-1 text-xs leading-relaxed text-fg-muted">
+                                Data ini diperlukan agar akun dapat membuka dashboard petani.
+                            </p>
+                        </div>
+
+                        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                            <Field :error="form.errors.phone">
+                                <Label required>No. WhatsApp / Telepon</Label>
+                                <PhoneInput v-model="form.phone" placeholder="81234567890" />
+                                <p v-if="form.errors.phone" class="text-xs text-danger mt-1">{{ form.errors.phone }}</p>
+                            </Field>
+
+                            <Field :error="form.errors.region_id">
+                                <Label required>Distrik / Kawasan</Label>
+                                <select
+                                    v-model="form.region_id"
+                                    class="flex h-10 w-full rounded-xl border border-border/80 bg-white px-3 py-2 text-sm ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
+                                >
+                                    <option :value="null" disabled>Pilih distrik</option>
+                                    <option v-for="region in (regions ?? [])" :key="region.id" :value="region.id">
+                                        {{ region.name }}
+                                    </option>
+                                </select>
+                                <p v-if="form.errors.region_id" class="text-xs text-danger mt-1">{{ form.errors.region_id }}</p>
+                            </Field>
+                        </div>
+
+                        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                            <Field :error="form.errors.village_id">
+                                <Label>Desa / Kampung</Label>
+                                <select
+                                    v-model="form.village_id"
+                                    class="flex h-10 w-full rounded-xl border border-border/80 bg-white px-3 py-2 text-sm ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
+                                >
+                                    <option :value="null">Pilih desa (opsional)</option>
+                                    <option v-for="village in filteredVillages" :key="village.id" :value="village.id">
+                                        {{ village.name }}
+                                    </option>
+                                </select>
+                                <p v-if="form.errors.village_id" class="text-xs text-danger mt-1">{{ form.errors.village_id }}</p>
+                            </Field>
+
+                            <Field :error="form.errors.farmer_group_id">
+                                <Label>Kelompok Tani</Label>
+                                <select
+                                    v-model="form.farmer_group_id"
+                                    class="flex h-10 w-full rounded-xl border border-border/80 bg-white px-3 py-2 text-sm ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
+                                >
+                                    <option :value="null">Mandiri / tanpa kelompok</option>
+                                    <option v-for="group in filteredFarmerGroups" :key="group.id" :value="group.id">
+                                        {{ group.name }}
+                                    </option>
+                                </select>
+                                <p v-if="form.errors.farmer_group_id" class="text-xs text-danger mt-1">{{ form.errors.farmer_group_id }}</p>
+                            </Field>
+                        </div>
+
+                        <Field :error="form.errors.land_area_ha">
+                            <Label>Luas Lahan (Ha)</Label>
+                            <Input v-model="form.land_area_ha" type="number" min="0" step="0.01" placeholder="Contoh: 2.5" />
+                            <p v-if="form.errors.land_area_ha" class="text-xs text-danger mt-1">{{ form.errors.land_area_ha }}</p>
+                        </Field>
+                    </template>
                 </div>
 
                 <div class="rounded-xl border border-border/80 bg-white p-6 shadow-xs space-y-5">

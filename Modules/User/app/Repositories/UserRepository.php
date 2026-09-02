@@ -50,7 +50,7 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
 
     protected function allowedIncludes(): array
     {
-        return ['roles', 'media', 'region'];
+        return ['roles', 'media', 'region', 'farmer'];
     }
 
     public function clearAvatar(User $user): void

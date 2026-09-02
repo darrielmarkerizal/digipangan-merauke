@@ -36,7 +36,7 @@ class UserController extends Controller implements HasMiddleware
     public function show(int $user): JsonResponse
     {
         return $this->successResponse(
-            new UserResource($this->userService->findOrFail($user, ['roles']))
+            new UserResource($this->userService->findOrFail($user, ['roles', 'farmer']))
         );
     }
 

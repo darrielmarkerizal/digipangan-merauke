@@ -5,6 +5,8 @@ import UserForm from "@/Components/admin/User/UserForm.vue";
 const props = defineProps<{
     roles: string[];
     regions?: Array<{ id: number; name: string }>;
+    villages?: Array<{ id: number; name: string; region_id: number }>;
+    farmerGroups?: Array<{ id: number; name: string; region_id: number }>;
 }>();
 </script>
 
@@ -13,6 +15,11 @@ const props = defineProps<{
         title="Tambah Pengguna"
         subtitle="Buat akun pengguna baru dengan peran dan hak akses yang sesuai."
     >
-        <UserForm :roles="roles" :regions="regions" />
+        <UserForm
+            :roles="roles"
+            :regions="regions"
+            :villages="villages"
+            :farmer-groups="farmerGroups"
+        />
     </AdminLayout>
 </template>

@@ -21,6 +21,15 @@ class UserResource extends JsonResource
                 'name' => $this->region->name,
                 'slug' => $this->region->slug,
             ] : null),
+            'farmer' => $this->whenLoaded('farmer', fn () => $this->farmer ? [
+                'id' => $this->farmer->id,
+                'region_id' => $this->farmer->region_id,
+                'village_id' => $this->farmer->village_id,
+                'farmer_group_id' => $this->farmer->farmer_group_id,
+                'name' => $this->farmer->name,
+                'phone' => $this->farmer->phone,
+                'land_area_ha' => $this->farmer->land_area_ha,
+            ] : null),
             'roles' => $this->whenLoaded('roles', fn () => $this->roles->pluck('name')),
             'permissions' => $this->when(
                 $request->routeIs('api.auth.profile*'),

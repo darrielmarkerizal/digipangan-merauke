@@ -8,7 +8,9 @@ use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Modules\Farmer\Services\FarmerGroupService;
 use Modules\Region\Services\RegionService;
+use Modules\Region\Services\VillageService;
 use Modules\User\Http\Requests\StoreUserRequest;
 use Modules\User\Http\Requests\UpdateUserRequest;
 use Modules\User\Http\Resources\UserResource;
@@ -19,6 +21,8 @@ class UserAdminController extends Controller
     public function __construct(
         private readonly UserService $service,
         private readonly RegionService $regionService,
+        private readonly VillageService $villageService,
+        private readonly FarmerGroupService $farmerGroupService,
     ) {}
 
     public function index(Request $request): Response
@@ -44,6 +48,8 @@ class UserAdminController extends Controller
         return Inertia::render('Admin/User/Create', [
             'roles' => $this->service->availableRoleNames(),
             'regions' => $this->regionService->list(),
+            'villages' => $this->villageService->list(),
+            'farmerGroups' => $this->farmerGroupService->list(),
         ]);
     }
 
@@ -52,7 +58,7 @@ class UserAdminController extends Controller
         abort_unless($request->user()?->hasRole('super_admin'), 403, 'Akses ditolak: Hanya Super Admin yang dapat mengelola pengguna.');
 
         return Inertia::render('Admin/User/Show', [
-            'user' => (new UserResource($this->service->findOrFail($id, ['roles', 'region'])))->resolve(),
+            'user' => (new UserResource($this->service->findOrFail($id, ['roles', 'region', 'farmer'])))->resolve(),
         ]);
     }
 
@@ -71,9 +77,11 @@ class UserAdminController extends Controller
         abort_unless($request->user()?->hasRole('super_admin'), 403, 'Akses ditolak: Hanya Super Admin yang dapat mengelola pengguna.');
 
         return Inertia::render('Admin/User/Edit', [
-            'user'  => (new UserResource($this->service->findOrFail($id, ['roles', 'region'])))->resolve(),
+            'user'  => (new UserResource($this->service->findOrFail($id, ['roles', 'region', 'farmer'])))->resolve(),
             'roles' => $this->service->availableRoleNames(),
             'regions' => $this->regionService->list(),
+            'villages' => $this->villageService->list(),
+            'farmerGroups' => $this->farmerGroupService->list(),
         ]);
     }
 
