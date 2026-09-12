@@ -210,7 +210,7 @@ const handleSubmit = async () => {
                                     >Isi Berita
                                     <span class="text-danger">*</span></Label
                                 >
-                                                                <div class="overflow-hidden rounded-md border border-border/80" :class="{'border-danger': form.errors.body}">
+                                                                <div class="rounded-md border border-border/80" :class="{'border-danger': form.errors.body}">
                                                                     <div class="flex items-center gap-2 border-b border-border/60 bg-muted/20 px-3 py-2">
                                                                         <button type="button" class="inline-flex items-center gap-1.5 rounded-lg border border-border bg-white px-2.5 py-1.5 text-xs font-semibold text-fg hover:border-brand hover:text-brand" @click="imageInput?.click()">
                                                                             <Icon :icon="ImageIcon" :size="14" /> Gambar
@@ -434,6 +434,15 @@ const handleSubmit = async () => {
     font-family: inherit !important;
     font-size: 14px !important;
 }
+
+.ql-toolbar.ql-snow {
+    position: sticky;
+    top: 3.5rem;
+    z-index: 20;
+    background: rgba(255, 255, 255, 0.98);
+    box-shadow: 0 1px 0 rgba(220, 231, 225, 0.9), 0 4px 12px rgba(20, 40, 31, 0.06);
+}
+
 .ql-editor {
     min-height: 300px;
 }
