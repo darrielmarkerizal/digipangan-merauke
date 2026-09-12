@@ -54,10 +54,15 @@ class Post extends Model implements AuditableContract, HasMedia
     public function registerMediaCollections(): void
     {
         $this->addMediaCollection('cover')->singleFile();
+        $this->addMediaCollection('content_media');
     }
 
     public function registerMediaConversions(?Media $media = null): void
     {
+        if ($media && ! str_starts_with((string) $media->mime_type, 'image/')) {
+            return;
+        }
+
         $this->addMediaConversion('thumb')->fit(Fit::Crop, 400, 400)->nonQueued();
         $this->addMediaConversion('card')->width(800)->nonQueued();
     }

@@ -25,8 +25,8 @@ class HandleInertiaRequests extends Middleware
                     'name' => $request->user()->name,
                     'email' => $request->user()->email,
                     'avatar_url' => $request->user()->avatarUrl(),
-                    'region_id' => $request->user()->region_id,
-                    'region' => $request->user()->region ? [
+                    'region_id' => $request->user()->getAssignedRegionId(),
+                    'region' => $request->user()->getAssignedRegionId() && $request->user()->region ? [
                         'id' => $request->user()->region->id,
                         'name' => $request->user()->region->name,
                         'slug' => $request->user()->region->slug,

@@ -7,6 +7,10 @@ return [
         'password' => env('ADMIN_PASSWORD'),
     ],
 
+    'district_admin' => [
+        'password' => env('DISTRICT_ADMIN_PASSWORD', 'password123'),
+    ],
+
     /*
      * Base URL of the public-facing frontend, used to build canonical URLs,
      * sitemap entries, and Open Graph links. Falls back to APP_URL when the

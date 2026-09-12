@@ -20,6 +20,7 @@ class MediaUploadController extends Controller
         return response()->json([
             'folder' => $temporaryFile->folder,
             'filename' => $temporaryFile->filename,
+            'mime_type' => $request->file('file')->getMimeType(),
         ], 200);
     }
 

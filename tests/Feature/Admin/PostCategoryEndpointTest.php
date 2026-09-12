@@ -93,3 +93,56 @@ describe('PostCategory CRUD', function () {
         $this->assertDatabaseHas('post_categories', ['id' => $category->id]);
     });
 });
+
+describe('PostCategory Admin Web CRUD', function () {
+    it('mengizinkan Super Admin mengakses halaman kategori berita', function () {
+        $this->actingAs(actor_post_category('super_admin'))
+            ->get(route('admin.post-category.index'))
+            ->assertOk()
+            ->assertInertia(fn ($page) => $page->component('Admin/PostCategory/Index'));
+    });
+
+    it('menolak Admin Distrik mengakses pengelolaan kategori berita', function () {
+        $this->actingAs(actor_post_category('admin_distrik'))
+            ->get(route('admin.post-category.index'))
+            ->assertForbidden();
+    });
+
+    it('mengizinkan Super Admin membuat dan memperbarui kategori berita melalui web', function () {
+        $admin = actor_post_category('super_admin');
+
+        $this->actingAs($admin)
+            ->post(route('admin.post-category.store'), ['name' => 'Program Pemerintah'])
+            ->assertRedirect();
+
+        $category = PostCategory::where('name', 'Program Pemerintah')->firstOrFail();
+
+        $this->actingAs($admin)
+            ->put(route('admin.post-category.update', $category->id), ['name' => 'Program Pemerintah Daerah'])
+            ->assertRedirect();
+
+        $this->assertDatabaseHas('post_categories', [
+            'id' => $category->id,
+            'name' => 'Program Pemerintah Daerah',
+        ]);
+    });
+
+    it('mengembalikan validasi 422 untuk kategori berita duplikat melalui web', function () {
+        PostCategory::create(['name' => 'Panen']);
+
+        $this->actingAs(actor_post_category('super_admin'))
+            ->from(route('admin.post-category.index'))
+            ->post(route('admin.post-category.store'), ['name' => 'Panen'])
+            ->assertRedirect(route('admin.post-category.index'))
+            ->assertSessionHasErrors('name');
+    });
+
+    it('mengembalikan 409 ketika kategori berita masih digunakan', function () {
+        $category = PostCategory::create(['name' => 'Kegiatan Tani']);
+        post_category_referencing_post($category);
+
+        $this->actingAs(actor_post_category('super_admin'))
+            ->delete(route('admin.post-category.destroy', $category->id))
+            ->assertStatus(409);
+    });
+});

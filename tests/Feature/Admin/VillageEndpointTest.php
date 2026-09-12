@@ -92,3 +92,75 @@ describe('Village CRUD', function () {
         $this->assertSoftDeleted('villages', ['id' => $village->id]);
     });
 });
+
+describe('Village Admin Web CRUD', function () {
+    it('menampilkan halaman tambah desa untuk admin distrik yang memiliki penugasan', function () {
+        $region = village_region();
+        $admin = actor_village('admin_distrik');
+        $admin->update(['region_id' => $region->id]);
+
+        $this->actingAs($admin)
+            ->get(route('admin.village.create'))
+            ->assertOk()
+            ->assertInertia(fn ($page) => $page
+                ->component('Admin/Village/Create')
+                ->where('default_region_id', $region->id)
+                ->has('regions', 1)
+            );
+    });
+
+    it('mengizinkan admin distrik membuat desa pada wilayahnya', function () {
+        $region = village_region();
+        $admin = actor_village('admin_distrik');
+        $admin->update(['region_id' => $region->id]);
+
+        $this->actingAs($admin)
+            ->post(route('admin.village.store'), [
+                'name' => 'Kampung Pemekaran',
+                'region_id' => $region->id,
+                'is_active' => true,
+            ])
+            ->assertRedirect(route('admin.village.index'));
+
+        $this->assertDatabaseHas('villages', [
+            'name' => 'Kampung Pemekaran',
+            'region_id' => $region->id,
+            'is_active' => true,
+        ]);
+    });
+
+    it('mengabaikan wilayah dari request dan memakai wilayah penugasan admin distrik', function () {
+        $assignedRegion = village_region('Assigned');
+        $otherRegion = village_region('Other');
+        $admin = actor_village('admin_distrik');
+        $admin->update(['region_id' => $assignedRegion->id]);
+
+        $this->actingAs($admin)
+            ->post(route('admin.village.store'), [
+                'name' => 'Desa Tidak Sah',
+                'region_id' => $otherRegion->id,
+            ])
+            ->assertRedirect(route('admin.village.index'));
+
+        $this->assertDatabaseHas('villages', [
+            'name' => 'Desa Tidak Sah',
+            'region_id' => $assignedRegion->id,
+        ]);
+    });
+
+    it('mengembalikan validasi 422 untuk nama desa duplikat pada web admin', function () {
+        $region = village_region();
+        Village::create(['name' => 'Selil', 'region_id' => $region->id]);
+        $admin = actor_village('admin_distrik');
+        $admin->update(['region_id' => $region->id]);
+
+        $this->actingAs($admin)
+            ->from(route('admin.village.create'))
+            ->post(route('admin.village.store'), [
+                'name' => 'Selil',
+                'region_id' => $region->id,
+            ])
+            ->assertRedirect(route('admin.village.create'))
+            ->assertSessionHasErrors('name');
+    });
+});

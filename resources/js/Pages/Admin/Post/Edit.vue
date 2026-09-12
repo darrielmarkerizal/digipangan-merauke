@@ -14,6 +14,7 @@ const form = useForm({
   body: props.post.body || '',
   status: props.post.status || 'draft',
   cover: props.post.cover_url || '',
+  content_media: [] as string[],
 })
 
 const handleSubmit = () => {

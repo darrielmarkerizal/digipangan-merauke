@@ -16,6 +16,11 @@ class PostCategoryRepository extends BaseRepository implements PostCategoryRepos
         parent::__construct($model);
     }
 
+    public function query(): Builder
+    {
+        return parent::query()->withCount('posts');
+    }
+
     /**
      * Categories with their published-post count, for the public post
      * catalog's category filter chips.

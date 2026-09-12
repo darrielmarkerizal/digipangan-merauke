@@ -233,3 +233,49 @@ describe('Region CRUD', function () {
         $this->assertSoftDeleted('regions', ['id' => $region->id]);
     });
 });
+
+describe('Region Admin Web CRUD', function () {
+    it('menampilkan halaman tambah wilayah hanya untuk super admin', function () {
+        $this->actingAs(actor_region('super_admin'))
+            ->get(route('admin.region.create'))
+            ->assertOk()
+            ->assertInertia(fn ($page) => $page->component('Admin/Region/Create'));
+
+        $this->actingAs(actor_region('admin_distrik'))
+            ->get(route('admin.region.create'))
+            ->assertForbidden();
+    });
+
+    it('mengizinkan super admin membuat wilayah melalui panel admin', function () {
+        $this->actingAs(actor_region('super_admin'))
+            ->post(route('admin.region.store'), [
+                'name' => 'Distrik Pemekaran',
+                'description' => 'Wilayah baru',
+                'area_km2' => 120.5,
+                'population' => 1500,
+                'is_active' => true,
+            ])
+            ->assertRedirect();
+
+        $this->assertDatabaseHas('regions', [
+            'name' => 'Distrik Pemekaran',
+            'population' => 1500,
+        ]);
+    });
+
+    it('menolak pembuatan wilayah oleh admin distrik tanpa 5xx', function () {
+        $this->actingAs(actor_region('admin_distrik'))
+            ->post(route('admin.region.store'), ['name' => 'Tidak Diizinkan'])
+            ->assertForbidden();
+    });
+
+    it('mengembalikan validasi 422 untuk nama wilayah duplikat', function () {
+        Region::create(['name' => 'Distrik Existing']);
+
+        $this->actingAs(actor_region('super_admin'))
+            ->from(route('admin.region.create'))
+            ->post(route('admin.region.store'), ['name' => 'Distrik Existing'])
+            ->assertRedirect(route('admin.region.create'))
+            ->assertSessionHasErrors('name');
+    });
+});

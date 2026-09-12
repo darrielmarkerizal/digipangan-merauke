@@ -89,8 +89,9 @@ const isSubmitting = ref(false)
 
 const handleMultipleImageUpload = (e: Event) => {
   const target = e.target as HTMLInputElement
-  if (target.files && target.files.length > 0) {
-    const filesArray = Array.from(target.files)
+  const filesArray = target.files ? Array.from(target.files) : []
+  target.value = ''
+  if (filesArray.length > 0) {
     filesArray.forEach((file) => {
       galleryImages.value.push({
         id: Math.random().toString(36).substring(2, 9),
@@ -126,9 +127,7 @@ async function uploadFileToTemp(file: File): Promise<string> {
   const formData = new FormData()
   formData.append('file', file)
   const res = await axios.post('/admin/media/upload', formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
+    headers: { Accept: 'application/json' },
   })
   return res.data.folder
 }

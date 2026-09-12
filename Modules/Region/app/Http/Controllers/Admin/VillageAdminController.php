@@ -9,6 +9,7 @@ use Inertia\Response;
 use Illuminate\Http\RedirectResponse;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Modules\Region\Http\Requests\StoreVillageRequest;
 use Modules\Region\Http\Requests\UpdateVillageRequest;
 use Modules\Region\Http\Resources\VillageResource;
 use Modules\Region\Services\RegionService;
@@ -41,9 +42,48 @@ class VillageAdminController extends Controller
             VillageResource::class,
             [
                 'regions' => $regions,
+                'can_create' => $request->user()?->isSuperAdmin() || ($isDistrictAdmin && $regionId !== null),
             ],
             'villages'
         );
+    }
+
+    public function create(Request $request): Response
+    {
+        $user = $request->user();
+        $isDistrictAdmin = $user?->isDistrictAdmin() ?? false;
+        $regionId = $isDistrictAdmin ? $user?->getAssignedRegionId() : null;
+
+        abort_if($isDistrictAdmin && $regionId === null, 403);
+
+        $regions = $isDistrictAdmin && $user?->region
+            ? collect([['id' => $user->region->id, 'name' => $user->region->name]])
+            : $this->regionService->list();
+
+        return Inertia::render('Admin/Village/Create', [
+            'regions' => $regions,
+            'default_region_id' => $regionId,
+            'is_district_admin' => $isDistrictAdmin,
+        ]);
+    }
+
+    public function store(StoreVillageRequest $request): RedirectResponse
+    {
+        $user = $request->user();
+        $data = $request->validated();
+
+        if ($user?->isDistrictAdmin()) {
+            abort_if(
+                (int) $data['region_id'] !== (int) $user->getAssignedRegionId(),
+                403,
+                'Akses ditolak: Anda hanya dapat menambahkan desa pada distrik yang ditugaskan.'
+            );
+        }
+
+        $this->service->create($data);
+
+        return redirect()->route('admin.village.index')
+            ->with('success', 'Desa berhasil ditambahkan.');
     }
 
     public function show(Request $request, int $id): Response
@@ -71,6 +111,7 @@ class VillageAdminController extends Controller
         return Inertia::render('Admin/Village/Edit', [
             'village' => (new VillageResource($model))->resolve(),
             'regions' => $regions,
+            'is_district_admin' => $isDistrictAdmin,
         ]);
     }
 

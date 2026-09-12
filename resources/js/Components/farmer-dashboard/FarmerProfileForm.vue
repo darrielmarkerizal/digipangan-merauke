@@ -89,7 +89,7 @@ const handlePhotoChange = async (event: Event) => {
         const formData = new FormData();
         formData.append("file", file);
         const res = await axios.post("/admin/media/upload", formData, {
-            headers: { "Content-Type": "multipart/form-data" },
+            headers: { Accept: "application/json" },
         });
         form.photo = res.data.folder;
         form.remove_photo = false;

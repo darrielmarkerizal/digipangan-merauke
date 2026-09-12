@@ -3,7 +3,7 @@ import { computed } from "vue";
 import { Link } from "@inertiajs/vue3";
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 import FilterPanel from "@/Components/admin/FilterPanel.vue";
-import { Search, Edit2, Home, CheckCircle2, XCircle, Eye } from "@lucide/vue";
+import { Search, Edit2, Home, CheckCircle2, XCircle, Eye, Plus } from "@lucide/vue";
 import {
     Icon,
     Input,
@@ -21,6 +21,7 @@ const props = defineProps<{
         meta?: any;
     };
     regions?: Array<{ id: number; name: string }>;
+    can_create?: boolean;
 }>();
 
 const { search } = useSearch();
@@ -40,6 +41,15 @@ const villageList = computed(() => {
         title="Master Desa"
         subtitle="Manajemen data desa yang tergabung dalam kawasan transmigrasi."
     >
+        <template #actions>
+            <Link v-if="can_create" href="/admin/desa/create">
+                <Button class="gap-1.5 font-semibold">
+                    <Icon :icon="Plus" :size="16" />
+                    <span>Tambah Desa</span>
+                </Button>
+            </Link>
+        </template>
+
         <div class="space-y-4">
             <div class="flex flex-col sm:flex-row w-full sm:w-auto justify-between gap-3 items-center">
                 <div class="relative flex-1 max-w-md w-full">

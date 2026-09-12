@@ -34,7 +34,7 @@ const closeSidebar = () => {
   <Head :title="title ? `${title} - Portal Admin DigiPangan` : 'Portal Admin - DigiPangan Merauke'" />
   <Toaster position="top-center" richColors />
 
-  <div class="flex h-screen w-full overflow-hidden bg-bg text-fg">
+  <div class="flex min-h-screen w-full bg-bg text-fg">
     <div class="hidden lg:block shrink-0">
       <AdminSidebar />
     </div>
@@ -70,14 +70,14 @@ const closeSidebar = () => {
       </div>
     </transition>
 
-    <div class="flex min-w-0 flex-1 flex-col overflow-hidden">
+    <div class="flex min-w-0 flex-1 flex-col">
       <AdminTopbar
         :title="title"
         :subtitle="subtitle"
         @toggle-sidebar="toggleSidebar"
       />
 
-      <main class="min-w-0 flex-1 overflow-y-auto bg-bg py-4 md:py-6">
+      <main class="min-w-0 flex-1 bg-bg py-4 md:py-6">
         <div class="w-full min-w-0 space-y-5 px-4 md:px-6">
           <header v-if="title || subtitle" class="flex flex-col justify-between gap-3 border-b border-border/80 pb-4 sm:flex-row sm:items-end">
             <div class="space-y-1">

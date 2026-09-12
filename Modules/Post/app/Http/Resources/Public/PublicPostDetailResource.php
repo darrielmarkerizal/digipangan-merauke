@@ -6,6 +6,7 @@ use App\Support\PublicUrl;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Str;
+use App\Support\PostContentSanitizer;
 
 class PublicPostDetailResource extends JsonResource
 {
@@ -19,7 +20,12 @@ class PublicPostDetailResource extends JsonResource
             'title' => $this->title,
             'slug' => $this->slug,
             'published_at' => $this->published_at,
-            'body' => $this->body,
+            'body' => app(PostContentSanitizer::class)->sanitize((string) $this->body),
+            'content_media' => $this->getMedia('content_media')->map(fn ($media) => [
+                'id' => $media->id,
+                'url' => $media->getUrl(),
+                'mime_type' => $media->mime_type,
+            ])->values()->all(),
             'cover' => $cover ? [
                 'original' => $cover->getUrl(),
                 'card' => $cover->getUrl('card'),

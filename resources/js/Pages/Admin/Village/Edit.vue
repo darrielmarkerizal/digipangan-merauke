@@ -7,6 +7,7 @@ import { Icon, Input, Button, Label, Select } from "@/Components/ui";
 const props = defineProps<{
     village: any;
     regions: any[];
+    is_district_admin?: boolean;
 }>();
 
 const form = useForm({
@@ -52,11 +53,11 @@ const handleSubmit = () => {
             </div>
 
             <div
-                class="rounded-2xl border border-border/80 bg-white p-6 shadow-xs max-w-3xl"
+                class="w-full rounded-2xl border border-border/80 bg-white p-6 shadow-xs"
             >
                 <form @submit.prevent="handleSubmit" class="space-y-6">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="space-y-1.5 md:col-span-2">
+                        <div v-if="!is_district_admin" class="space-y-1.5 md:col-span-2">
                             <Label
                                 for="region_id"
                                 class="text-sm font-semibold text-fg"

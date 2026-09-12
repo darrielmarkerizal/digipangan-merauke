@@ -17,6 +17,8 @@ class UpdatePostRequest extends FormRequest
             'status' => ['nullable', Rule::enum(PostStatus::class)],
             'published_at' => ['nullable', 'date'],
             'cover' => ['nullable', 'string'],
+            'content_media' => ['nullable', 'array', 'max:20'],
+            'content_media.*' => ['uuid', 'distinct'],
         ];
     }
 

@@ -13,6 +13,7 @@ const form = useForm({
   body: '',
   status: 'draft',
   cover: '',
+  content_media: [] as string[],
 })
 
 const handleSubmit = () => {

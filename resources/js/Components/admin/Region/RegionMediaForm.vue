@@ -125,7 +125,7 @@ const uploadFile = async (file: File): Promise<string> => {
     data.append("file", file);
 
     const response = await axios.post("/admin/media/upload", data, {
-        headers: { "Content-Type": "multipart/form-data" },
+        headers: { Accept: "application/json" },
     });
 
     return response.data.folder;

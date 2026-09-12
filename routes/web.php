@@ -10,6 +10,7 @@ use Modules\Post\Http\Controllers\Admin\PostAdminController;
 use Modules\Product\Http\Controllers\Admin\CategoryAdminController;
 use Modules\Product\Http\Controllers\Admin\ProductAdminController;
 use Modules\Product\Http\Controllers\Admin\UnitAdminController;
+use Modules\Post\Http\Controllers\Admin\PostCategoryAdminController;
 use Modules\Region\Http\Controllers\Admin\RegionAdminController;
 use Modules\Region\Http\Controllers\Admin\VillageAdminController;
 use Modules\User\Http\Controllers\Admin\AuthAdminController;
@@ -93,11 +94,15 @@ Route::middleware(['auth', 'role:super_admin|admin_distrik'])->prefix('admin')->
     Route::post('/kelompok-tani/{id}/keluarkan-petani', [FarmerGroupAdminController::class, 'detachFarmer'])->name('farmer-group.detach-farmer');
 
     Route::get('/wilayah', [RegionAdminController::class, 'index'])->name('region.index');
+    Route::get('/wilayah/create', [RegionAdminController::class, 'create'])->name('region.create');
+    Route::post('/wilayah', [RegionAdminController::class, 'store'])->name('region.store');
     Route::get('/wilayah/{id}', [RegionAdminController::class, 'show'])->name('region.show');
     Route::get('/wilayah/{id}/edit', [RegionAdminController::class, 'edit'])->name('region.edit');
     Route::put('/wilayah/{id}', [RegionAdminController::class, 'update'])->name('region.update');
 
     Route::get('/desa', [VillageAdminController::class, 'index'])->name('village.index');
+    Route::get('/desa/create', [VillageAdminController::class, 'create'])->name('village.create');
+    Route::post('/desa', [VillageAdminController::class, 'store'])->name('village.store');
     Route::get('/desa/{id}', [VillageAdminController::class, 'show'])->name('village.show');
     Route::get('/desa/{id}/edit', [VillageAdminController::class, 'edit'])->name('village.edit');
     Route::put('/desa/{id}', [VillageAdminController::class, 'update'])->name('village.update');
@@ -134,6 +139,10 @@ Route::middleware(['auth', 'role:super_admin|admin_distrik'])->prefix('admin')->
 
     // Super Admin Only: User & Hak Akses, Pengaturan, Audit Log
     Route::middleware(['role:super_admin'])->group(function () {
+        Route::get('/kategori-berita', [PostCategoryAdminController::class, 'index'])->name('post-category.index');
+        Route::post('/kategori-berita', [PostCategoryAdminController::class, 'store'])->name('post-category.store');
+        Route::put('/kategori-berita/{id}', [PostCategoryAdminController::class, 'update'])->name('post-category.update');
+        Route::delete('/kategori-berita/{id}', [PostCategoryAdminController::class, 'destroy'])->name('post-category.destroy');
         Route::get('/pengaturan', fn () => Inertia::render('Admin/Setting'))->name('setting.index');
         Route::get('/user', [UserAdminController::class, 'index'])->name('user.index');
         Route::get('/user/tambah', [UserAdminController::class, 'create'])->name('user.create');

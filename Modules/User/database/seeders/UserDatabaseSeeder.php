@@ -7,6 +7,7 @@ use App\Enums\UserRole;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Modules\Region\Models\Region;
 use RuntimeException;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -32,6 +33,7 @@ class UserDatabaseSeeder extends Seeder
         $districtAdmin->syncPermissions(PermissionEnum::forDistrictAdmin());
 
         $this->seedInitialAdmin();
+        $this->seedDistrictAdmins();
     }
 
     private function seedInitialAdmin(): void
@@ -64,5 +66,45 @@ class UserDatabaseSeeder extends Seeder
         }
 
         $initialUser->syncRoles([UserRole::SuperAdmin->value]);
+    }
+
+    private function seedDistrictAdmins(): void
+    {
+        $password = config('digipangan.district_admin.password');
+
+        if (blank($password)) {
+            $this->command?->warn('DISTRICT_ADMIN_PASSWORD kosong, akun admin distrik dilewati.');
+
+            return;
+        }
+
+        if (app()->isProduction() && in_array(strtolower($password), self::WEAK_PASSWORDS, true)) {
+            throw new RuntimeException(
+                'DISTRICT_ADMIN_PASSWORD masih memakai nilai default yang lemah. Ganti sebelum seeding di produksi.'
+            );
+        }
+
+        foreach (['Muting', 'Ulilin', 'Elikobel'] as $districtName) {
+            $region = Region::where('name', $districtName)->first();
+
+            if (! $region) {
+                continue;
+            }
+
+            $email = 'admin.' . $region->slug . '@digipangan.test';
+            $districtAdmin = User::withTrashed()->firstOrNew(['email' => $email]);
+
+            if (! $districtAdmin->exists) {
+                $districtAdmin->fill([
+                    'name' => 'Admin Distrik ' . $region->name,
+                    'password' => Hash::make($password),
+                    'is_active' => true,
+                ]);
+            }
+
+            $districtAdmin->region_id = $region->id;
+            $districtAdmin->save();
+            $districtAdmin->syncRoles([UserRole::DistrictAdmin->value]);
+        }
     }
 }

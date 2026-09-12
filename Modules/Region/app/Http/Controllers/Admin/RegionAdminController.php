@@ -9,6 +9,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use Modules\Region\Http\Requests\StoreRegionRequest;
 use Modules\Region\Http\Requests\UpdateRegionRequest;
 use Modules\Region\Http\Resources\RegionResource;
 use Modules\Region\Services\RegionService;
@@ -37,9 +38,26 @@ class RegionAdminController extends Controller
             'Admin/Region/Index',
             $paginator,
             RegionResource::class,
-            [],
+            ['can_create' => $request->user()?->isSuperAdmin() ?? false],
             'regions'
         );
+    }
+
+    public function create(Request $request): Response
+    {
+        $this->authorizeSuperAdmin($request->user());
+
+        return Inertia::render('Admin/Region/Create');
+    }
+
+    public function store(StoreRegionRequest $request): RedirectResponse
+    {
+        $this->authorizeSuperAdmin($request->user());
+
+        $region = $this->service->create($request->validated());
+
+        return redirect()->route('admin.region.show', $region->getKey())
+            ->with('success', 'Wilayah berhasil ditambahkan.');
     }
 
     public function show(Request $request, int $id): Response
@@ -81,5 +99,10 @@ class RegionAdminController extends Controller
                 'Akses ditolak: Anda hanya dapat mengelola data pada distrik Anda.'
             );
         }
+    }
+
+    private function authorizeSuperAdmin(?User $user): void
+    {
+        abort_unless($user?->isSuperAdmin(), 403, 'Hanya Super Admin yang dapat menambahkan wilayah.');
     }
 }

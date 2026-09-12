@@ -7,6 +7,13 @@ use Illuminate\Validation\Rule;
 
 class StoreVillageRequest extends FormRequest
 {
+    protected function prepareForValidation(): void
+    {
+        if ($this->user()?->isDistrictAdmin()) {
+            $this->merge(['region_id' => $this->user()->getAssignedRegionId()]);
+        }
+    }
+
     public function rules(): array
     {
         return [

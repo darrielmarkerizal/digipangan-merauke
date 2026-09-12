@@ -75,7 +75,7 @@ const handleSubmit = async () => {
             </div>
 
             <div
-                class="rounded-2xl border border-border/80 bg-white p-6 shadow-xs max-w-3xl"
+                class="w-full rounded-2xl border border-border/80 bg-white p-6 shadow-xs"
             >
                 <form @submit.prevent="handleSubmit" class="space-y-6">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -206,7 +206,7 @@ const handleSubmit = async () => {
                 </form>
             </div>
 
-            <div class="max-w-3xl">
+            <div class="w-full">
                 <RegionMediaForm
                     ref="mediaForm"
                     :form="form"

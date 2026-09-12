@@ -98,6 +98,13 @@ const navGroups = computed(() => {
                     href: "/admin/berita",
                     icon: Newspaper,
                 },
+                ...(isStrictSuperAdmin.value ? [
+                    {
+                        label: "Kategori Berita",
+                        href: "/admin/kategori-berita",
+                        icon: Tags,
+                    },
+                ] : []),
                 {
                     label: "Pusat Bantuan / FAQ",
                     href: "/admin/faq",

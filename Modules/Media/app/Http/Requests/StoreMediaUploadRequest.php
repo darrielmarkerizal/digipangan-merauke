@@ -10,6 +10,17 @@ class StoreMediaUploadRequest extends BaseFormRequest
 {
     public function rules(): array
     {
+        if ($this->input('purpose') === 'post_content') {
+            return [
+                'purpose' => ['required', 'in:post_content'],
+                'file' => [
+                    'required', 'file',
+                    'mimes:jpeg,jpg,png,webp,gif,mp4,webm,mov',
+                    'max:51200',
+                ],
+            ];
+        }
+
         // Every media collection in the app (avatar, farmer photo, product
         // photos, region cover/gallery, partner logo, post cover) stores
         // raster images. Restrict to safe raster types and cap the size so an
@@ -25,8 +36,12 @@ class StoreMediaUploadRequest extends BaseFormRequest
         return [
             'file.required' => 'Tidak ada berkas yang diunggah.',
             'file.image' => 'Berkas harus berupa gambar.',
-            'file.mimes' => 'Format gambar harus JPG, PNG, WEBP, atau GIF.',
-            'file.max' => 'Ukuran gambar maksimal 8 MB.',
+            'file.mimes' => $this->input('purpose') === 'post_content'
+                ? 'Format media harus JPG, PNG, WEBP, GIF, MP4, WEBM, atau MOV.'
+                : 'Format gambar harus JPG, PNG, WEBP, atau GIF.',
+            'file.max' => $this->input('purpose') === 'post_content'
+                ? 'Ukuran media maksimal 50 MB.'
+                : 'Ukuran gambar maksimal 8 MB.',
         ];
     }
 

@@ -124,3 +124,22 @@ describe('Unit CRUD', function () {
         $this->assertDatabaseHas('units', ['id' => $unit->id]);
     });
 });
+
+it('memperbarui satuan melalui panel admin tanpa menolak nilai unik miliknya sendiri', function () {
+    $unit = Unit::create(['name' => 'Liter', 'symbol' => 'L']);
+
+    $this->actingAs(actor_unit())
+        ->put(route('admin.unit.update', $unit->id), [
+            'name' => 'Liter',
+            'symbol' => 'L',
+            'is_active' => true,
+        ])
+        ->assertRedirect();
+
+    $this->assertDatabaseHas('units', [
+        'id' => $unit->id,
+        'name' => 'Liter',
+        'symbol' => 'L',
+        'is_active' => true,
+    ]);
+});

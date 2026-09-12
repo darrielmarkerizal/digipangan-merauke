@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { onBeforeUnmount, ref } from "vue";
 import { Link } from "@inertiajs/vue3";
-import { ArrowLeft, Save, FileText, Image as ImageIcon, Upload } from "@lucide/vue";
+import { ArrowLeft, Save, FileText, Image as ImageIcon, Upload, Film } from "@lucide/vue";
 import {
     Icon,
     Input,
@@ -26,6 +26,18 @@ const coverPreview = ref<string | null>(props.form.cover || null);
 const coverFile = ref<File | null>(null);
 const isUploading = ref(false);
 const isPreviewMode = ref(false);
+const editor = ref<any>(null);
+const imageInput = ref<HTMLInputElement | null>(null);
+const videoInput = ref<HTMLInputElement | null>(null);
+const previewUrls = ref<string[]>([]);
+
+const onEditorReady = (quill: any) => {
+    editor.value = quill;
+};
+
+onBeforeUnmount(() => {
+    previewUrls.value.forEach((url) => URL.revokeObjectURL(url));
+});
 
 const handleCoverChange = (e: Event) => {
     const target = e.target as HTMLInputElement;
@@ -42,6 +54,63 @@ const removeCover = () => {
     props.form.cover = null;
 };
 
+const insertUploadedMedia = async (event: Event, type: "image" | "video") => {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    input.value = "";
+
+    if (!file) return;
+
+    const allowedTypes = type === "video"
+        ? ["video/mp4", "video/webm", "video/quicktime"]
+        : ["image/jpeg", "image/png", "image/webp", "image/gif"];
+    if (!allowedTypes.includes(file.type)) {
+        toast.error(type === "video" ? "Format video tidak didukung." : "Format gambar tidak didukung.");
+        return;
+    }
+    if (file.size > 50 * 1024 * 1024) {
+        toast.error("Ukuran media maksimal 50 MB.");
+        return;
+    }
+
+    isUploading.value = true;
+    let uploadedFolder: string | null = null;
+    try {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("purpose", "post_content");
+        const response = await axios.post("/admin/media/upload", formData, {
+            headers: { Accept: "application/json" },
+        });
+        const folder = response.data.folder as string;
+        uploadedFolder = folder;
+        const quill = editor.value?.getQuill?.() ?? editor.value;
+        if (!quill?.clipboard || typeof quill.getLength !== "function") {
+            throw new Error("Editor berita belum siap.");
+        }
+
+        const index = quill.getSelection(true)?.index ?? quill.getLength();
+        const previewUrl = URL.createObjectURL(file);
+        previewUrls.value.push(previewUrl);
+        const marker = type === "video"
+            ? `<p data-temp-media="${folder}"><video controls preload="metadata" class="post-content-video" src="${previewUrl}"></video></p>`
+            : `<p data-temp-media="${folder}"><img loading="lazy" class="post-content-image" src="${previewUrl}" alt="Media berita"></p>`;
+
+        quill.clipboard.dangerouslyPasteHTML(index, marker, "user");
+        props.form.content_media = [...(props.form.content_media || []), folder];
+    } catch (error: any) {
+        if (uploadedFolder) {
+            await axios.delete("/admin/media/upload", { data: { folder: uploadedFolder } }).catch(() => undefined);
+        }
+        const message = error.response?.data?.message || error.message;
+        toast.error(message === "Editor berita belum siap."
+            ? "Editor berita belum siap. Silakan tunggu sebentar lalu coba lagi."
+            : message || "Gagal mengunggah media berita.");
+    } finally {
+        isUploading.value = false;
+    }
+};
+
 const handleSubmit = async () => {
     if (coverFile.value) {
         isUploading.value = true;
@@ -49,7 +118,7 @@ const handleSubmit = async () => {
             const formData = new FormData();
             formData.append("file", coverFile.value);
             const res = await axios.post("/admin/media/upload", formData, {
-                headers: { "Content-Type": "multipart/form-data" },
+                headers: { Accept: "application/json" },
             });
             props.form.cover = res.data.folder;
         } catch (e) {
@@ -73,7 +142,7 @@ const handleSubmit = async () => {
                 <span>Kembali ke Daftar Berita</span>
             </Link>
 
-            <div class="flex p-1 bg-muted/30 rounded-lg border border-border inline-flex self-start sm:self-auto">
+            <div class="inline-flex self-start rounded-lg border border-border bg-muted/30 p-1 sm:self-auto">
                 <button 
                     type="button" 
                     @click="isPreviewMode = false" 
@@ -141,11 +210,23 @@ const handleSubmit = async () => {
                                     >Isi Berita
                                     <span class="text-danger">*</span></Label
                                 >
-                                <div class="border rounded-md border-border/80 overflow-hidden" :class="{'border-danger': form.errors.body}">
+                                                                <div class="overflow-hidden rounded-md border border-border/80" :class="{'border-danger': form.errors.body}">
+                                                                    <div class="flex items-center gap-2 border-b border-border/60 bg-muted/20 px-3 py-2">
+                                                                        <button type="button" class="inline-flex items-center gap-1.5 rounded-lg border border-border bg-white px-2.5 py-1.5 text-xs font-semibold text-fg hover:border-brand hover:text-brand" @click="imageInput?.click()">
+                                                                            <Icon :icon="ImageIcon" :size="14" /> Gambar
+                                                                        </button>
+                                                                        <button type="button" class="inline-flex items-center gap-1.5 rounded-lg border border-border bg-white px-2.5 py-1.5 text-xs font-semibold text-fg hover:border-brand hover:text-brand" @click="videoInput?.click()">
+                                                                            <Icon :icon="Film" :size="14" /> Video
+                                                                        </button>
+                                                                        <input ref="imageInput" type="file" accept="image/jpeg,image/png,image/webp,image/gif" class="hidden" @change="insertUploadedMedia($event, 'image')" />
+                                                                        <input ref="videoInput" type="file" accept="video/mp4,video/webm,video/quicktime" class="hidden" @change="insertUploadedMedia($event, 'video')" />
+                                                                    </div>
                                   <QuillEditor
+                                                                        ref="editor"
                                     theme="snow"
                                     v-model:content="form.body"
                                     contentType="html"
+                                                                        @ready="onEditorReady"
                                     placeholder="Tulis konten berita atau artikel di sini..."
                                     style="min-height: 300px;"
                                   />
@@ -179,7 +260,7 @@ const handleSubmit = async () => {
                         <div class="p-6">
                             <div class="space-y-4">
                                 <div
-                                    class="relative flex aspect-[4/3] w-full flex-col items-center justify-center overflow-hidden rounded-xl border-2 border-dashed border-border/90 bg-muted/20 transition-colors hover:border-brand/50 hover:bg-brand-weak/10"
+                                    class="relative flex aspect-4/3 w-full flex-col items-center justify-center overflow-hidden rounded-xl border-2 border-dashed border-border/90 bg-muted/20 transition-colors hover:border-brand/50 hover:bg-brand-weak/10"
                                 >
                                     <div v-if="coverPreview" class="relative h-full w-full group">
                                         <img
@@ -315,7 +396,7 @@ const handleSubmit = async () => {
 
         <div v-if="isPreviewMode" class="max-w-4xl mx-auto pb-12 animate-in fade-in slide-in-from-bottom-4 duration-300">
             <div class="bg-white rounded-2xl border border-border/80 shadow-xs overflow-hidden">
-                <div class="w-full aspect-[21/9] bg-muted/20 relative overflow-hidden">
+                <div class="relative aspect-21/9 w-full overflow-hidden bg-muted/20">
                     <img 
                         v-if="coverPreview"
                         :src="coverPreview" 

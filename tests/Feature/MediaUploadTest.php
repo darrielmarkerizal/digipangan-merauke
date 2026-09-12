@@ -42,6 +42,27 @@ it('can upload temporary media', function () {
     $disk->assertExists('temp/'.$folder.'/'.$filename);
 });
 
+it('can upload an inline post image with its media purpose', function () {
+    $this->actingAs(User::factory()->create(['is_active' => true]));
+
+    $response = $this->postJson(route('media.upload'), [
+        'purpose' => 'post_content',
+        'file' => UploadedFile::fake()->image('inline.jpg'),
+    ]);
+
+    $response->assertOk()->assertJsonStructure(['folder', 'filename', 'mime_type']);
+});
+
+it('returns an Indonesian validation message for unsupported inline media', function () {
+    $this->actingAs(User::factory()->create(['is_active' => true]));
+
+    $this->postJson(route('media.upload'), [
+        'purpose' => 'post_content',
+        'file' => UploadedFile::fake()->create('dokumen.pdf', 100, 'application/pdf'),
+    ])->assertUnprocessable()
+        ->assertJsonPath('message', 'Format media harus JPG, PNG, WEBP, GIF, MP4, WEBM, atau MOV.');
+});
+
 it('can delete temporary media', function () {
     $this->actingAs(User::factory()->create(['is_active' => true]));
 

@@ -2,7 +2,7 @@
 import { ref, computed } from "vue";
 import { Link } from "@inertiajs/vue3";
 import AdminLayout from "@/Layouts/AdminLayout.vue";
-import { Search, Edit2, MapPin, CheckCircle2, XCircle, Eye } from "@lucide/vue";
+import { Search, Edit2, MapPin, CheckCircle2, XCircle, Eye, Plus } from "@lucide/vue";
 import { Icon, Input, Button, Badge, EmptyState } from "@/Components/ui";
 
 const props = defineProps<{
@@ -11,6 +11,7 @@ const props = defineProps<{
         links?: any;
         meta?: any;
     };
+    can_create?: boolean;
 }>();
 
 const search = ref("");
@@ -33,6 +34,12 @@ const regionList = computed(() => {
         subtitle="Manajemen profil distrik transmigrasi Muting, Ulilin, dan Elikobel."
     >
         <template #actions>
+            <Link v-if="can_create" href="/admin/wilayah/create">
+                <Button class="gap-1.5 font-semibold">
+                    <Icon :icon="Plus" :size="16" />
+                    <span>Tambah Wilayah</span>
+                </Button>
+            </Link>
         </template>
 
         <div class="space-y-4">

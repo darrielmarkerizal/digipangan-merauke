@@ -4,6 +4,7 @@ namespace Modules\Post\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Support\PostContentSanitizer;
 
 class PostResource extends JsonResource
 {
@@ -15,7 +16,7 @@ class PostResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'slug' => $this->slug,
-            'body' => $this->body,
+            'body' => app(PostContentSanitizer::class)->sanitize((string) $this->body),
             'status' => $this->status,
             'published_at' => $this->published_at,
             'category' => $this->whenLoaded('category', fn () => [
@@ -33,6 +34,11 @@ class PostResource extends JsonResource
                 'thumb' => $cover->getUrl('thumb'),
                 'card' => $cover->getUrl('card'),
             ] : null,
+            'content_media' => $this->getMedia('content_media')->map(fn ($media) => [
+                'id' => $media->id,
+                'url' => $media->getUrl(),
+                'mime_type' => $media->mime_type,
+            ])->values()->all(),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

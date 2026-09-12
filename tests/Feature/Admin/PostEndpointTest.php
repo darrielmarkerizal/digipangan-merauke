@@ -126,6 +126,35 @@ describe('Post CRUD', function () {
         expect(Post::first()->getFirstMedia('cover'))->not->toBeNull();
     });
 
+    it('menyisipkan media konten pada urutan body berita', function () {
+        Storage::fake('local');
+        Storage::fake('public');
+
+        $category = post_category();
+        $folder = app(TemporaryMediaService::class)
+            ->handleUpload(UploadedFile::fake()->image('kegiatan.jpg', 800, 600))
+            ->folder;
+        $body = '<p>Sebelum media.</p><p data-temp-media="'.$folder.'">'
+            .'<img loading="lazy" class="post-content-image" src="about:blank" alt="Media berita">'
+            .'</p><p>Sesudah media.</p>';
+
+        $this->actingAs(actor_post())
+            ->postJson(route('api.post.store'), [
+                'post_category_id' => $category->id,
+                'title' => 'Berita Dengan Media Inline',
+                'body' => $body,
+                'content_media' => [$folder],
+            ])
+            ->assertCreated()
+            ->assertJsonPath('data.content_media.0.mime_type', 'image/jpeg');
+
+        $post = Post::where('title', 'Berita Dengan Media Inline')->firstOrFail();
+        expect($post->getMedia('content_media'))->toHaveCount(1)
+            ->and($post->body)->toContain('<p>Sebelum media.</p>')
+            ->and($post->body)->toContain('<p>Sesudah media.</p>')
+            ->and($post->body)->not->toContain('data-temp-media');
+    });
+
     it('menghapus berita (soft delete)', function () {
         $author = actor_post();
         $post = Post::create([
