@@ -14,7 +14,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(AuditRepositoryInterface::class, AuditRepository::class);
 
         if ($this->app->environment('local')) {
-            $this->app->register(\App\Providers\TelescopeServiceProvider::class);
+            $this->app->register(TelescopeServiceProvider::class);
             $this->app->register(\Laravel\Telescope\TelescopeServiceProvider::class);
         }
     }

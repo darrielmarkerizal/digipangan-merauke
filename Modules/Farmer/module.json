@@ -4,8 +4,6 @@
     "description": "",
     "keywords": [],
     "priority": 0,
-    "providers": [
-        "Modules\\Farmer\\Providers\\FarmerServiceProvider"
-    ],
+    "providers": ["Modules\\Farmer\\Providers\\FarmerServiceProvider"],
     "files": []
 }

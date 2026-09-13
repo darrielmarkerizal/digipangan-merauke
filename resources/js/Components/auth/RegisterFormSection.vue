@@ -29,7 +29,10 @@ defineProps<{
 
         <p class="mt-6 text-center text-sm text-fg-muted">
             Sudah punya akun?
-            <Link href="/login" class="font-medium text-brand hover:text-brand-strong">
+            <Link
+                href="/login"
+                class="font-medium text-brand hover:text-brand-strong"
+            >
                 Masuk di sini
             </Link>
         </p>

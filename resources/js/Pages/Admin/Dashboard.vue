@@ -46,12 +46,22 @@ const props = defineProps<{
 
 <template>
     <AdminLayout
-        :title="props.is_district_admin ? `Dashboard Distrik ${props.district_name ?? ''}` : 'Dashboard Statistik & Dampak Program'"
-        :subtitle="props.is_district_admin
-            ? `Pusat pemantauan komoditas pangan, petani, interaksi pembeli WhatsApp, dan sebaran per kampung di Distrik ${props.district_name ?? ''}.`
-            : 'Pusat pembuktian dampak ekonomi komunitas, efektivitas kontak langsung WhatsApp, dan pemantauan sebaran panen per distrik transmigrasi.'"
+        :title="
+            props.is_district_admin
+                ? `Dashboard Distrik ${props.district_name ?? ''}`
+                : 'Dashboard Statistik & Dampak Program'
+        "
+        :subtitle="
+            props.is_district_admin
+                ? `Pusat pemantauan komoditas pangan, petani, interaksi pembeli WhatsApp, dan sebaran per kampung di Distrik ${props.district_name ?? ''}.`
+                : 'Pusat pembuktian dampak ekonomi komunitas, efektivitas kontak langsung WhatsApp, dan pemantauan sebaran panen per distrik transmigrasi.'
+        "
     >
-        <DashboardKpiCards :metrics="props.metrics" :is-district-admin="props.is_district_admin" :district-name="props.district_name" />
+        <DashboardKpiCards
+            :metrics="props.metrics"
+            :is-district-admin="props.is_district_admin"
+            :district-name="props.district_name"
+        />
 
         <div class="mt-4 grid grid-cols-1 gap-5 lg:grid-cols-12">
             <div class="lg:col-span-8 flex flex-col gap-5">

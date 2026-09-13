@@ -69,11 +69,16 @@ const hasContact = computed(
     </Head>
 
     <main class="min-h-screen bg-bg">
-        <section class="relative overflow-hidden border-b border-border/80 bg-white">
+        <section
+            class="relative overflow-hidden border-b border-border/80 bg-white"
+        >
             <div
                 class="absolute inset-0 z-0 opacity-[0.04]"
                 style="
-                    background-image: radial-gradient(#000 1.5px, transparent 1.5px);
+                    background-image: radial-gradient(
+                        #000 1.5px,
+                        transparent 1.5px
+                    );
                     background-size: 32px 32px;
                 "
             ></div>
@@ -103,9 +108,7 @@ const hasContact = computed(
             </div>
         </section>
 
-        <div
-            class="mx-auto max-w-[90rem] px-4 py-12 sm:px-6 sm:py-16 lg:px-8"
-        >
+        <div class="mx-auto max-w-[90rem] px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
             <div class="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-14">
                 <div class="space-y-12 lg:col-span-8">
                     <section v-if="background">
@@ -161,7 +164,9 @@ const hasContact = computed(
                                 v-for="partner in partners"
                                 :key="partner.name"
                                 :href="partner.website_url || undefined"
-                                :target="partner.website_url ? '_blank' : undefined"
+                                :target="
+                                    partner.website_url ? '_blank' : undefined
+                                "
                                 :rel="
                                     partner.website_url
                                         ? 'noopener noreferrer'
@@ -227,7 +232,10 @@ const hasContact = computed(
                             <div
                                 class="flex size-10 items-center justify-center rounded-lg bg-brand-weak text-brand"
                             >
-                                <Icon :icon="MessageCircleQuestion" :size="20" />
+                                <Icon
+                                    :icon="MessageCircleQuestion"
+                                    :size="20"
+                                />
                             </div>
                             <h2 class="text-2xl font-bold text-fg">
                                 Pusat Bantuan
@@ -295,7 +303,9 @@ const hasContact = computed(
                                     >
                                         Nama
                                     </p>
-                                    <p class="truncate text-sm font-bold text-fg">
+                                    <p
+                                        class="truncate text-sm font-bold text-fg"
+                                    >
                                         {{ contactName }}
                                     </p>
                                 </div>
@@ -305,7 +315,9 @@ const hasContact = computed(
                                 v-if="contactPhone"
                                 :href="waLink || `tel:${contactPhone}`"
                                 :target="waLink ? '_blank' : undefined"
-                                :rel="waLink ? 'noopener noreferrer' : undefined"
+                                :rel="
+                                    waLink ? 'noopener noreferrer' : undefined
+                                "
                                 class="flex items-center gap-3 rounded-xl border border-border/60 bg-muted/20 p-3 transition-colors hover:border-brand/40 hover:bg-brand/5"
                             >
                                 <div
@@ -319,7 +331,9 @@ const hasContact = computed(
                                     >
                                         Telepon / WhatsApp
                                     </p>
-                                    <p class="truncate text-sm font-bold text-fg">
+                                    <p
+                                        class="truncate text-sm font-bold text-fg"
+                                    >
                                         {{ contactPhone }}
                                     </p>
                                 </div>
@@ -341,7 +355,9 @@ const hasContact = computed(
                                     >
                                         Email
                                     </p>
-                                    <p class="truncate text-sm font-bold text-fg">
+                                    <p
+                                        class="truncate text-sm font-bold text-fg"
+                                    >
                                         {{ contactEmail }}
                                     </p>
                                 </div>

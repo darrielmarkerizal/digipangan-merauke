@@ -137,7 +137,11 @@ onUnmounted(() => {
                     class="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 border-b border-border/60 pb-6 text-sm text-fg-muted"
                 >
                     <span class="inline-flex items-center gap-1.5">
-                        <Icon :icon="CalendarDays" :size="15" class="text-brand" />
+                        <Icon
+                            :icon="CalendarDays"
+                            :size="15"
+                            class="text-brand"
+                        />
                         {{ formatTanggal(post.published_at) }}
                     </span>
                     <span

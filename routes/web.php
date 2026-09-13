@@ -1,37 +1,42 @@
 <?php
 
+use App\Http\Controllers\Admin\AuditLogAdminController;
+use App\Http\Controllers\Admin\DashboardAdminController;
+use App\Http\Controllers\Farmer\FarmerDashboardController;
 use App\Http\Controllers\SitemapController;
 use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
 use Modules\Farmer\Http\Controllers\Admin\CommodityAdminController;
 use Modules\Farmer\Http\Controllers\Admin\FarmerAdminController;
 use Modules\Farmer\Http\Controllers\Admin\FarmerGroupAdminController;
+use Modules\Farmer\Http\Controllers\Farmer\FarmerProfileController;
+use Modules\Farmer\Http\Controllers\Public\FarmerPageController;
+use Modules\Farmer\Http\Controllers\Public\FarmerRegisterController;
 use Modules\Home\Http\Controllers\Public\HomePageController;
+use Modules\Page\Http\Controllers\Admin\FaqAdminController;
+use Modules\Page\Http\Controllers\Public\AboutPageController;
 use Modules\Post\Http\Controllers\Admin\PostAdminController;
+use Modules\Post\Http\Controllers\Admin\PostCategoryAdminController;
+use Modules\Post\Http\Controllers\Public\PostPageController;
 use Modules\Product\Http\Controllers\Admin\CategoryAdminController;
 use Modules\Product\Http\Controllers\Admin\ProductAdminController;
 use Modules\Product\Http\Controllers\Admin\UnitAdminController;
-use Modules\Post\Http\Controllers\Admin\PostCategoryAdminController;
+use Modules\Product\Http\Controllers\Farmer\FarmerProductController;
+use Modules\Product\Http\Controllers\Public\ProductPageController;
 use Modules\Region\Http\Controllers\Admin\RegionAdminController;
 use Modules\Region\Http\Controllers\Admin\VillageAdminController;
+use Modules\Region\Http\Controllers\Public\RegionPageController;
 use Modules\User\Http\Controllers\Admin\AuthAdminController;
 use Modules\User\Http\Controllers\Admin\UserAdminController;
-use Modules\Farmer\Http\Controllers\Public\FarmerRegisterController;
-use Modules\Farmer\Http\Controllers\Farmer\FarmerProfileController;
-use Modules\Product\Http\Controllers\Farmer\FarmerProductController;
-use App\Http\Controllers\Farmer\FarmerDashboardController;
-use Modules\Page\Http\Controllers\Admin\FaqAdminController;
-use App\Http\Controllers\Admin\AuditLogAdminController;
-use App\Http\Controllers\Admin\DashboardAdminController;
-use Inertia\Inertia;
 
 Route::get('/', [HomePageController::class, 'index'])->name('home');
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 
-Route::get('/wilayah', [\Modules\Region\Http\Controllers\Public\RegionPageController::class, 'index'])->name('region.public.index');
-Route::get('/wilayah/{slug}', [\Modules\Region\Http\Controllers\Public\RegionPageController::class, 'show'])->name('region.public.show');
+Route::get('/wilayah', [RegionPageController::class, 'index'])->name('region.public.index');
+Route::get('/wilayah/{slug}', [RegionPageController::class, 'show'])->name('region.public.show');
 
-Route::get('/produk', [\Modules\Product\Http\Controllers\Public\ProductPageController::class, 'index'])->name('product.public.index');
-Route::get('/produk/{slug}', [\Modules\Product\Http\Controllers\Public\ProductPageController::class, 'show'])->name('product.public.show');
+Route::get('/produk', [ProductPageController::class, 'index'])->name('product.public.index');
+Route::get('/produk/{slug}', [ProductPageController::class, 'show'])->name('product.public.show');
 
 Route::middleware(['auth', 'role:farmer'])->prefix('petani/dashboard')->name('farmer.dashboard.')->group(function () {
     Route::get('/', [FarmerDashboardController::class, 'index'])->name('index');
@@ -47,13 +52,13 @@ Route::middleware(['auth', 'role:farmer'])->prefix('petani/dashboard')->name('fa
     Route::delete('/produk/{id}', [FarmerProductController::class, 'destroy'])->name('product.destroy');
 });
 
-Route::get('/petani', [\Modules\Farmer\Http\Controllers\Public\FarmerPageController::class, 'index'])->name('farmer.public.index');
-Route::get('/petani/{slug}', [\Modules\Farmer\Http\Controllers\Public\FarmerPageController::class, 'show'])->name('farmer.public.show');
+Route::get('/petani', [FarmerPageController::class, 'index'])->name('farmer.public.index');
+Route::get('/petani/{slug}', [FarmerPageController::class, 'show'])->name('farmer.public.show');
 
-Route::get('/berita', [\Modules\Post\Http\Controllers\Public\PostPageController::class, 'index'])->name('post.public.index');
-Route::get('/berita/{slug}', [\Modules\Post\Http\Controllers\Public\PostPageController::class, 'show'])->name('post.public.show');
+Route::get('/berita', [PostPageController::class, 'index'])->name('post.public.index');
+Route::get('/berita/{slug}', [PostPageController::class, 'show'])->name('post.public.show');
 
-Route::get('/tentang', [\Modules\Page\Http\Controllers\Public\AboutPageController::class, 'show'])->name('about.public.show');
+Route::get('/tentang', [AboutPageController::class, 'show'])->name('about.public.show');
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthAdminController::class, 'showLogin'])->name('login');

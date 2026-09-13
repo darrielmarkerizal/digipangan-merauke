@@ -12,22 +12,22 @@ const props = defineProps<{
 
 const chartOptions: ApexOptions = {
     chart: {
-        type: 'area',
-        fontFamily: 'inherit',
+        type: "area",
+        fontFamily: "inherit",
         toolbar: { show: false },
         zoom: { enabled: false },
-        animations: { enabled: true }
+        animations: { enabled: true },
     },
     dataLabels: {
-        enabled: false
+        enabled: false,
     },
     stroke: {
-        curve: 'smooth',
+        curve: "smooth",
         width: 3,
-        colors: ['#0f8a48']
+        colors: ["#0f8a48"],
     },
     fill: {
-        type: 'gradient',
+        type: "gradient",
         gradient: {
             shadeIntensity: 1,
             opacityFrom: 0.4,
@@ -37,52 +37,58 @@ const chartOptions: ApexOptions = {
                 {
                     offset: 0,
                     color: "#0f8a48",
-                    opacity: 0.4
+                    opacity: 0.4,
                 },
                 {
                     offset: 100,
                     color: "#0f8a48",
-                    opacity: 0.05
-                }
-            ]
-        }
+                    opacity: 0.05,
+                },
+            ],
+        },
     },
     xaxis: {
-        type: 'category',
+        type: "category",
         labels: {
-            style: { colors: '#737373', fontSize: '11px' }
+            style: { colors: "#737373", fontSize: "11px" },
         },
         axisBorder: { show: false },
         axisTicks: { show: false },
     },
     yaxis: {
         labels: {
-            style: { colors: '#737373', fontSize: '11px' }
-        }
+            style: { colors: "#737373", fontSize: "11px" },
+        },
     },
     grid: {
-        borderColor: '#f0f0f0',
+        borderColor: "#f0f0f0",
         strokeDashArray: 4,
         xaxis: { lines: { show: true } },
-        yaxis: { lines: { show: true } }
+        yaxis: { lines: { show: true } },
     },
     tooltip: {
-        theme: 'light',
+        theme: "light",
         y: {
-            formatter: (val: number) => val + " interaksi"
-        }
-    }
+            formatter: (val: number) => val + " interaksi",
+        },
+    },
 };
 
-const chartSeries = computed(() => [{
-    name: 'Klik Hubungi Penjual',
-    data: props.trendData
-}]);
+const chartSeries = computed(() => [
+    {
+        name: "Klik Hubungi Penjual",
+        data: props.trendData,
+    },
+]);
 </script>
 
 <template>
-    <div class="rounded-xl border border-border/80 bg-white p-5 shadow-xs h-full flex flex-col">
-        <div class="flex flex-col items-start gap-2 border-b border-border/80 pb-3 sm:flex-row sm:items-center sm:justify-between">
+    <div
+        class="rounded-xl border border-border/80 bg-white p-5 shadow-xs h-full flex flex-col"
+    >
+        <div
+            class="flex flex-col items-start gap-2 border-b border-border/80 pb-3 sm:flex-row sm:items-center sm:justify-between"
+        >
             <div class="min-w-0">
                 <h2 class="text-sm font-bold text-fg">
                     Tren Kontak Pembeli via WhatsApp (12 Bulan)
@@ -91,7 +97,9 @@ const chartSeries = computed(() => [{
                     Pencatatan interaksi langsung tombol Hubungi Penjual.
                 </p>
             </div>
-            <span class="shrink-0 rounded-full bg-brand-weak px-2.5 py-1 text-[11px] font-bold text-brand">
+            <span
+                class="shrink-0 rounded-full bg-brand-weak px-2.5 py-1 text-[11px] font-bold text-brand"
+            >
                 Live Metric
             </span>
         </div>

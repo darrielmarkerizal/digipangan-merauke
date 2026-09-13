@@ -3,7 +3,14 @@ import { ref, computed, watch } from "vue";
 import { useForm } from "@inertiajs/vue3";
 import { UserPlus, Eye, EyeOff } from "@lucide/vue";
 import { toast } from "vue-sonner";
-import { Button, Field, Input, PhoneInput, Select, Icon } from "@/Components/ui";
+import {
+    Button,
+    Field,
+    Input,
+    PhoneInput,
+    Select,
+    Icon,
+} from "@/Components/ui";
 
 const props = defineProps<{
     regions?: any[];
@@ -54,7 +61,8 @@ const submit = () => {
     form.transform((data) => ({
         ...data,
         village_id: data.village_id === "" ? null : data.village_id,
-        farmer_group_id: data.farmer_group_id === "" ? null : data.farmer_group_id,
+        farmer_group_id:
+            data.farmer_group_id === "" ? null : data.farmer_group_id,
         land_area_ha:
             data.land_area_ha === "" || data.land_area_ha === null
                 ? null
@@ -88,7 +96,11 @@ const submit = () => {
                 />
             </Field>
 
-            <Field label="No. WhatsApp / Telepon" :error="form.errors.phone" required>
+            <Field
+                label="No. WhatsApp / Telepon"
+                :error="form.errors.phone"
+                required
+            >
                 <PhoneInput
                     v-model="form.phone"
                     placeholder="81234567890"
@@ -148,9 +160,14 @@ const submit = () => {
                         type="button"
                         aria-label="Tampilkan konfirmasi kata sandi"
                         class="absolute right-3 top-1/2 -translate-y-1/2 rounded-md p-1 text-fg-muted transition-colors hover:text-fg"
-                        @click="showPasswordConfirmation = !showPasswordConfirmation"
+                        @click="
+                            showPasswordConfirmation = !showPasswordConfirmation
+                        "
                     >
-                        <Icon :icon="showPasswordConfirmation ? EyeOff : Eye" :size="18" />
+                        <Icon
+                            :icon="showPasswordConfirmation ? EyeOff : Eye"
+                            :size="18"
+                        />
                     </button>
                 </div>
             </Field>
@@ -159,7 +176,11 @@ const submit = () => {
         <div class="h-px bg-border/60" />
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <Field label="Distrik / Kawasan" :error="form.errors.region_id" required>
+            <Field
+                label="Distrik / Kawasan"
+                :error="form.errors.region_id"
+                required
+            >
                 <Select v-model="form.region_id" :disabled="form.processing">
                     <option value="">Pilih Distrik...</option>
                     <option v-for="r in regions" :key="r.id" :value="r.id">
@@ -171,7 +192,11 @@ const submit = () => {
             <Field label="Desa / Kampung" :error="form.errors.village_id">
                 <Select v-model="form.village_id" :disabled="form.processing">
                     <option value="">Tanpa Desa / Kampung</option>
-                    <option v-for="v in filteredVillages" :key="v.id" :value="v.id">
+                    <option
+                        v-for="v in filteredVillages"
+                        :key="v.id"
+                        :value="v.id"
+                    >
                         {{ v.name }}
                     </option>
                 </Select>
@@ -184,9 +209,16 @@ const submit = () => {
                 :error="form.errors.farmer_group_id"
                 helper="Boleh dikosongkan jika belum tergabung kelompok tani."
             >
-                <Select v-model="form.farmer_group_id" :disabled="form.processing">
+                <Select
+                    v-model="form.farmer_group_id"
+                    :disabled="form.processing"
+                >
                     <option value="">Mandiri / Tanpa Kelompok</option>
-                    <option v-for="g in filteredFarmerGroups" :key="g.id" :value="g.id">
+                    <option
+                        v-for="g in filteredFarmerGroups"
+                        :key="g.id"
+                        :value="g.id"
+                    >
                         {{ g.name }}
                     </option>
                 </Select>
@@ -204,9 +236,18 @@ const submit = () => {
             </Field>
         </div>
 
-        <Button type="submit" fullWidth :loading="form.processing" class="mt-3 shadow-sm">
+        <Button
+            type="submit"
+            fullWidth
+            :loading="form.processing"
+            class="mt-3 shadow-sm"
+        >
             <Icon v-if="!form.processing" :icon="UserPlus" :size="18" />
-            <span>{{ form.processing ? "Mendaftarkan akun..." : "Daftar Sebagai Petani" }}</span>
+            <span>{{
+                form.processing
+                    ? "Mendaftarkan akun..."
+                    : "Daftar Sebagai Petani"
+            }}</span>
         </Button>
     </form>
 </template>

@@ -2,9 +2,9 @@
 
 namespace Modules\Post\Http\Resources;
 
+use App\Support\PostContentSanitizer;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Support\PostContentSanitizer;
 
 class PostResource extends JsonResource
 {

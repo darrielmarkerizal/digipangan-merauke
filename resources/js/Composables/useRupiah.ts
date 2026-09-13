@@ -1,5 +1,5 @@
-import { formatRupiah, formatAngka } from '@/lib/format'
+import { formatRupiah, formatAngka } from "@/lib/format";
 
 export function useRupiah() {
-  return { formatRupiah, formatAngka }
+    return { formatRupiah, formatAngka };
 }

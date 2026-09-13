@@ -19,7 +19,10 @@ import LoginForm from "@/Components/auth/LoginForm.vue";
 
         <p class="mt-6 text-center text-sm text-fg-muted">
             Belum punya akun petani?
-            <Link href="/daftar" class="font-medium text-brand hover:text-brand-strong">
+            <Link
+                href="/daftar"
+                class="font-medium text-brand hover:text-brand-strong"
+            >
                 Daftar di sini
             </Link>
         </p>

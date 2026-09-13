@@ -6,6 +6,7 @@ use App\Enums\Permission;
 use App\Http\Controllers\Controller;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Modules\Product\Http\Requests\StoreProductRequest;
 use Modules\Product\Http\Requests\UpdateProductRequest;
@@ -39,7 +40,7 @@ class ProductController extends Controller implements HasMiddleware
         );
     }
 
-    public function store(StoreProductRequest $request): JsonResponse|\Illuminate\Http\RedirectResponse
+    public function store(StoreProductRequest $request): JsonResponse|RedirectResponse
     {
         $product = $this->service->create($request->validated());
 
@@ -54,7 +55,7 @@ class ProductController extends Controller implements HasMiddleware
         );
     }
 
-    public function update(UpdateProductRequest $request, int $id): JsonResponse|\Illuminate\Http\RedirectResponse
+    public function update(UpdateProductRequest $request, int $id): JsonResponse|RedirectResponse
     {
         $model = $this->service->findOrFail($id);
         $product = $this->service->update($model, $request->validated());
@@ -69,7 +70,7 @@ class ProductController extends Controller implements HasMiddleware
         );
     }
 
-    public function destroy(int $id): JsonResponse|\Illuminate\Http\RedirectResponse
+    public function destroy(int $id): JsonResponse|RedirectResponse
     {
         $model = $this->service->findOrFail($id);
         $this->service->delete($model);

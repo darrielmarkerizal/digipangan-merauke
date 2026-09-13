@@ -10,26 +10,26 @@ defineProps<{
     categoriesPreview: TaxonomyRef[];
 }>();
 const getBentoClasses = (index: number, total: number) => {
-    if (total === 1) return 'sm:col-span-2 lg:col-span-4';
-    if (total === 2) return 'sm:col-span-1 lg:col-span-2';
+    if (total === 1) return "sm:col-span-2 lg:col-span-4";
+    if (total === 2) return "sm:col-span-1 lg:col-span-2";
     if (total === 3) {
-        if (index === 0) return 'sm:col-span-2 lg:col-span-2 lg:row-span-2';
-        return 'sm:col-span-2 lg:col-span-2 lg:row-span-1';
+        if (index === 0) return "sm:col-span-2 lg:col-span-2 lg:row-span-2";
+        return "sm:col-span-2 lg:col-span-2 lg:row-span-1";
     }
-    if (index === 0) return 'sm:col-span-2 lg:col-span-2 lg:row-span-2';
-    if (index === 1) return 'sm:col-span-2 lg:col-span-2 lg:row-span-1';
-    return 'sm:col-span-1 lg:col-span-1 lg:row-span-1';
+    if (index === 0) return "sm:col-span-2 lg:col-span-2 lg:row-span-2";
+    if (index === 1) return "sm:col-span-2 lg:col-span-2 lg:row-span-1";
+    return "sm:col-span-1 lg:col-span-1 lg:row-span-1";
 };
 
 const getBentoVariant = (index: number, total: number) => {
-    if (total === 1 || total === 2) return 'default';
+    if (total === 1 || total === 2) return "default";
     if (total === 3) {
-        if (index === 0) return 'spotlight';
-        return 'horizontal';
+        if (index === 0) return "spotlight";
+        return "horizontal";
     }
-    if (index === 0) return 'spotlight';
-    if (index === 1) return 'horizontal';
-    return 'default';
+    if (index === 0) return "spotlight";
+    if (index === 1) return "horizontal";
+    return "default";
 };
 </script>
 
@@ -84,17 +84,25 @@ const getBentoVariant = (index: number, total: number) => {
             v-if="featuredList.length > 0"
             :class="[
                 'mt-8 sm:mt-12 grid grid-cols-1 gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-4',
-                featuredList.length >= 3 ? 'lg:grid-rows-2' : ''
+                featuredList.length >= 3 ? 'lg:grid-rows-2' : '',
             ]"
         >
             <div
                 v-for="(prod, index) in featuredList.slice(0, 4)"
                 :key="prod.slug"
-                :class="['h-full w-full', getBentoClasses(index, Math.min(featuredList.length, 4))]"
+                :class="[
+                    'h-full w-full',
+                    getBentoClasses(index, Math.min(featuredList.length, 4)),
+                ]"
             >
                 <ProductCard
                     :product="prod"
-                    :variant="getBentoVariant(index, Math.min(featuredList.length, 4)) as any"
+                    :variant="
+                        getBentoVariant(
+                            index,
+                            Math.min(featuredList.length, 4),
+                        ) as any
+                    "
                 />
             </div>
         </div>

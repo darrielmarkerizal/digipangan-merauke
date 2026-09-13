@@ -54,7 +54,9 @@ const handleSubmit = async () => {
             >
                 <Icon :icon="Save" :size="16" />
                 <span>{{
-                    isSubmitting ? "Mengunggah & Menyimpan..." : "Simpan Wilayah"
+                    isSubmitting
+                        ? "Mengunggah & Menyimpan..."
+                        : "Simpan Wilayah"
                 }}</span>
             </Button>
         </template>

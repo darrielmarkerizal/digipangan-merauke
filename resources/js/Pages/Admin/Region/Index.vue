@@ -2,7 +2,15 @@
 import { ref, computed } from "vue";
 import { Link } from "@inertiajs/vue3";
 import AdminLayout from "@/Layouts/AdminLayout.vue";
-import { Search, Edit2, MapPin, CheckCircle2, XCircle, Eye, Plus } from "@lucide/vue";
+import {
+    Search,
+    Edit2,
+    MapPin,
+    CheckCircle2,
+    XCircle,
+    Eye,
+    Plus,
+} from "@lucide/vue";
 import { Icon, Input, Button, Badge, EmptyState } from "@/Components/ui";
 
 const props = defineProps<{
@@ -43,7 +51,9 @@ const regionList = computed(() => {
         </template>
 
         <div class="space-y-4">
-            <div class="flex flex-col sm:flex-row w-full sm:w-auto justify-between gap-3 items-center">
+            <div
+                class="flex flex-col sm:flex-row w-full sm:w-auto justify-between gap-3 items-center"
+            >
                 <div class="relative w-full sm:w-80">
                     <Icon
                         :icon="Search"
@@ -59,7 +69,9 @@ const regionList = computed(() => {
                 </div>
             </div>
 
-            <div class="overflow-hidden rounded-2xl border border-border/80 bg-white shadow-xs">
+            <div
+                class="overflow-hidden rounded-2xl border border-border/80 bg-white shadow-xs"
+            >
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-sm text-fg">
                         <thead
@@ -69,8 +81,12 @@ const regionList = computed(() => {
                                 <th scope="col" class="px-5 py-3.5">
                                     Nama Wilayah
                                 </th>
-                                <th scope="col" class="px-4 py-3.5">Luas (km²)</th>
-                                <th scope="col" class="px-4 py-3.5">Populasi</th>
+                                <th scope="col" class="px-4 py-3.5">
+                                    Luas (km²)
+                                </th>
+                                <th scope="col" class="px-4 py-3.5">
+                                    Populasi
+                                </th>
                                 <th scope="col" class="px-4 py-3.5">Status</th>
                                 <th scope="col" class="px-5 py-3.5 text-right">
                                     Aksi
@@ -104,7 +120,9 @@ const regionList = computed(() => {
                                 <td class="px-4 py-4">
                                     <Badge
                                         :variant="
-                                            item.is_active ? 'success' : 'neutral'
+                                            item.is_active
+                                                ? 'success'
+                                                : 'neutral'
                                         "
                                         class="gap-1"
                                     >
@@ -117,7 +135,9 @@ const regionList = computed(() => {
                                             :size="12"
                                         />
                                         <span>{{
-                                            item.is_active ? "Aktif" : "Tidak Aktif"
+                                            item.is_active
+                                                ? "Aktif"
+                                                : "Tidak Aktif"
                                         }}</span>
                                     </Badge>
                                 </td>
@@ -125,7 +145,9 @@ const regionList = computed(() => {
                                     <div
                                         class="flex items-center justify-end gap-1.5"
                                     >
-                                        <Link :href="`/admin/wilayah/${item.id}`">
+                                        <Link
+                                            :href="`/admin/wilayah/${item.id}`"
+                                        >
                                             <Button
                                                 variant="secondary"
                                                 size="sm"
@@ -144,7 +166,10 @@ const regionList = computed(() => {
                                                 class="size-8 p-0"
                                                 title="Edit Wilayah"
                                             >
-                                                <Icon :icon="Edit2" :size="14" />
+                                                <Icon
+                                                    :icon="Edit2"
+                                                    :size="14"
+                                                />
                                             </Button>
                                         </Link>
                                     </div>

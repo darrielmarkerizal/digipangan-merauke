@@ -27,8 +27,8 @@ class MediaUploadController extends Controller
     public function destroy(Request $request)
     {
         $folder = $request->input('folder') ?? $request->folder;
-        
-        if (!$folder) {
+
+        if (! $folder) {
             return response()->json(['error' => 'Folder not provided'], 400);
         }
 

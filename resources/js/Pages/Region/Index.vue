@@ -34,7 +34,6 @@ const totalProducts = computed(() =>
     <Head title="Wilayah Transmigrasi" />
 
     <main class="min-h-screen bg-bg relative">
-
         <div
             class="absolute inset-0 z-0 opacity-[0.03] pointer-events-none"
             style="
@@ -50,7 +49,6 @@ const totalProducts = computed(() =>
             class="mx-auto max-w-[90rem] px-4 sm:px-6 lg:px-8 py-12 lg:py-24 relative z-10"
         >
             <div class="flex flex-col lg:flex-row gap-12 lg:gap-20">
-
                 <div class="lg:w-[400px] xl:w-[450px] shrink-0">
                     <div class="lg:sticky lg:top-32">
                         <div
@@ -74,7 +72,6 @@ const totalProducts = computed(() =>
                             dan komoditas unggulan yang tersebar di berbagai
                             distrik transmigrasi.
                         </p>
-
 
                         <div class="grid grid-cols-2 gap-4">
                             <div
@@ -156,12 +153,8 @@ const totalProducts = computed(() =>
                     </div>
                 </div>
 
-
                 <div class="flex-1">
-                    <div
-                        v-if="regions.length > 0"
-                        class="flex flex-col gap-6"
-                    >
+                    <div v-if="regions.length > 0" class="flex flex-col gap-6">
                         <RegionCard
                             v-for="region in regions"
                             :key="region.slug"

@@ -4,7 +4,14 @@ import { useForm } from "@inertiajs/vue3";
 import axios from "axios";
 import { Save, Check, Upload, User, MapPin, Sprout } from "@lucide/vue";
 import { toast } from "vue-sonner";
-import { Button, Field, Input, PhoneInput, Select, Icon } from "@/Components/ui";
+import {
+    Button,
+    Field,
+    Input,
+    PhoneInput,
+    Select,
+    Icon,
+} from "@/Components/ui";
 
 const props = defineProps<{
     initialData?: any;
@@ -156,23 +163,46 @@ const handleSubmit = () => {
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div class="lg:col-span-2 space-y-6">
-                <div class="rounded-2xl border border-border/80 bg-white p-6 shadow-xs space-y-5">
-                    <div class="flex items-center gap-2 border-b border-border/60 pb-3">
+                <div
+                    class="rounded-2xl border border-border/80 bg-white p-6 shadow-xs space-y-5"
+                >
+                    <div
+                        class="flex items-center gap-2 border-b border-border/60 pb-3"
+                    >
                         <Icon :icon="User" :size="18" class="text-brand" />
-                        <h3 class="text-sm font-bold text-fg">Informasi Diri</h3>
+                        <h3 class="text-sm font-bold text-fg">
+                            Informasi Diri
+                        </h3>
                     </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <Field label="Nama Lengkap" :error="form.errors.name" required>
-                            <Input v-model="form.name" placeholder="Nama lengkap Anda" />
+                        <Field
+                            label="Nama Lengkap"
+                            :error="form.errors.name"
+                            required
+                        >
+                            <Input
+                                v-model="form.name"
+                                placeholder="Nama lengkap Anda"
+                            />
                         </Field>
 
-                        <Field label="No. WhatsApp / Telepon" :error="form.errors.phone" required>
-                            <PhoneInput v-model="form.phone" placeholder="81234567890" />
+                        <Field
+                            label="No. WhatsApp / Telepon"
+                            :error="form.errors.phone"
+                            required
+                        >
+                            <PhoneInput
+                                v-model="form.phone"
+                                placeholder="81234567890"
+                            />
                         </Field>
                     </div>
 
-                    <Field label="Luas Lahan (Ha)" :error="form.errors.land_area_ha">
+                    <Field
+                        label="Luas Lahan (Ha)"
+                        :error="form.errors.land_area_ha"
+                    >
                         <Input
                             v-model="form.land_area_ha"
                             type="number"
@@ -183,35 +213,65 @@ const handleSubmit = () => {
                     </Field>
                 </div>
 
-                <div class="rounded-2xl border border-border/80 bg-white p-6 shadow-xs space-y-5">
-                    <div class="flex items-center gap-2 border-b border-border/60 pb-3">
+                <div
+                    class="rounded-2xl border border-border/80 bg-white p-6 shadow-xs space-y-5"
+                >
+                    <div
+                        class="flex items-center gap-2 border-b border-border/60 pb-3"
+                    >
                         <Icon :icon="MapPin" :size="18" class="text-brand" />
-                        <h3 class="text-sm font-bold text-fg">Wilayah &amp; Kelompok Tani</h3>
+                        <h3 class="text-sm font-bold text-fg">
+                            Wilayah &amp; Kelompok Tani
+                        </h3>
                     </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                        <Field label="Distrik / Kawasan" :error="form.errors.region_id" required>
+                        <Field
+                            label="Distrik / Kawasan"
+                            :error="form.errors.region_id"
+                            required
+                        >
                             <Select v-model="form.region_id">
                                 <option value="">Pilih Distrik...</option>
-                                <option v-for="r in regions" :key="r.id" :value="r.id">
+                                <option
+                                    v-for="r in regions"
+                                    :key="r.id"
+                                    :value="r.id"
+                                >
                                     {{ r.name }}
                                 </option>
                             </Select>
                         </Field>
 
-                        <Field label="Desa / Kampung" :error="form.errors.village_id">
+                        <Field
+                            label="Desa / Kampung"
+                            :error="form.errors.village_id"
+                        >
                             <Select v-model="form.village_id">
                                 <option value="">Tanpa Desa / Kampung</option>
-                                <option v-for="v in filteredVillages" :key="v.id" :value="v.id">
+                                <option
+                                    v-for="v in filteredVillages"
+                                    :key="v.id"
+                                    :value="v.id"
+                                >
                                     {{ v.name }}
                                 </option>
                             </Select>
                         </Field>
 
-                        <Field label="Kelompok Tani" :error="form.errors.farmer_group_id">
+                        <Field
+                            label="Kelompok Tani"
+                            :error="form.errors.farmer_group_id"
+                        >
                             <Select v-model="form.farmer_group_id">
-                                <option value="">Mandiri / Tanpa Kelompok</option>
-                                <option v-for="g in filteredFarmerGroups" :key="g.id" :value="g.id">
+                                <option value="">
+                                    Mandiri / Tanpa Kelompok
+                                </option>
+                                <option
+                                    v-for="g in filteredFarmerGroups"
+                                    :key="g.id"
+                                    :value="g.id"
+                                >
                                     {{ g.name }}
                                 </option>
                             </Select>
@@ -221,14 +281,22 @@ const handleSubmit = () => {
             </div>
 
             <div class="space-y-6">
-                <div class="rounded-2xl border border-border/80 bg-white p-6 shadow-xs space-y-5">
-                    <div class="flex items-center gap-2 border-b border-border/60 pb-3">
+                <div
+                    class="rounded-2xl border border-border/80 bg-white p-6 shadow-xs space-y-5"
+                >
+                    <div
+                        class="flex items-center gap-2 border-b border-border/60 pb-3"
+                    >
                         <Icon :icon="Sprout" :size="18" class="text-brand" />
-                        <h3 class="text-sm font-bold text-fg">Komoditas Budidaya</h3>
+                        <h3 class="text-sm font-bold text-fg">
+                            Komoditas Budidaya
+                        </h3>
                     </div>
 
                     <div class="space-y-2">
-                        <div class="flex flex-wrap gap-1.5 max-h-52 overflow-y-auto p-2.5 rounded-xl border border-border/80 bg-muted/20">
+                        <div
+                            class="flex flex-wrap gap-1.5 max-h-52 overflow-y-auto p-2.5 rounded-xl border border-border/80 bg-muted/20"
+                        >
                             <button
                                 v-for="c in commodities"
                                 :key="c.id"
@@ -241,18 +309,29 @@ const handleSubmit = () => {
                                         : 'bg-white border border-border text-fg-muted hover:text-fg'
                                 "
                             >
-                                <Icon v-if="form.commodities.includes(c.id)" :icon="Check" :size="12" />
+                                <Icon
+                                    v-if="form.commodities.includes(c.id)"
+                                    :icon="Check"
+                                    :size="12"
+                                />
                                 <span>{{ c.name }}</span>
                             </button>
-                            <span v-if="!commodities || commodities.length === 0" class="text-xs text-fg-muted px-2 py-1">
+                            <span
+                                v-if="!commodities || commodities.length === 0"
+                                class="text-xs text-fg-muted px-2 py-1"
+                            >
                                 Belum ada master komoditas tersedia.
                             </span>
                         </div>
                     </div>
                 </div>
 
-                <div class="rounded-2xl border border-border/80 bg-white p-6 shadow-xs space-y-5">
-                    <div class="flex items-center gap-2 border-b border-border/60 pb-3">
+                <div
+                    class="rounded-2xl border border-border/80 bg-white p-6 shadow-xs space-y-5"
+                >
+                    <div
+                        class="flex items-center gap-2 border-b border-border/60 pb-3"
+                    >
                         <Icon :icon="Upload" :size="18" class="text-brand" />
                         <h3 class="text-sm font-bold text-fg">Foto Profil</h3>
                     </div>
@@ -266,13 +345,29 @@ const handleSubmit = () => {
                             @change="handlePhotoChange"
                         />
 
-                        <div class="flex flex-col items-center justify-center p-6 rounded-2xl border-2 border-dashed border-border/80 bg-muted/10 text-center gap-3">
-                            <div class="size-24 rounded-full border border-border overflow-hidden bg-brand-weak/30 flex items-center justify-center shadow-xs">
-                                <img v-if="photoPreviewUrl" :src="photoPreviewUrl" alt="Preview" class="size-full object-cover" />
-                                <Icon v-else :icon="User" :size="36" class="text-brand/60" />
+                        <div
+                            class="flex flex-col items-center justify-center p-6 rounded-2xl border-2 border-dashed border-border/80 bg-muted/10 text-center gap-3"
+                        >
+                            <div
+                                class="size-24 rounded-full border border-border overflow-hidden bg-brand-weak/30 flex items-center justify-center shadow-xs"
+                            >
+                                <img
+                                    v-if="photoPreviewUrl"
+                                    :src="photoPreviewUrl"
+                                    alt="Preview"
+                                    class="size-full object-cover"
+                                />
+                                <Icon
+                                    v-else
+                                    :icon="User"
+                                    :size="36"
+                                    class="text-brand/60"
+                                />
                             </div>
 
-                            <div class="flex flex-wrap items-center justify-center gap-2 pt-1">
+                            <div
+                                class="flex flex-wrap items-center justify-center gap-2 pt-1"
+                            >
                                 <Button
                                     type="button"
                                     variant="secondary"
@@ -282,7 +377,11 @@ const handleSubmit = () => {
                                     @click="triggerFileInput"
                                 >
                                     <Icon :icon="Upload" :size="14" />
-                                    <span>{{ photoPreviewUrl ? "Ganti Foto" : "Unggah Foto" }}</span>
+                                    <span>{{
+                                        photoPreviewUrl
+                                            ? "Ganti Foto"
+                                            : "Unggah Foto"
+                                    }}</span>
                                 </Button>
                                 <Button
                                     v-if="photoPreviewUrl || form.photo"

@@ -40,11 +40,15 @@ const props = defineProps<{
 const viewMode = ref<"grid" | "list">("grid");
 
 const selectedCategories = computed<string[]>(() => {
-    return props.filters.kategori ? props.filters.kategori.split(",").filter(Boolean) : [];
+    return props.filters.kategori
+        ? props.filters.kategori.split(",").filter(Boolean)
+        : [];
 });
 
 const selectedRegions = computed<string[]>(() => {
-    return props.filters.region ? props.filters.region.split(",").filter(Boolean) : [];
+    return props.filters.region
+        ? props.filters.region.split(",").filter(Boolean)
+        : [];
 });
 
 const currentSort = computed(() => props.filters.sort || "-created_at");
@@ -61,7 +65,7 @@ const hasActiveFilters = computed(() => {
 
 const applyFilters = (newFilters: Record<string, string | undefined>) => {
     const merged = { ...props.filters, ...newFilters };
-    
+
     const cleanedFilters: Record<string, string> = {};
     Object.keys(merged).forEach((key) => {
         const val = merged[key as keyof typeof merged];
@@ -140,22 +144,34 @@ const resetAllFilters = () => {
                         </Badge>
                     </div>
 
-                    <h1 class="text-3xl font-extrabold tracking-tight text-fg sm:text-4xl lg:text-5xl">
+                    <h1
+                        class="text-3xl font-extrabold tracking-tight text-fg sm:text-4xl lg:text-5xl"
+                    >
                         Katalog Komoditas Unggulan
                     </h1>
-                    <p class="mt-3 text-base text-fg-muted sm:text-lg leading-relaxed">
-                        Jelajahi berbagai produk komoditas pertanian dan olahan segar langsung dari lahan transmigrasi Kabupaten Merauke.
+                    <p
+                        class="mt-3 text-base text-fg-muted sm:text-lg leading-relaxed"
+                    >
+                        Jelajahi berbagai produk komoditas pertanian dan olahan
+                        segar langsung dari lahan transmigrasi Kabupaten
+                        Merauke.
                     </p>
 
-                    <div class="mt-6 flex flex-wrap items-center gap-6 pt-4 border-t border-border/60 text-xs font-medium text-fg-muted">
+                    <div
+                        class="mt-6 flex flex-wrap items-center gap-6 pt-4 border-t border-border/60 text-xs font-medium text-fg-muted"
+                    >
                         <div class="flex items-center gap-2">
-                            <div class="flex size-7 items-center justify-center rounded-lg bg-white shadow-xs border border-border/60 text-brand">
+                            <div
+                                class="flex size-7 items-center justify-center rounded-lg bg-white shadow-xs border border-border/60 text-brand"
+                            >
                                 <Icon :icon="Sprout" :size="14" />
                             </div>
                             <span>Hasil Panen Berkualitas</span>
                         </div>
                         <div class="flex items-center gap-2">
-                            <div class="flex size-7 items-center justify-center rounded-lg bg-white shadow-xs border border-border/60 text-brand">
+                            <div
+                                class="flex size-7 items-center justify-center rounded-lg bg-white shadow-xs border border-border/60 text-brand"
+                            >
                                 <Icon :icon="MapPin" :size="14" />
                             </div>
                             <span>Distrik Transmigrasi</span>
@@ -165,9 +181,10 @@ const resetAllFilters = () => {
             </div>
         </section>
 
-        <section class="mx-auto max-w-[90rem] px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
+        <section
+            class="mx-auto max-w-[90rem] px-4 py-8 sm:px-6 sm:py-12 lg:px-8"
+        >
             <div class="flex flex-col gap-8 lg:flex-row lg:items-start">
-                
                 <ProductFilterPanel
                     :search-query="searchQuery"
                     :selected-categories="selectedCategories"
@@ -185,25 +202,34 @@ const resetAllFilters = () => {
                 />
 
                 <div class="flex-1 space-y-6">
-
-                    <div class="flex flex-col gap-4 rounded-2xl border border-border/80 bg-white p-4 shadow-xs sm:flex-row sm:items-center sm:justify-between">
-                        
+                    <div
+                        class="flex flex-col gap-4 rounded-2xl border border-border/80 bg-white p-4 shadow-xs sm:flex-row sm:items-center sm:justify-between"
+                    >
                         <div class="space-y-1">
                             <p class="text-sm font-semibold text-fg">
                                 Menampilkan
                                 <span class="font-bold text-brand">
-                                    {{ products.meta?.total ?? products.data.length }}
+                                    {{
+                                        products.meta?.total ??
+                                        products.data.length
+                                    }}
                                 </span>
                                 Komoditas
                             </p>
 
-                            <div v-if="hasActiveFilters" class="flex flex-wrap items-center gap-1.5 pt-1">
+                            <div
+                                v-if="hasActiveFilters"
+                                class="flex flex-wrap items-center gap-1.5 pt-1"
+                            >
                                 <span
                                     v-if="searchQuery"
                                     class="inline-flex items-center gap-1 rounded-md bg-muted/60 px-2 py-0.5 text-xs text-fg font-medium"
                                 >
                                     Teks: "{{ searchQuery }}"
-                                    <button @click="clearSearch" class="hover:text-red-500 cursor-pointer">
+                                    <button
+                                        @click="clearSearch"
+                                        class="hover:text-red-500 cursor-pointer"
+                                    >
                                         <Icon :icon="X" :size="12" />
                                     </button>
                                 </span>
@@ -213,8 +239,16 @@ const resetAllFilters = () => {
                                     :key="catSlug"
                                     class="inline-flex items-center gap-1 rounded-md bg-brand/10 text-brand px-2 py-0.5 text-xs font-medium"
                                 >
-                                    Kat: {{ categories.find(c => c.slug === catSlug)?.name || catSlug }}
-                                    <button @click="toggleCategory(catSlug)" class="hover:text-red-500 cursor-pointer">
+                                    Kat:
+                                    {{
+                                        categories.find(
+                                            (c) => c.slug === catSlug,
+                                        )?.name || catSlug
+                                    }}
+                                    <button
+                                        @click="toggleCategory(catSlug)"
+                                        class="hover:text-red-500 cursor-pointer"
+                                    >
                                         <Icon :icon="X" :size="12" />
                                     </button>
                                 </span>
@@ -224,8 +258,15 @@ const resetAllFilters = () => {
                                     :key="regSlug"
                                     class="inline-flex items-center gap-1 rounded-md bg-green-50 text-green-700 border border-green-200 px-2 py-0.5 text-xs font-medium"
                                 >
-                                    Distrik: {{ regions?.find(r => r.slug === regSlug)?.name || regSlug }}
-                                    <button @click="toggleRegion(regSlug)" class="hover:text-red-500 cursor-pointer">
+                                    Distrik:
+                                    {{
+                                        regions?.find((r) => r.slug === regSlug)
+                                            ?.name || regSlug
+                                    }}
+                                    <button
+                                        @click="toggleRegion(regSlug)"
+                                        class="hover:text-red-500 cursor-pointer"
+                                    >
                                         <Icon :icon="X" :size="12" />
                                     </button>
                                 </span>
@@ -239,23 +280,33 @@ const resetAllFilters = () => {
                                     @change="handleSortChange"
                                     class="h-9 cursor-pointer rounded-xl border border-border/80 bg-white px-3 text-xs font-semibold text-fg shadow-xs transition-all focus:border-brand focus:outline-none"
                                 >
-                                    <option value="-created_at">Urutan: Terbaru</option>
-                                    <option value="created_at">Urutan: Terlama</option>
-                                    <option value="price">Harga: Terendah</option>
-                                    <option value="-price">Harga: Tertinggi</option>
+                                    <option value="-created_at">
+                                        Urutan: Terbaru
+                                    </option>
+                                    <option value="created_at">
+                                        Urutan: Terlama
+                                    </option>
+                                    <option value="price">
+                                        Harga: Terendah
+                                    </option>
+                                    <option value="-price">
+                                        Harga: Tertinggi
+                                    </option>
                                     <option value="name">Nama (A - Z)</option>
                                     <option value="-name">Nama (Z - A)</option>
                                 </select>
                             </div>
 
-                            <div class="flex items-center rounded-xl border border-border/80 bg-muted/20 p-0.5">
+                            <div
+                                class="flex items-center rounded-xl border border-border/80 bg-muted/20 p-0.5"
+                            >
                                 <button
                                     @click="viewMode = 'grid'"
                                     :class="[
                                         'flex size-8 items-center justify-center rounded-lg transition-colors cursor-pointer',
                                         viewMode === 'grid'
                                             ? 'bg-white text-brand shadow-xs'
-                                            : 'text-fg-muted hover:text-fg'
+                                            : 'text-fg-muted hover:text-fg',
                                     ]"
                                     title="Tampilan Grid"
                                 >
@@ -267,7 +318,7 @@ const resetAllFilters = () => {
                                         'flex size-8 items-center justify-center rounded-lg transition-colors cursor-pointer',
                                         viewMode === 'list'
                                             ? 'bg-white text-brand shadow-xs'
-                                            : 'text-fg-muted hover:text-fg'
+                                            : 'text-fg-muted hover:text-fg',
                                     ]"
                                     title="Tampilan List"
                                 >
@@ -299,7 +350,10 @@ const resetAllFilters = () => {
                         </div>
                     </div>
 
-                    <div v-else class="rounded-2xl border border-border/80 bg-white py-16 text-center shadow-xs">
+                    <div
+                        v-else
+                        class="rounded-2xl border border-border/80 bg-white py-16 text-center shadow-xs"
+                    >
                         <EmptyState
                             title="Komoditas Tidak Ditemukan"
                             description="Maaf, tidak ada produk komoditas yang sesuai dengan kriteria filter atau pencarian Anda."
@@ -314,10 +368,15 @@ const resetAllFilters = () => {
                         </Button>
                     </div>
 
-                    <div v-if="products.meta && products.meta.last_page > 1" class="flex justify-center pt-6">
-                        <Pagination :meta="products.meta" :links="products.links" />
+                    <div
+                        v-if="products.meta && products.meta.last_page > 1"
+                        class="flex justify-center pt-6"
+                    >
+                        <Pagination
+                            :meta="products.meta"
+                            :links="products.links"
+                        />
                     </div>
-
                 </div>
             </div>
         </section>

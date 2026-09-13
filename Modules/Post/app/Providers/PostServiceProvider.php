@@ -2,11 +2,12 @@
 
 namespace Modules\Post\Providers;
 
-use Nwidart\Modules\Support\ModuleServiceProvider;
 use Illuminate\Console\Scheduling\Schedule;
-
 use Modules\Post\Repositories\Contracts\PostCategoryRepositoryInterface;
+use Modules\Post\Repositories\Contracts\PostRepositoryInterface;
 use Modules\Post\Repositories\PostCategoryRepository;
+use Modules\Post\Repositories\PostRepository;
+use Nwidart\Modules\Support\ModuleServiceProvider;
 
 class PostServiceProvider extends ModuleServiceProvider
 {
@@ -39,18 +40,18 @@ class PostServiceProvider extends ModuleServiceProvider
 
     /**
      * Define module schedules.
-     * 
-     * @param $schedule
+     *
+     * @param  $schedule
      */
     // protected function configureSchedules(Schedule $schedule): void
     // {
     //     $schedule->command('inspire')->hourly();
-    // 
+    //
     public function register(): void
     {
         parent::register();
 
-        $this->app->bind(\Modules\Post\Repositories\Contracts\PostCategoryRepositoryInterface::class, \Modules\Post\Repositories\PostCategoryRepository::class);
-        $this->app->bind(\Modules\Post\Repositories\Contracts\PostRepositoryInterface::class, \Modules\Post\Repositories\PostRepository::class);
+        $this->app->bind(PostCategoryRepositoryInterface::class, PostCategoryRepository::class);
+        $this->app->bind(PostRepositoryInterface::class, PostRepository::class);
     }
 }

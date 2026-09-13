@@ -5,6 +5,11 @@ namespace Modules\Region\Repositories;
 use App\Repositories\BaseRepository;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Query\JoinClause;
+use Modules\Farmer\Models\Farmer;
+use Modules\Product\Enums\ProductInteractionType;
+use Modules\Product\Models\Product;
 use Modules\Region\Models\Region;
 use Modules\Region\Repositories\Contracts\RegionRepositoryInterface;
 use Spatie\QueryBuilder\AllowedFilter;
@@ -60,12 +65,12 @@ class RegionRepository extends BaseRepository implements RegionRepositoryInterfa
         return 'name';
     }
 
-    public function publicFindBySlugWithFeaturedProducts(string $slug): ?\Illuminate\Database\Eloquent\Model
+    public function publicFindBySlugWithFeaturedProducts(string $slug): ?Model
     {
         $region = $this->publicFindBySlug($slug);
-        
+
         if ($region) {
-            $region->setRelation('regionFeaturedProducts', \Modules\Product\Models\Product::query()
+            $region->setRelation('regionFeaturedProducts', Product::query()
                 ->where('region_id', $region->id)
                 ->where('is_active', true)
                 ->where('is_region_featured', true)
@@ -73,7 +78,7 @@ class RegionRepository extends BaseRepository implements RegionRepositoryInterfa
                 ->latest()
                 ->get());
 
-            $region->setRelation('regionFarmers', \Modules\Farmer\Models\Farmer::query()
+            $region->setRelation('regionFarmers', Farmer::query()
                 ->where('region_id', $region->id)
                 ->where('is_active', true)
                 ->with(['media', 'farmerGroup:id,name', 'commodities:id,name,slug'])
@@ -105,9 +110,9 @@ class RegionRepository extends BaseRepository implements RegionRepositoryInterfa
     public function contactCountsByRegion(): Collection
     {
         return $this->model->newQuery()
-            ->leftJoin('product_interactions as pi', function (\Illuminate\Database\Query\JoinClause $join) {
+            ->leftJoin('product_interactions as pi', function (JoinClause $join) {
                 $join->on('pi.region_id', '=', 'regions.id')
-                    ->where('pi.type', '=', \Modules\Product\Enums\ProductInteractionType::Contact);
+                    ->where('pi.type', '=', ProductInteractionType::Contact);
             })
             ->groupBy('regions.id', 'regions.name')
             ->orderBy('regions.name')

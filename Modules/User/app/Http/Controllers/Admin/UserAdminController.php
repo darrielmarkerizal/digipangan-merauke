@@ -4,10 +4,10 @@ namespace Modules\User\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Support\InertiaQuery;
-use Inertia\Inertia;
-use Inertia\Response;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
 use Modules\Farmer\Services\FarmerGroupService;
 use Modules\Region\Services\RegionService;
 use Modules\Region\Services\VillageService;
@@ -77,7 +77,7 @@ class UserAdminController extends Controller
         abort_unless($request->user()?->hasRole('super_admin'), 403, 'Akses ditolak: Hanya Super Admin yang dapat mengelola pengguna.');
 
         return Inertia::render('Admin/User/Edit', [
-            'user'  => (new UserResource($this->service->findOrFail($id, ['roles', 'region', 'farmer'])))->resolve(),
+            'user' => (new UserResource($this->service->findOrFail($id, ['roles', 'region', 'farmer'])))->resolve(),
             'roles' => $this->service->availableRoleNames(),
             'regions' => $this->regionService->list(),
             'villages' => $this->villageService->list(),

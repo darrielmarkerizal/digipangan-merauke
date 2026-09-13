@@ -2,9 +2,9 @@
 
 namespace Modules\Media\Repositories;
 
-use Modules\Media\Models\TemporaryFile;
-use Illuminate\Database\Eloquent\Collection;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
+use Modules\Media\Models\TemporaryFile;
 
 class TemporaryFileRepository implements TemporaryFileRepositoryInterface
 {

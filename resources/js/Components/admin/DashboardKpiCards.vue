@@ -1,11 +1,6 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import {
-    Users,
-    ShoppingBasket,
-    MessageCircle,
-    MapPin,
-} from "@lucide/vue";
+import { Users, ShoppingBasket, MessageCircle, MapPin } from "@lucide/vue";
 import { Icon } from "@/Components/ui";
 
 const props = defineProps<{
@@ -24,28 +19,38 @@ const kpiCards = computed(() => [
         label: "Produk Aktif Tayang",
         value: props.metrics.active_products,
         unit: "Komoditas",
-        delta: props.isDistrictAdmin ? "Komoditas distrik aktif" : "Total produk ter-publish",
+        delta: props.isDistrictAdmin
+            ? "Komoditas distrik aktif"
+            : "Total produk ter-publish",
         icon: ShoppingBasket,
     },
     {
         label: "Petani & Gapoktan Terdaftar",
         value: props.metrics.farmers_and_groups,
         unit: "Mitra",
-        delta: props.isDistrictAdmin ? "Petani binaan di distrik" : "Berdampak pada komunitas",
+        delta: props.isDistrictAdmin
+            ? "Petani binaan di distrik"
+            : "Berdampak pada komunitas",
         icon: Users,
     },
     {
         label: "Klik WA Hubungi Penjual",
         value: props.metrics.wa_clicks,
         unit: "Interaksi",
-        delta: props.isDistrictAdmin ? "Pembeli kontak petani distrik" : "Kontak langsung WhatsApp",
+        delta: props.isDistrictAdmin
+            ? "Pembeli kontak petani distrik"
+            : "Kontak langsung WhatsApp",
         icon: MessageCircle,
     },
     {
-        label: props.isDistrictAdmin ? "Kampung / Desa Terdata" : "Kawasan Terintegrasi",
+        label: props.isDistrictAdmin
+            ? "Kampung / Desa Terdata"
+            : "Kawasan Terintegrasi",
         value: props.metrics.integrated_regions,
         unit: props.isDistrictAdmin ? "Kampung" : "Kawasan",
-        delta: props.isDistrictAdmin ? `Kampung di Distrik ${props.districtName ?? ''}` : "Distrik/Wilayah aktif",
+        delta: props.isDistrictAdmin
+            ? `Kampung di Distrik ${props.districtName ?? ""}`
+            : "Distrik/Wilayah aktif",
         icon: MapPin,
     },
 ]);
@@ -59,15 +64,21 @@ const kpiCards = computed(() => [
             class="flex flex-col justify-between rounded-xl border border-border/80 bg-white p-4 shadow-xs"
         >
             <div class="flex items-center justify-between">
-                <span class="text-xs font-semibold text-fg-muted">{{ kpi.label }}</span>
-                <span class="flex size-8 items-center justify-center rounded-lg bg-brand-weak text-brand">
+                <span class="text-xs font-semibold text-fg-muted">{{
+                    kpi.label
+                }}</span>
+                <span
+                    class="flex size-8 items-center justify-center rounded-lg bg-brand-weak text-brand"
+                >
                     <Icon :icon="kpi.icon" :size="16" />
                 </span>
             </div>
             <div class="mt-3">
                 <p class="text-2xl font-extrabold tabular-nums text-fg">
                     {{ kpi.value }}
-                    <span class="text-xs font-semibold text-brand">{{ kpi.unit }}</span>
+                    <span class="text-xs font-semibold text-brand">{{
+                        kpi.unit
+                    }}</span>
                 </p>
                 <p class="mt-1 text-xs font-medium text-fg-muted/80">
                     {{ kpi.delta }}

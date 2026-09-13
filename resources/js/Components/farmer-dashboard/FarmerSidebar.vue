@@ -62,7 +62,9 @@ const isActive = (href: string) => {
             </Link>
         </div>
 
-        <div class="flex-1 overflow-y-auto px-4 py-6 space-y-1.5 custom-scrollbar">
+        <div
+            class="flex-1 overflow-y-auto px-4 py-6 space-y-1.5 custom-scrollbar"
+        >
             <nav class="space-y-0.5">
                 <Link
                     v-for="item in navItems"

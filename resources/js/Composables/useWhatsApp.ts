@@ -1,5 +1,5 @@
-import { buildWhatsappUrl } from '@/lib/whatsapp'
+import { buildWhatsappUrl } from "@/lib/whatsapp";
 
 export function useWhatsApp() {
-  return { buildWhatsappUrl }
+    return { buildWhatsappUrl };
 }

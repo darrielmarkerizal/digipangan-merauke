@@ -91,12 +91,12 @@ class UserDatabaseSeeder extends Seeder
                 continue;
             }
 
-            $email = 'admin.' . $region->slug . '@digipangan.test';
+            $email = 'admin.'.$region->slug.'@digipangan.test';
             $districtAdmin = User::withTrashed()->firstOrNew(['email' => $email]);
 
             if (! $districtAdmin->exists) {
                 $districtAdmin->fill([
-                    'name' => 'Admin Distrik ' . $region->name,
+                    'name' => 'Admin Distrik '.$region->name,
                     'password' => Hash::make($password),
                     'is_active' => true,
                 ]);

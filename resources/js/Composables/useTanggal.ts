@@ -1,5 +1,5 @@
-import { formatTanggal } from '@/lib/format'
+import { formatTanggal } from "@/lib/format";
 
 export function useTanggal() {
-  return { formatTanggal }
+    return { formatTanggal };
 }

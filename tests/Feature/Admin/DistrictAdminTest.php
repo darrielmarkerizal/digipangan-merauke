@@ -2,17 +2,14 @@
 
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
-use Inertia\Testing\AssertableInertia as Assert;
 use Modules\Farmer\Database\Seeders\FarmerDatabaseSeeder;
 use Modules\Farmer\Models\Farmer;
-use Modules\Farmer\Models\FarmerGroup;
 use Modules\Product\Database\Seeders\ProductDatabaseSeeder;
 use Modules\Product\Models\Product;
 use Modules\Product\Models\ProductCategory;
 use Modules\Product\Models\Unit;
 use Modules\Region\Database\Seeders\RegionDatabaseSeeder;
 use Modules\Region\Models\Region;
-use Modules\Region\Models\Village;
 use Modules\User\Database\Seeders\UserDatabaseSeeder;
 
 beforeEach(function () {
@@ -32,19 +29,21 @@ function createSuperAdmin(): User
         'is_active' => true,
     ]);
     $user->assignRole('super_admin');
+
     return $user;
 }
 
 function createDistrictAdmin(Region $region): User
 {
     $user = User::create([
-        'name' => 'Admin Distrik ' . $region->name,
-        'email' => 'admin.' . $region->slug . '@digipangan.test',
+        'name' => 'Admin Distrik '.$region->name,
+        'email' => 'admin.'.$region->slug.'@digipangan.test',
         'password' => Hash::make('password123'),
         'is_active' => true,
         'region_id' => $region->id,
     ]);
     $user->assignRole('admin_distrik');
+
     return $user;
 }
 
@@ -115,7 +114,7 @@ describe('District Scoped Data Access', function () {
 
         // Find or create product in region B
         $farmerB = Farmer::where('region_id', $regionB->id)->first();
-        if (!$farmerB) {
+        if (! $farmerB) {
             $farmerB = Farmer::create([
                 'name' => 'Petani Region B',
                 'phone' => '081234567891',
@@ -167,7 +166,7 @@ describe('District Scoped Data Access', function () {
         $districtAdminA = createDistrictAdmin($regionA);
 
         $farmerB = Farmer::where('region_id', $regionB->id)->first();
-        if (!$farmerB) {
+        if (! $farmerB) {
             $farmerB = Farmer::create([
                 'name' => 'Petani Region B2',
                 'phone' => '081234567892',
@@ -281,4 +280,3 @@ describe('District Scoped Data Access', function () {
         $response->assertOk();
     });
 });
-

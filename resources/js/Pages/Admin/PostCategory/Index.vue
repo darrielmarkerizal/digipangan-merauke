@@ -52,11 +52,14 @@ const { getSortDirection, sortBy } = useSort();
 
 const categoryList = computed(() => {
     const rawData = props.categories?.data;
-    const items = Array.isArray(rawData) ? rawData : (rawData as any)?.data || [];
+    const items = Array.isArray(rawData)
+        ? rawData
+        : (rawData as any)?.data || [];
     const query = search.value.trim().toLowerCase();
 
-    return items.filter((category: CategoryItem) =>
-        !query || category.name.toLowerCase().includes(query),
+    return items.filter(
+        (category: CategoryItem) =>
+            !query || category.name.toLowerCase().includes(query),
     );
 });
 
@@ -112,7 +115,10 @@ const handleSubmit = () => {
 const executeDelete = (id: number) => {
     router.delete(`/admin/kategori-berita/${id}`, {
         onSuccess: () => toast.success("Kategori berita berhasil dihapus."),
-        onError: () => toast.error("Kategori berita tidak dapat dihapus karena masih digunakan."),
+        onError: () =>
+            toast.error(
+                "Kategori berita tidak dapat dihapus karena masih digunakan.",
+            ),
     });
 };
 </script>
@@ -136,18 +142,44 @@ const executeDelete = (id: number) => {
                     :size="16"
                     class="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-fg-muted"
                 />
-                <Input v-model="search" type="search" placeholder="Cari kategori berita..." class="w-full pl-10" />
+                <Input
+                    v-model="search"
+                    type="search"
+                    placeholder="Cari kategori berita..."
+                    class="w-full pl-10"
+                />
             </div>
 
-            <div class="overflow-hidden rounded-2xl border border-border/80 bg-white shadow-xs">
+            <div
+                class="overflow-hidden rounded-2xl border border-border/80 bg-white shadow-xs"
+            >
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-sm text-fg">
-                        <thead class="border-b border-border/60 bg-muted/30 text-xs font-bold uppercase tracking-wider text-fg-muted">
+                        <thead
+                            class="border-b border-border/60 bg-muted/30 text-xs font-bold uppercase tracking-wider text-fg-muted"
+                        >
                             <tr>
-                                <th class="cursor-pointer px-5 py-3.5" @click="sortBy('name')">
-                                    <span class="inline-flex items-center gap-1.5">
+                                <th
+                                    class="cursor-pointer px-5 py-3.5"
+                                    @click="sortBy('name')"
+                                >
+                                    <span
+                                        class="inline-flex items-center gap-1.5"
+                                    >
                                         Nama Kategori
-                                        <Icon :icon="getSortDirection('name') === 'asc' ? ArrowUp : getSortDirection('name') === 'desc' ? ArrowDown : ArrowUpDown" :size="14" />
+                                        <Icon
+                                            :icon="
+                                                getSortDirection('name') ===
+                                                'asc'
+                                                    ? ArrowUp
+                                                    : getSortDirection(
+                                                            'name',
+                                                        ) === 'desc'
+                                                      ? ArrowDown
+                                                      : ArrowUpDown
+                                            "
+                                            :size="14"
+                                        />
                                     </span>
                                 </th>
                                 <th class="px-4 py-3.5">Jumlah Berita</th>
@@ -158,21 +190,50 @@ const executeDelete = (id: number) => {
                         <tbody class="divide-y divide-border/60">
                             <tr v-if="categoryList.length === 0">
                                 <td colspan="4" class="px-5 py-12 text-center">
-                                    <EmptyState title="Tidak ada kategori ditemukan" description="Belum ada kategori berita yang sesuai." :icon="Tag" />
+                                    <EmptyState
+                                        title="Tidak ada kategori ditemukan"
+                                        description="Belum ada kategori berita yang sesuai."
+                                        :icon="Tag"
+                                    />
                                 </td>
                             </tr>
-                            <tr v-for="category in categoryList" :key="category.id" class="transition-colors hover:bg-muted/20">
-                                <td class="px-5 py-4 font-bold">{{ category.name }}</td>
+                            <tr
+                                v-for="category in categoryList"
+                                :key="category.id"
+                                class="transition-colors hover:bg-muted/20"
+                            >
+                                <td class="px-5 py-4 font-bold">
+                                    {{ category.name }}
+                                </td>
                                 <td class="px-4 py-4">
                                     <Badge variant="brand" class="gap-1">
                                         <Icon :icon="Layers" :size="12" />
-                                        <span>{{ category.posts_count ?? 0 }} Berita</span>
+                                        <span
+                                            >{{
+                                                category.posts_count ?? 0
+                                            }}
+                                            Berita</span
+                                        >
                                     </Badge>
                                 </td>
-                                <td class="px-4 py-4 text-xs text-fg-muted">{{ category.created_at ? formatTanggal(category.created_at) : "-" }}</td>
+                                <td class="px-4 py-4 text-xs text-fg-muted">
+                                    {{
+                                        category.created_at
+                                            ? formatTanggal(category.created_at)
+                                            : "-"
+                                    }}
+                                </td>
                                 <td class="px-5 py-4 text-right">
-                                    <div class="flex items-center justify-end gap-1.5">
-                                        <Button variant="secondary" size="sm" class="size-8 p-0" title="Edit Kategori" @click="openEditModal(category)">
+                                    <div
+                                        class="flex items-center justify-end gap-1.5"
+                                    >
+                                        <Button
+                                            variant="secondary"
+                                            size="sm"
+                                            class="size-8 p-0"
+                                            title="Edit Kategori"
+                                            @click="openEditModal(category)"
+                                        >
                                             <Icon :icon="Edit2" :size="14" />
                                         </Button>
                                         <AlertDialog
@@ -181,11 +242,20 @@ const executeDelete = (id: number) => {
                                             confirm-label="Ya, Hapus Kategori"
                                             cancel-label="Batal"
                                             :destructive="true"
-                                            @confirm="executeDelete(category.id)"
+                                            @confirm="
+                                                executeDelete(category.id)
+                                            "
                                         >
                                             <template #trigger>
-                                                <button type="button" class="inline-flex size-8 items-center justify-center rounded-lg border border-danger/30 bg-danger-weak/40 text-danger shadow-xs transition-all hover:border-danger hover:bg-danger hover:text-white" title="Hapus Kategori">
-                                                    <Icon :icon="Trash2" :size="14" />
+                                                <button
+                                                    type="button"
+                                                    class="inline-flex size-8 items-center justify-center rounded-lg border border-danger/30 bg-danger-weak/40 text-danger shadow-xs transition-all hover:border-danger hover:bg-danger hover:text-white"
+                                                    title="Hapus Kategori"
+                                                >
+                                                    <Icon
+                                                        :icon="Trash2"
+                                                        :size="14"
+                                                    />
                                                 </button>
                                             </template>
                                         </AlertDialog>
@@ -200,21 +270,56 @@ const executeDelete = (id: number) => {
             <Pagination :links="categories?.links" :meta="categories?.meta" />
         </div>
 
-        <div v-if="isModalOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-fg/50 p-4 backdrop-blur-xs">
-            <div class="w-full max-w-md overflow-hidden rounded-card border border-border bg-card shadow-soft">
-                <div class="flex items-center justify-between border-b border-border px-6 py-4">
-                    <h3 class="text-base font-bold">{{ editingCategory ? "Edit Kategori Berita" : "Tambah Kategori Berita" }}</h3>
-                    <button type="button" class="rounded-lg p-1 text-fg-muted hover:bg-muted hover:text-fg" @click="closeModal" aria-label="Tutup">
+        <div
+            v-if="isModalOpen"
+            class="fixed inset-0 z-50 flex items-center justify-center bg-fg/50 p-4 backdrop-blur-xs"
+        >
+            <div
+                class="w-full max-w-md overflow-hidden rounded-card border border-border bg-card shadow-soft"
+            >
+                <div
+                    class="flex items-center justify-between border-b border-border px-6 py-4"
+                >
+                    <h3 class="text-base font-bold">
+                        {{
+                            editingCategory
+                                ? "Edit Kategori Berita"
+                                : "Tambah Kategori Berita"
+                        }}
+                    </h3>
+                    <button
+                        type="button"
+                        class="rounded-lg p-1 text-fg-muted hover:bg-muted hover:text-fg"
+                        @click="closeModal"
+                        aria-label="Tutup"
+                    >
                         <Icon :icon="X" :size="18" />
                     </button>
                 </div>
                 <form class="space-y-4 p-6" @submit.prevent="handleSubmit">
-                    <Field label="Nama Kategori Berita" :error="form.errors.name" required>
-                        <Input v-model="form.name" placeholder="Contoh: Program Pemerintah" required />
+                    <Field
+                        label="Nama Kategori Berita"
+                        :error="form.errors.name"
+                        required
+                    >
+                        <Input
+                            v-model="form.name"
+                            placeholder="Contoh: Program Pemerintah"
+                            required
+                        />
                     </Field>
                     <div class="flex justify-end gap-3 pt-2">
-                        <Button type="button" variant="secondary" @click="closeModal">Batal</Button>
-                        <Button type="submit" :loading="form.processing" class="gap-1.5">
+                        <Button
+                            type="button"
+                            variant="secondary"
+                            @click="closeModal"
+                            >Batal</Button
+                        >
+                        <Button
+                            type="submit"
+                            :loading="form.processing"
+                            class="gap-1.5"
+                        >
                             <Icon :icon="Save" :size="16" />
                             <span>Simpan</span>
                         </Button>

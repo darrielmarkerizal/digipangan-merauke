@@ -13,28 +13,49 @@ defineProps<{
 </script>
 
 <template>
-    <div class="h-full rounded-2xl border border-border/80 bg-white p-5 shadow-xs">
+    <div
+        class="h-full rounded-2xl border border-border/80 bg-white p-5 shadow-xs"
+    >
         <h3 class="font-bold text-fg">Top Produk Diminati</h3>
-        <p class="mb-4 text-xs text-fg-muted">Produk dengan interaksi WA terbanyak</p>
-        
-        <div v-if="popularProducts.length === 0" class="text-sm text-fg-muted text-center py-4">
+        <p class="mb-4 text-xs text-fg-muted">
+            Produk dengan interaksi WA terbanyak
+        </p>
+
+        <div
+            v-if="popularProducts.length === 0"
+            class="text-sm text-fg-muted text-center py-4"
+        >
             Belum ada data.
         </div>
 
         <div class="space-y-3">
-            <div v-for="(product, index) in popularProducts" :key="product.id" class="flex items-start justify-between gap-3 p-3 border border-border/50 rounded-xl bg-muted/10 transition-colors hover:bg-muted/20 sm:items-center">
+            <div
+                v-for="(product, index) in popularProducts"
+                :key="product.id"
+                class="flex items-start justify-between gap-3 p-3 border border-border/50 rounded-xl bg-muted/10 transition-colors hover:bg-muted/20 sm:items-center"
+            >
                 <div class="flex min-w-0 flex-1 items-center gap-3">
-                    <div class="flex h-6 w-6 items-center justify-center rounded-full bg-brand text-white text-xs font-bold shadow-sm">
+                    <div
+                        class="flex h-6 w-6 items-center justify-center rounded-full bg-brand text-white text-xs font-bold shadow-sm"
+                    >
                         {{ Number(index) + 1 }}
                     </div>
                     <div class="min-w-0">
-                        <p class="line-clamp-2 text-sm font-semibold text-fg">{{ product.name }}</p>
-                        <p class="truncate text-xs text-fg-muted">{{ product.region }}</p>
+                        <p class="line-clamp-2 text-sm font-semibold text-fg">
+                            {{ product.name }}
+                        </p>
+                        <p class="truncate text-xs text-fg-muted">
+                            {{ product.region }}
+                        </p>
                     </div>
                 </div>
-                <div class="shrink-0 text-right flex items-center gap-1.5 bg-green-50 text-green-700 px-2.5 py-1 rounded-md shadow-sm border border-green-200">
+                <div
+                    class="shrink-0 text-right flex items-center gap-1.5 bg-green-50 text-green-700 px-2.5 py-1 rounded-md shadow-sm border border-green-200"
+                >
                     <Icon :icon="MessageCircle" :size="14" />
-                    <span class="text-xs font-bold">{{ product.contact_count }}</span>
+                    <span class="text-xs font-bold">{{
+                        product.contact_count
+                    }}</span>
                 </div>
             </div>
         </div>

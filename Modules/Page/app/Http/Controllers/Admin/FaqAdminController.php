@@ -4,9 +4,9 @@ namespace Modules\Page\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Support\InertiaQuery;
+use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
-use Illuminate\Http\RedirectResponse;
 use Modules\Page\Http\Requests\StoreFaqRequest;
 use Modules\Page\Http\Requests\UpdateFaqRequest;
 use Modules\Page\Http\Resources\FaqResource;

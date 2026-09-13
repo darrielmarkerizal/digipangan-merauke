@@ -94,7 +94,9 @@ const executeDelete = (id: number) => {
                 <FilterPanel module="post" :authors="authors as any" />
             </div>
 
-            <div class="overflow-hidden rounded-2xl border border-border/80 bg-white shadow-xs">
+            <div
+                class="overflow-hidden rounded-2xl border border-border/80 bg-white shadow-xs"
+            >
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-sm text-fg">
                         <thead

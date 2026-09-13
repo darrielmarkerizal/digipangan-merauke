@@ -3,8 +3,9 @@
 namespace Modules\Product\Services;
 
 use App\Services\BaseService;
-use Modules\Product\Repositories\Contracts\UnitRepositoryInterface;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\QueryException;
+use Modules\Product\Repositories\Contracts\UnitRepositoryInterface;
 
 class UnitService extends BaseService
 {
@@ -17,9 +18,9 @@ class UnitService extends BaseService
     {
         try {
             return parent::delete($model);
-        } catch (\Illuminate\Database\QueryException $e) {
-            if ($e->getCode() === "23000") {
-                abort(409, "Tidak dapat menghapus data karena masih memiliki relasi (sedang digunakan).");
+        } catch (QueryException $e) {
+            if ($e->getCode() === '23000') {
+                abort(409, 'Tidak dapat menghapus data karena masih memiliki relasi (sedang digunakan).');
             }
             throw $e;
         }

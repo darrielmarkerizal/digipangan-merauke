@@ -3,6 +3,7 @@
 namespace Modules\Farmer\Repositories;
 
 use App\Repositories\BaseRepository;
+use Illuminate\Database\Eloquent\Collection;
 use Modules\Farmer\Models\FarmerGroup;
 use Modules\Farmer\Repositories\Contracts\FarmerGroupRepositoryInterface;
 use Spatie\QueryBuilder\AllowedFilter;
@@ -49,7 +50,7 @@ class FarmerGroupRepository extends BaseRepository implements FarmerGroupReposit
         return $query->count();
     }
 
-    public function listByRegion(int $regionId): \Illuminate\Database\Eloquent\Collection
+    public function listByRegion(int $regionId): Collection
     {
         return $this->model->newQuery()
             ->where('region_id', $regionId)

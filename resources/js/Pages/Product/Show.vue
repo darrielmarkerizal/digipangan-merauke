@@ -634,7 +634,9 @@ onMounted(() => {
             v-if="relatedProducts && relatedProducts.length > 0"
             class="mx-auto max-w-[90rem] px-3 py-8 sm:px-5 lg:px-6 border-t border-border/60 mt-8"
         >
-            <div class="mb-6 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div
+                class="mb-6 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between"
+            >
                 <div>
                     <h2 class="text-xl sm:text-2xl font-extrabold text-fg">
                         Komoditas Sejenis

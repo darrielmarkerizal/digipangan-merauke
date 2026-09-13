@@ -3,12 +3,12 @@
 namespace Modules\Farmer\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use App\Support\InertiaQuery;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
-use Illuminate\Http\RedirectResponse;
-use App\Models\User;
-use Illuminate\Http\Request;
 use Modules\Farmer\Http\Requests\AttachFarmerToGroupRequest;
 use Modules\Farmer\Http\Requests\DetachFarmerFromGroupRequest;
 use Modules\Farmer\Http\Requests\StoreFarmerGroupRequest;
@@ -88,7 +88,7 @@ class FarmerGroupAdminController extends Controller
 
         return Inertia::render('Admin/FarmerGroup/Show', [
             'farmerGroup' => (new FarmerGroupResource($group))->resolve(),
-            'members'     => FarmerResource::collection($group->farmers()->get())->resolve(),
+            'members' => FarmerResource::collection($group->farmers()->get())->resolve(),
         ]);
     }
 
@@ -108,9 +108,9 @@ class FarmerGroupAdminController extends Controller
         $availableFarmers = $this->farmerService->availableForGroup($group->region_id);
 
         return Inertia::render('Admin/FarmerGroup/Edit', [
-            'farmerGroup'      => (new FarmerGroupResource($group))->resolve(),
-            'regions'          => $regions,
-            'members'          => FarmerResource::collection($group->farmers()->get())->resolve(),
+            'farmerGroup' => (new FarmerGroupResource($group))->resolve(),
+            'regions' => $regions,
+            'members' => FarmerResource::collection($group->farmers()->get())->resolve(),
             'availableFarmers' => FarmerResource::collection($availableFarmers)->resolve(),
             'default_region_id' => $regionId,
         ]);
@@ -145,7 +145,7 @@ class FarmerGroupAdminController extends Controller
 
     public function attachFarmer(AttachFarmerToGroupRequest $request, int $id): RedirectResponse
     {
-        $group  = $this->service->findOrFail($id);
+        $group = $this->service->findOrFail($id);
         $this->authorizeDistrictAccess($request->user(), $group->region_id);
 
         $farmer = $this->farmerService->findOrFail($request->validated('farmer_id'));
@@ -162,7 +162,7 @@ class FarmerGroupAdminController extends Controller
 
     public function detachFarmer(DetachFarmerFromGroupRequest $request, int $id): RedirectResponse
     {
-        $group  = $this->service->findOrFail($id);
+        $group = $this->service->findOrFail($id);
         $this->authorizeDistrictAccess($request->user(), $group->region_id);
 
         $farmer = $this->farmerService->findOrFail($request->validated('farmer_id'));

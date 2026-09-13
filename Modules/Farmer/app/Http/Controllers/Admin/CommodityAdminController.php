@@ -4,8 +4,8 @@ namespace Modules\Farmer\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Support\InertiaQuery;
-use Inertia\Response;
 use Illuminate\Http\RedirectResponse;
+use Inertia\Response;
 use Modules\Farmer\Http\Requests\StoreCommodityRequest;
 use Modules\Farmer\Http\Requests\UpdateCommodityRequest;
 use Modules\Farmer\Http\Resources\CommodityResource;

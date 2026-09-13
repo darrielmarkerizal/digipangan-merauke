@@ -4,7 +4,6 @@ namespace App\Support;
 
 use DOMDocument;
 use DOMElement;
-use DOMNode;
 use DOMNodeList;
 
 final class PostContentSanitizer
@@ -59,6 +58,7 @@ final class PostContentSanitizer
             $tag = strtolower($node->tagName);
             if (! in_array($tag, self::ALLOWED_TAGS, true)) {
                 $this->unwrap($node);
+
                 continue;
             }
 
@@ -75,6 +75,7 @@ final class PostContentSanitizer
             $name = strtolower($attribute->name);
             if (! in_array($name, $allowed, true)) {
                 $element->removeAttribute($attribute->name);
+
                 continue;
             }
 
@@ -100,6 +101,7 @@ final class PostContentSanitizer
         }
 
         $scheme = parse_url($trimmed, PHP_URL_SCHEME);
+
         return $scheme === null || in_array(strtolower($scheme), ['http', 'https'], true);
     }
 

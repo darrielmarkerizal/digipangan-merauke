@@ -11,6 +11,7 @@ class VillageResource extends JsonResource
     {
         $data = parent::toArray($request);
         $data['region'] = $this->region;
+
         return $data;
     }
 }

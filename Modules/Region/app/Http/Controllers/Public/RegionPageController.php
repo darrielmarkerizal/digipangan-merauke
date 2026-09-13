@@ -5,7 +5,6 @@ namespace Modules\Region\Http\Controllers\Public;
 use App\Http\Controllers\Controller;
 use Inertia\Inertia;
 use Inertia\Response;
-
 use Modules\Region\Http\Resources\Public\PublicRegionDetailResource;
 use Modules\Region\Http\Resources\Public\PublicRegionResource;
 use Modules\Region\Repositories\Contracts\RegionRepositoryInterface;

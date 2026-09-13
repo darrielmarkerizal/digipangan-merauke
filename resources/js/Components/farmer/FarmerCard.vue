@@ -59,7 +59,9 @@ const extraCommodities = computed(() =>
                         class="mt-1 flex items-center gap-1 text-sm text-fg-muted"
                     >
                         <Icon :icon="MapPin" :size="14" class="shrink-0" />
-                        <span class="truncate">Distrik {{ farmer.region.name }}</span>
+                        <span class="truncate"
+                            >Distrik {{ farmer.region.name }}</span
+                        >
                     </p>
 
                     <p
@@ -67,7 +69,9 @@ const extraCommodities = computed(() =>
                         class="mt-0.5 flex items-center gap-1 text-xs text-fg-muted"
                     >
                         <Icon :icon="Tractor" :size="13" class="shrink-0" />
-                        <span class="truncate">{{ farmer.farmer_group.name }}</span>
+                        <span class="truncate">{{
+                            farmer.farmer_group.name
+                        }}</span>
                     </p>
                 </div>
             </div>
@@ -96,7 +100,9 @@ const extraCommodities = computed(() =>
                 class="mt-auto flex items-center justify-between border-t border-border/60 px-5 py-3"
             >
                 <span class="text-xs font-medium text-fg-muted">
-                    <span class="font-bold text-fg">{{ farmer.products_count }}</span>
+                    <span class="font-bold text-fg">{{
+                        farmer.products_count
+                    }}</span>
                     produk dijual
                 </span>
                 <span

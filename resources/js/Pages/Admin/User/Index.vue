@@ -28,7 +28,10 @@ const userList = computed(() => {
 </script>
 
 <template>
-    <AdminLayout title="User & Hak Akses" subtitle="Kelola akun pengguna dan pengaturan peran serta hak akses sistem.">
+    <AdminLayout
+        title="User & Hak Akses"
+        subtitle="Kelola akun pengguna dan pengaturan peran serta hak akses sistem."
+    >
         <template #actions>
             <Link href="/admin/user/tambah">
                 <Button class="gap-2 font-semibold shadow-sm">
@@ -39,9 +42,15 @@ const userList = computed(() => {
         </template>
 
         <div class="space-y-4">
-            <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+            <div
+                class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3"
+            >
                 <div class="relative flex-1 max-w-sm">
-                    <Icon :icon="Search" :size="16" class="absolute left-3.5 top-1/2 -translate-y-1/2 text-fg-muted pointer-events-none" />
+                    <Icon
+                        :icon="Search"
+                        :size="16"
+                        class="absolute left-3.5 top-1/2 -translate-y-1/2 text-fg-muted pointer-events-none"
+                    />
                     <input
                         v-model="search"
                         type="text"
@@ -52,7 +61,9 @@ const userList = computed(() => {
                 <FilterPanel module="user" :roles="roles" />
             </div>
 
-            <div class="overflow-hidden rounded-2xl border border-border/80 bg-white shadow-xs">
+            <div
+                class="overflow-hidden rounded-2xl border border-border/80 bg-white shadow-xs"
+            >
                 <UserTable
                     :user-list="userList"
                     :sort-by="sortBy"

@@ -5,7 +5,6 @@ namespace Modules\User\Repositories\Contracts;
 use App\Models\User;
 use App\Repositories\Contracts\BaseRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection as SupportCollection;
 
 interface UserRepositoryInterface extends BaseRepositoryInterface

@@ -7,7 +7,9 @@ use App\Support\Filters\UniversalSearch;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Modules\Region\Models\Region;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -65,7 +67,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
         return '-created_at';
     }
 
-    protected function promoteSearchParameter(): \Illuminate\Http\Request
+    protected function promoteSearchParameter(): Request
     {
         $request = request();
 
@@ -77,8 +79,8 @@ abstract class BaseRepository implements BaseRepositoryInterface
         }
 
         $allowedFilterNames = array_map(function ($allowedFilter) {
-            return $allowedFilter instanceof AllowedFilter 
-                ? $allowedFilter->getName() 
+            return $allowedFilter instanceof AllowedFilter
+                ? $allowedFilter->getName()
                 : $allowedFilter;
         }, $this->allowedFilters());
 
@@ -134,7 +136,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
     public function paginateFilteredForDistrict(int $regionId, ?int $perPage = null, string $column = 'region_id'): LengthAwarePaginator
     {
         $baseQuery = $this->query();
-        if ($this->model instanceof \Modules\Region\Models\Region) {
+        if ($this->model instanceof Region) {
             $baseQuery->where('id', $regionId);
         } else {
             $baseQuery->where($this->model->qualifyColumn($column), $regionId);

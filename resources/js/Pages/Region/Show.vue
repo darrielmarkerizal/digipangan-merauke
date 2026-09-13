@@ -64,7 +64,6 @@ defineOptions({ layout: PublicLayout });
     </Head>
 
     <main class="min-h-screen bg-bg pb-24 sm:pb-16">
-
         <div class="mx-auto max-w-[90rem] px-4 sm:px-6 lg:px-8 pt-6 pb-6">
             <div class="flex items-center justify-between gap-4 mb-4">
                 <Link
@@ -85,7 +84,6 @@ defineOptions({ layout: PublicLayout });
             />
         </div>
 
-
         <div class="relative bg-brand-weak/20">
             <div class="absolute inset-0 z-0">
                 <img
@@ -97,7 +95,13 @@ defineOptions({ layout: PublicLayout });
                 <div
                     v-else
                     class="w-full h-full bg-brand-weak/30"
-                    style="background-image: radial-gradient(rgba(10, 110, 60, 0.15) 1.5px, transparent 1.5px); background-size: 24px 24px;"
+                    style="
+                        background-image: radial-gradient(
+                            rgba(10, 110, 60, 0.15) 1.5px,
+                            transparent 1.5px
+                        );
+                        background-size: 24px 24px;
+                    "
                 ></div>
                 <div
                     class="absolute inset-0 bg-gradient-to-t from-bg via-bg/80 to-transparent"
@@ -130,12 +134,10 @@ defineOptions({ layout: PublicLayout });
             </div>
         </div>
 
-
         <div
             class="mx-auto max-w-[90rem] px-4 sm:px-6 lg:px-8 pt-4 lg:pt-0 pb-12 mt-0 lg:-mt-20 relative z-20"
         >
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 lg:gap-6">
-
                 <div
                     class="bg-white/80 backdrop-blur-md border border-border/80 rounded-2xl p-4 shadow-soft transition-transform hover:-translate-y-1 sm:p-5 lg:p-6"
                 >
@@ -144,17 +146,21 @@ defineOptions({ layout: PublicLayout });
                     >
                         <Icon :icon="MapPin" :size="24" />
                     </div>
-                    <dt class="mb-1 text-xs font-medium text-fg-muted sm:text-sm">
+                    <dt
+                        class="mb-1 text-xs font-medium text-fg-muted sm:text-sm"
+                    >
                         Luas Wilayah
                     </dt>
-                    <dd class="mt-1 text-2xl font-black tracking-tight text-fg sm:text-3xl lg:text-4xl">
+                    <dd
+                        class="mt-1 text-2xl font-black tracking-tight text-fg sm:text-3xl lg:text-4xl"
+                    >
                         {{ region.area_km2 }}
-                        <span class="text-xs font-semibold text-fg-muted sm:text-base"
+                        <span
+                            class="text-xs font-semibold text-fg-muted sm:text-base"
                             >km²</span
                         >
                     </dd>
                 </div>
-
 
                 <div
                     class="bg-white/80 backdrop-blur-md border border-border/80 rounded-2xl p-4 shadow-soft transition-transform hover:-translate-y-1 sm:p-5 lg:p-6"
@@ -164,17 +170,21 @@ defineOptions({ layout: PublicLayout });
                     >
                         <Icon :icon="Users" :size="24" />
                     </div>
-                    <dt class="mb-1 text-xs font-medium text-fg-muted sm:text-sm">
+                    <dt
+                        class="mb-1 text-xs font-medium text-fg-muted sm:text-sm"
+                    >
                         Populasi
                     </dt>
-                    <dd class="mt-1 text-2xl font-black tracking-tight text-fg sm:text-3xl lg:text-4xl">
+                    <dd
+                        class="mt-1 text-2xl font-black tracking-tight text-fg sm:text-3xl lg:text-4xl"
+                    >
                         {{ formatAngka(region.population) }}
-                        <span class="text-xs font-semibold text-fg-muted sm:text-base"
+                        <span
+                            class="text-xs font-semibold text-fg-muted sm:text-base"
                             >jiwa</span
                         >
                     </dd>
                 </div>
-
 
                 <div
                     class="bg-white/80 backdrop-blur-md border border-border/80 rounded-2xl p-6 shadow-soft transition-transform hover:-translate-y-1"
@@ -187,11 +197,12 @@ defineOptions({ layout: PublicLayout });
                     <dt class="text-sm font-medium text-fg-muted mb-1">
                         Jumlah Desa/Kampung
                     </dt>
-                    <dd class="text-3xl lg:text-4xl font-black text-fg tracking-tight mt-1">
+                    <dd
+                        class="text-3xl lg:text-4xl font-black text-fg tracking-tight mt-1"
+                    >
                         {{ formatAngka(region.villages_count) }}
                     </dd>
                 </div>
-
 
                 <div
                     class="bg-white/80 backdrop-blur-md border border-border/80 rounded-2xl p-6 shadow-soft transition-transform hover:-translate-y-1"
@@ -204,7 +215,9 @@ defineOptions({ layout: PublicLayout });
                     <dt class="text-sm font-medium text-fg-muted mb-1">
                         Kelompok Tani
                     </dt>
-                    <dd class="text-3xl lg:text-4xl font-black text-fg tracking-tight mt-1">
+                    <dd
+                        class="text-3xl lg:text-4xl font-black text-fg tracking-tight mt-1"
+                    >
                         {{ formatAngka(region.farmer_groups_count) }}
                     </dd>
                 </div>
@@ -214,9 +227,7 @@ defineOptions({ layout: PublicLayout });
         <div
             class="mx-auto max-w-[90rem] px-4 sm:px-6 lg:px-8 py-8 lg:py-16 grid grid-cols-1 lg:grid-cols-12 gap-12"
         >
-
             <div class="lg:col-span-8 space-y-16">
-
                 <section>
                     <div class="flex items-center gap-3 mb-6">
                         <div
@@ -238,9 +249,10 @@ defineOptions({ layout: PublicLayout });
                     </div>
                 </section>
 
-
                 <section>
-                    <div class="mb-6 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <div
+                        class="mb-6 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between"
+                    >
                         <div class="flex min-w-0 items-center gap-3">
                             <div
                                 class="size-10 rounded-lg bg-brand-weak text-brand flex items-center justify-center"
@@ -315,7 +327,6 @@ defineOptions({ layout: PublicLayout });
                     </div>
                 </section>
             </div>
-
 
             <div class="lg:col-span-4">
                 <div class="sticky top-24">

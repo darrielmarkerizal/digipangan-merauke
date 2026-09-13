@@ -20,7 +20,13 @@ interface ImageItem {
 }
 
 const MAX_FILE_SIZE = 8 * 1024 * 1024;
-const ACCEPTED_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp", "image/gif"];
+const ACCEPTED_TYPES = [
+    "image/jpeg",
+    "image/jpg",
+    "image/png",
+    "image/webp",
+    "image/gif",
+];
 
 const props = defineProps<{
     form: any;
@@ -32,7 +38,11 @@ const coverImage = ref<ImageItem | null>(
     props.initialCover
         ? {
               id: `cover-${props.initialCover.id}`,
-              url: props.initialCover.original || props.initialCover.card || props.initialCover.thumb || "",
+              url:
+                  props.initialCover.original ||
+                  props.initialCover.card ||
+                  props.initialCover.thumb ||
+                  "",
               mediaId: props.initialCover.id,
           }
         : null,
@@ -185,16 +195,25 @@ defineExpose({ prepareUpload, isUploading });
 </script>
 
 <template>
-    <div class="space-y-4 rounded-2xl border border-border/80 bg-white p-5 shadow-xs md:p-6">
-        <div class="flex items-start justify-between gap-3 border-b border-border/60 pb-3">
+    <div
+        class="space-y-4 rounded-2xl border border-border/80 bg-white p-5 shadow-xs md:p-6"
+    >
+        <div
+            class="flex items-start justify-between gap-3 border-b border-border/60 pb-3"
+        >
             <div class="flex items-center gap-2.5">
-                <span class="flex size-8 items-center justify-center rounded-lg bg-brand-weak text-brand">
+                <span
+                    class="flex size-8 items-center justify-center rounded-lg bg-brand-weak text-brand"
+                >
                     <Icon :icon="ImageIcon" :size="18" />
                 </span>
                 <div>
-                    <h2 class="text-base font-bold text-fg">Foto Profil Distrik</h2>
+                    <h2 class="text-base font-bold text-fg">
+                        Foto Profil Distrik
+                    </h2>
                     <p class="text-xs text-fg-muted">
-                        Foto cover tampil pada kartu wilayah; foto tambahan tampil di galeri.
+                        Foto cover tampil pada kartu wilayah; foto tambahan
+                        tampil di galeri.
                     </p>
                 </div>
             </div>
@@ -204,9 +223,13 @@ defineExpose({ prepareUpload, isUploading });
             <div class="flex items-center justify-between gap-3">
                 <div>
                     <h3 class="text-sm font-bold text-fg">Cover Utama</h3>
-                    <p class="text-xs text-fg-muted">Disarankan foto lanskap distrik.</p>
+                    <p class="text-xs text-fg-muted">
+                        Disarankan foto lanskap distrik.
+                    </p>
                 </div>
-                <label class="inline-flex cursor-pointer items-center gap-1.5 rounded-xl bg-brand px-3 py-2 text-xs font-bold text-white transition-colors hover:bg-brand-strong">
+                <label
+                    class="inline-flex cursor-pointer items-center gap-1.5 rounded-xl bg-brand px-3 py-2 text-xs font-bold text-white transition-colors hover:bg-brand-strong"
+                >
                     <Icon :icon="Upload" :size="14" />
                     {{ coverImage ? "Ganti Foto" : "Pilih Foto" }}
                     <input
@@ -218,35 +241,52 @@ defineExpose({ prepareUpload, isUploading });
                 </label>
             </div>
 
-            <div class="relative aspect-[2.4/1] overflow-hidden rounded-xl border border-border/80 bg-brand-weak/30">
+            <div
+                class="relative aspect-[2.4/1] overflow-hidden rounded-xl border border-border/80 bg-brand-weak/30"
+            >
                 <img
                     v-if="coverImage"
                     :src="coverImage.url"
                     alt="Pratinjau cover distrik"
                     class="size-full object-cover"
                 />
-                <div v-else class="flex size-full flex-col items-center justify-center gap-2 text-brand/50">
+                <div
+                    v-else
+                    class="flex size-full flex-col items-center justify-center gap-2 text-brand/50"
+                >
                     <Icon :icon="ImageIcon" :size="32" />
-                    <span class="text-xs font-medium">Belum ada foto cover</span>
+                    <span class="text-xs font-medium"
+                        >Belum ada foto cover</span
+                    >
                 </div>
                 <span
                     v-if="coverImage"
                     class="absolute left-2 top-2 inline-flex items-center gap-1 rounded-full bg-brand px-2.5 py-1 text-[10px] font-extrabold text-white shadow-sm"
                 >
-                    <Icon :icon="Star" :size="12" class="fill-current text-amber-300" />
+                    <Icon
+                        :icon="Star"
+                        :size="12"
+                        class="fill-current text-amber-300"
+                    />
                     Cover Utama
                 </span>
             </div>
-            <p v-if="form.errors.cover" class="text-xs text-danger">{{ form.errors.cover }}</p>
+            <p v-if="form.errors.cover" class="text-xs text-danger">
+                {{ form.errors.cover }}
+            </p>
         </div>
 
         <div class="space-y-2 border-t border-border/60 pt-4">
             <div class="flex items-center justify-between gap-3">
                 <div>
                     <h3 class="text-sm font-bold text-fg">Galeri Distrik</h3>
-                    <p class="text-xs text-fg-muted">Tambahkan foto pemandangan atau kegiatan pertanian.</p>
+                    <p class="text-xs text-fg-muted">
+                        Tambahkan foto pemandangan atau kegiatan pertanian.
+                    </p>
                 </div>
-                <label class="inline-flex cursor-pointer items-center gap-1.5 rounded-xl border border-border bg-white px-3 py-2 text-xs font-bold text-fg transition-colors hover:border-brand hover:text-brand">
+                <label
+                    class="inline-flex cursor-pointer items-center gap-1.5 rounded-xl border border-border bg-white px-3 py-2 text-xs font-bold text-fg transition-colors hover:border-brand hover:text-brand"
+                >
                     <Icon :icon="Plus" :size="14" />
                     Tambah
                     <input
@@ -265,7 +305,11 @@ defineExpose({ prepareUpload, isUploading });
                     :key="image.id"
                     class="group relative aspect-square overflow-hidden rounded-xl border border-border/80 bg-muted/30"
                 >
-                    <img :src="image.url" alt="Pratinjau foto galeri distrik" class="size-full object-cover" />
+                    <img
+                        :src="image.url"
+                        alt="Pratinjau foto galeri distrik"
+                        class="size-full object-cover"
+                    />
                     <button
                         type="button"
                         class="absolute right-1.5 top-1.5 flex size-7 items-center justify-center rounded-lg bg-white/90 text-danger opacity-0 shadow-sm transition-opacity group-hover:opacity-100 focus:opacity-100"
@@ -277,14 +321,20 @@ defineExpose({ prepareUpload, isUploading });
                     </button>
                 </div>
             </div>
-            <p v-else class="rounded-xl border border-dashed border-border/90 bg-muted/20 px-4 py-5 text-center text-xs text-fg-muted">
+            <p
+                v-else
+                class="rounded-xl border border-dashed border-border/90 bg-muted/20 px-4 py-5 text-center text-xs text-fg-muted"
+            >
                 Belum ada foto tambahan.
             </p>
-            <p v-if="form.errors.gallery" class="text-xs text-danger">{{ form.errors.gallery }}</p>
+            <p v-if="form.errors.gallery" class="text-xs text-danger">
+                {{ form.errors.gallery }}
+            </p>
         </div>
 
         <p class="text-[11px] leading-relaxed text-fg-muted">
-            Format yang didukung: JPG, PNG, WEBP, GIF. Ukuran maksimal 8 MB per foto.
+            Format yang didukung: JPG, PNG, WEBP, GIF. Ukuran maksimal 8 MB per
+            foto.
         </p>
     </div>
 </template>

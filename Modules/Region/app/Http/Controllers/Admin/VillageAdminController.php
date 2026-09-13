@@ -3,12 +3,12 @@
 namespace Modules\Region\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use App\Support\InertiaQuery;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
-use Illuminate\Http\RedirectResponse;
-use App\Models\User;
-use Illuminate\Http\Request;
 use Modules\Region\Http\Requests\StoreVillageRequest;
 use Modules\Region\Http\Requests\UpdateVillageRequest;
 use Modules\Region\Http\Resources\VillageResource;

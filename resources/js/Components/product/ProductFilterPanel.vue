@@ -38,10 +38,18 @@ const emit = defineEmits<{
 
 <template>
     <aside class="w-full lg:w-72 shrink-0 space-y-6 lg:sticky lg:top-24 z-10">
-        <div class="rounded-2xl border border-border/80 bg-white p-5 shadow-xs space-y-6">
-            <div class="flex items-center justify-between border-b border-border/60 pb-3">
+        <div
+            class="rounded-2xl border border-border/80 bg-white p-5 shadow-xs space-y-6"
+        >
+            <div
+                class="flex items-center justify-between border-b border-border/60 pb-3"
+            >
                 <div class="flex items-center gap-2 font-bold text-fg">
-                    <Icon :icon="SlidersHorizontal" :size="16" class="text-brand" />
+                    <Icon
+                        :icon="SlidersHorizontal"
+                        :size="16"
+                        class="text-brand"
+                    />
                     <span>Filter Komoditas</span>
                 </div>
                 <button
@@ -55,17 +63,26 @@ const emit = defineEmits<{
             </div>
 
             <div>
-                <label class="mb-2 block text-xs font-bold uppercase tracking-wider text-fg-muted">
+                <label
+                    class="mb-2 block text-xs font-bold uppercase tracking-wider text-fg-muted"
+                >
                     Pencarian Teks
                 </label>
                 <div class="relative">
-                    <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-fg-muted">
+                    <div
+                        class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-fg-muted"
+                    >
                         <Icon :icon="Search" :size="16" />
                     </div>
                     <input
                         type="text"
                         :value="searchQuery"
-                        @input="emit('search', ($event.target as HTMLInputElement).value)"
+                        @input="
+                            emit(
+                                'search',
+                                ($event.target as HTMLInputElement).value,
+                            )
+                        "
                         placeholder="Cari beras, cabai..."
                         class="w-full rounded-xl border border-border/80 bg-white py-2.5 pl-9 pr-8 text-sm text-fg shadow-xs transition-all focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none"
                     />
@@ -81,7 +98,9 @@ const emit = defineEmits<{
 
             <div>
                 <div class="mb-2 flex items-center justify-between">
-                    <label class="text-xs font-bold uppercase tracking-wider text-fg-muted">
+                    <label
+                        class="text-xs font-bold uppercase tracking-wider text-fg-muted"
+                    >
                         Kategori
                     </label>
                     <button
@@ -100,11 +119,15 @@ const emit = defineEmits<{
                             'w-full text-left rounded-lg px-3 py-2 text-xs font-semibold transition-all flex items-center justify-between cursor-pointer',
                             selectedCategories.length === 0
                                 ? 'bg-brand text-white shadow-xs'
-                                : 'text-fg-muted hover:bg-muted/40 hover:text-fg'
+                                : 'text-fg-muted hover:bg-muted/40 hover:text-fg',
                         ]"
                     >
                         <span>Semua Kategori</span>
-                        <Icon v-if="selectedCategories.length === 0" :icon="Check" :size="14" />
+                        <Icon
+                            v-if="selectedCategories.length === 0"
+                            :icon="Check"
+                            :size="14"
+                        />
                     </button>
 
                     <div
@@ -115,7 +138,7 @@ const emit = defineEmits<{
                             'w-full text-left rounded-lg px-3 py-2 text-xs font-medium transition-all flex items-center justify-between cursor-pointer select-none border',
                             selectedCategories.includes(cat.slug)
                                 ? 'bg-brand/10 border-brand/40 text-brand font-semibold'
-                                : 'bg-white border-transparent text-fg-muted hover:bg-muted/40 hover:text-fg'
+                                : 'bg-white border-transparent text-fg-muted hover:bg-muted/40 hover:text-fg',
                         ]"
                     >
                         <div class="flex items-center gap-2.5">
@@ -124,10 +147,14 @@ const emit = defineEmits<{
                                     'size-4 rounded flex items-center justify-center border transition-colors',
                                     selectedCategories.includes(cat.slug)
                                         ? 'bg-brand border-brand text-white'
-                                        : 'border-border bg-white'
+                                        : 'border-border bg-white',
                                 ]"
                             >
-                                <Icon v-if="selectedCategories.includes(cat.slug)" :icon="Check" :size="12" />
+                                <Icon
+                                    v-if="selectedCategories.includes(cat.slug)"
+                                    :icon="Check"
+                                    :size="12"
+                                />
                             </div>
                             <span>{{ cat.name }}</span>
                         </div>
@@ -137,7 +164,9 @@ const emit = defineEmits<{
 
             <div v-if="regions && regions.length > 0">
                 <div class="mb-2 flex items-center justify-between">
-                    <label class="text-xs font-bold uppercase tracking-wider text-fg-muted">
+                    <label
+                        class="text-xs font-bold uppercase tracking-wider text-fg-muted"
+                    >
                         Distrik / Kawasan
                     </label>
                     <button
@@ -156,14 +185,18 @@ const emit = defineEmits<{
                             'w-full text-left rounded-lg px-3 py-2 text-xs font-semibold transition-all flex items-center justify-between cursor-pointer',
                             selectedRegions.length === 0
                                 ? 'bg-brand text-white shadow-xs'
-                                : 'text-fg-muted hover:bg-muted/40 hover:text-fg'
+                                : 'text-fg-muted hover:bg-muted/40 hover:text-fg',
                         ]"
                     >
                         <div class="flex items-center gap-2">
                             <Icon :icon="MapPin" :size="14" />
                             <span>Semua Wilayah</span>
                         </div>
-                        <Icon v-if="selectedRegions.length === 0" :icon="Check" :size="14" />
+                        <Icon
+                            v-if="selectedRegions.length === 0"
+                            :icon="Check"
+                            :size="14"
+                        />
                     </button>
 
                     <div
@@ -174,7 +207,7 @@ const emit = defineEmits<{
                             'w-full text-left rounded-lg px-3 py-2 text-xs font-medium transition-all flex items-center justify-between cursor-pointer select-none border',
                             selectedRegions.includes(reg.slug)
                                 ? 'bg-green-50 border-green-300 text-green-800 font-semibold'
-                                : 'bg-white border-transparent text-fg-muted hover:bg-muted/40 hover:text-fg'
+                                : 'bg-white border-transparent text-fg-muted hover:bg-muted/40 hover:text-fg',
                         ]"
                     >
                         <div class="flex items-center gap-2.5">
@@ -183,17 +216,20 @@ const emit = defineEmits<{
                                     'size-4 rounded flex items-center justify-center border transition-colors',
                                     selectedRegions.includes(reg.slug)
                                         ? 'bg-green-600 border-green-600 text-white'
-                                        : 'border-border bg-white'
+                                        : 'border-border bg-white',
                                 ]"
                             >
-                                <Icon v-if="selectedRegions.includes(reg.slug)" :icon="Check" :size="12" />
+                                <Icon
+                                    v-if="selectedRegions.includes(reg.slug)"
+                                    :icon="Check"
+                                    :size="12"
+                                />
                             </div>
                             <span>{{ reg.name }}</span>
                         </div>
                     </div>
                 </div>
             </div>
-
         </div>
     </aside>
 </template>

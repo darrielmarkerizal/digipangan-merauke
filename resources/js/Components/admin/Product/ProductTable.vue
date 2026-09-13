@@ -10,13 +10,7 @@ import {
     Eye,
     Image as ImageIcon,
 } from "@lucide/vue";
-import {
-    Icon,
-    Badge,
-    Button,
-    EmptyState,
-    AlertDialog,
-} from "@/Components/ui";
+import { Icon, Badge, Button, EmptyState, AlertDialog } from "@/Components/ui";
 import { toast } from "vue-sonner";
 
 const props = defineProps<{
@@ -53,19 +47,13 @@ const executeDelete = (id: number) => {
                         <div class="flex items-center gap-1.5">
                             <span>Produk Pangan</span>
                             <Icon
-                                v-if="
-                                    getSortDirection('name') ===
-                                    'asc'
-                                "
+                                v-if="getSortDirection('name') === 'asc'"
                                 :icon="ArrowUp"
                                 :size="14"
                                 class="text-brand font-bold"
                             />
                             <Icon
-                                v-else-if="
-                                    getSortDirection('name') ===
-                                    'desc'
-                                "
+                                v-else-if="getSortDirection('name') === 'desc'"
                                 :icon="ArrowDown"
                                 :size="14"
                                 class="text-brand font-bold"
@@ -78,12 +66,8 @@ const executeDelete = (id: number) => {
                             />
                         </div>
                     </th>
-                    <th scope="col" class="px-4 py-3.5">
-                        Kategori
-                    </th>
-                    <th scope="col" class="px-4 py-3.5">
-                        Petani / Kawasan
-                    </th>
+                    <th scope="col" class="px-4 py-3.5">Kategori</th>
+                    <th scope="col" class="px-4 py-3.5">Petani / Kawasan</th>
                     <th
                         scope="col"
                         class="px-4 py-3.5 cursor-pointer hover:text-fg transition-colors group"
@@ -93,19 +77,13 @@ const executeDelete = (id: number) => {
                         <div class="flex items-center gap-1.5">
                             <span>Harga &amp; Satuan</span>
                             <Icon
-                                v-if="
-                                    getSortDirection('price') ===
-                                    'asc'
-                                "
+                                v-if="getSortDirection('price') === 'asc'"
                                 :icon="ArrowUp"
                                 :size="14"
                                 class="text-brand font-bold"
                             />
                             <Icon
-                                v-else-if="
-                                    getSortDirection('price') ===
-                                    'desc'
-                                "
+                                v-else-if="getSortDirection('price') === 'desc'"
                                 :icon="ArrowDown"
                                 :size="14"
                                 class="text-brand font-bold"
@@ -119,9 +97,7 @@ const executeDelete = (id: number) => {
                         </div>
                     </th>
                     <th scope="col" class="px-4 py-3.5">Status</th>
-                    <th scope="col" class="px-5 py-3.5 text-right">
-                        Aksi
-                    </th>
+                    <th scope="col" class="px-5 py-3.5 text-right">Aksi</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-border/60">
@@ -156,10 +132,7 @@ const executeDelete = (id: number) => {
                                 class="flex size-11 shrink-0 items-center justify-center rounded-xl border border-border/60 bg-muted/60 text-fg-muted"
                                 title="Tidak ada gambar"
                             >
-                                <Icon
-                                    :icon="ImageIcon"
-                                    :size="18"
-                                />
+                                <Icon :icon="ImageIcon" :size="18" />
                             </div>
                             <div class="min-w-0">
                                 <p
@@ -167,28 +140,21 @@ const executeDelete = (id: number) => {
                                 >
                                     {{ item.name }}
                                 </p>
-                                <div
-                                    class="flex items-center gap-1.5 mt-0.5"
-                                >
+                                <div class="flex items-center gap-1.5 mt-0.5">
                                     <span
                                         v-if="item.is_featured"
                                         class="rounded bg-accent-weak px-1.5 py-0.2 text-[10px] font-bold text-accent"
                                     >
                                         Unggulan
                                     </span>
-                                    <span
-                                        class="text-[11px] text-fg-muted"
-                                        >ID: #PRD-00{{
-                                            item.id
-                                        }}</span
+                                    <span class="text-[11px] text-fg-muted"
+                                        >ID: #PRD-00{{ item.id }}</span
                                     >
                                 </div>
                             </div>
                         </div>
                     </td>
-                    <td
-                        class="px-4 py-4 text-xs font-medium text-fg-muted"
-                    >
+                    <td class="px-4 py-4 text-xs font-medium text-fg-muted">
                         {{ item.category }}
                     </td>
                     <td class="px-4 py-4">
@@ -200,9 +166,7 @@ const executeDelete = (id: number) => {
                         </p>
                     </td>
                     <td class="px-4 py-4">
-                        <p
-                            class="text-xs font-extrabold text-brand"
-                        >
+                        <p class="text-xs font-extrabold text-brand">
                             {{ item.price }}
                         </p>
                         <p class="text-[11px] text-fg-muted">
@@ -212,25 +176,17 @@ const executeDelete = (id: number) => {
                     <td class="px-4 py-4">
                         <Badge
                             :variant="
-                                item.stock_available
-                                    ? 'success'
-                                    : 'danger'
+                                item.stock_available ? 'success' : 'danger'
                             "
                         >
                             {{
-                                item.stock_available
-                                    ? "Stok Tersedia"
-                                    : "Habis"
+                                item.stock_available ? "Stok Tersedia" : "Habis"
                             }}
                         </Badge>
                     </td>
                     <td class="px-5 py-4 text-right">
-                        <div
-                            class="flex items-center justify-end gap-1.5"
-                        >
-                            <Link
-                                :href="`/admin/produk/${item.id}`"
-                            >
+                        <div class="flex items-center justify-end gap-1.5">
+                            <Link :href="`/admin/produk/${item.id}`">
                                 <Button
                                     variant="secondary"
                                     size="sm"
@@ -240,19 +196,14 @@ const executeDelete = (id: number) => {
                                     <Icon :icon="Eye" :size="14" />
                                 </Button>
                             </Link>
-                            <Link
-                                :href="`/admin/produk/${item.id}/edit`"
-                            >
+                            <Link :href="`/admin/produk/${item.id}/edit`">
                                 <Button
                                     variant="secondary"
                                     size="sm"
                                     class="size-8 p-0"
                                     title="Edit Produk"
                                 >
-                                    <Icon
-                                        :icon="Edit2"
-                                        :size="14"
-                                    />
+                                    <Icon :icon="Edit2" :size="14" />
                                 </Button>
                             </Link>
                             <AlertDialog
@@ -269,10 +220,7 @@ const executeDelete = (id: number) => {
                                         class="inline-flex size-8 items-center justify-center rounded-lg border border-danger/30 bg-danger-weak/40 text-danger transition-all hover:bg-danger hover:text-white hover:border-danger shadow-xs cursor-pointer"
                                         title="Hapus Produk"
                                     >
-                                        <Icon
-                                            :icon="Trash2"
-                                            :size="14"
-                                        />
+                                        <Icon :icon="Trash2" :size="14" />
                                     </button>
                                 </template>
                             </AlertDialog>

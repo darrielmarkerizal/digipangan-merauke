@@ -1,115 +1,120 @@
-import { computed } from 'vue'
-import { usePage, router } from '@inertiajs/vue3'
-import { toast } from 'vue-sonner'
-import axios from 'axios'
+import { computed } from "vue";
+import { usePage, router } from "@inertiajs/vue3";
+import { toast } from "vue-sonner";
+import axios from "axios";
 
 export interface AuthUser {
-  id: number | string
-  name: string
-  email: string
-  phone?: string
-  avatar_url?: string
-  region_id?: number | string | null
-  region?: {
-    id: number | string
-    name: string
-    slug: string
-  } | null
+    id: number | string;
+    name: string;
+    email: string;
+    phone?: string;
+    avatar_url?: string;
+    region_id?: number | string | null;
+    region?: {
+        id: number | string;
+        name: string;
+        slug: string;
+    } | null;
 }
 
 export function useAuthGuard() {
-  const page = usePage()
+    const page = usePage();
 
-  const user = computed<AuthUser | null>(() => {
-    return (page.props.auth as any)?.user || null
-  })
+    const user = computed<AuthUser | null>(() => {
+        return (page.props.auth as any)?.user || null;
+    });
 
-  const roles = computed<string[]>(() => {
-    return (page.props.auth as any)?.roles || []
-  })
+    const roles = computed<string[]>(() => {
+        return (page.props.auth as any)?.roles || [];
+    });
 
-  const permissions = computed<string[]>(() => {
-    return (page.props.auth as any)?.permissions || []
-  })
+    const permissions = computed<string[]>(() => {
+        return (page.props.auth as any)?.permissions || [];
+    });
 
-  const isAuthenticated = computed(() => !!user.value)
+    const isAuthenticated = computed(() => !!user.value);
 
-  const isSuperAdmin = computed(() => {
-    return roles.value.includes('super_admin')
-  })
+    const isSuperAdmin = computed(() => {
+        return roles.value.includes("super_admin");
+    });
 
-  const isStrictSuperAdmin = computed(() => {
-    return roles.value.includes('super_admin')
-  })
+    const isStrictSuperAdmin = computed(() => {
+        return roles.value.includes("super_admin");
+    });
 
-  const isDistrictAdmin = computed(() => {
-    return roles.value.includes('admin_distrik')
-  })
+    const isDistrictAdmin = computed(() => {
+        return roles.value.includes("admin_distrik");
+    });
 
-  const userRegion = computed(() => {
-    return user.value?.region || null
-  })
+    const userRegion = computed(() => {
+        return user.value?.region || null;
+    });
 
-  const isFarmer = computed(() => {
-    return roles.value.includes('farmer')
-  })
+    const isFarmer = computed(() => {
+        return roles.value.includes("farmer");
+    });
 
-  const hasRole = (roleName: string): boolean => {
-    return roles.value.includes(roleName)
-  }
+    const hasRole = (roleName: string): boolean => {
+        return roles.value.includes(roleName);
+    };
 
-  const hasPermission = (permissionName: string): boolean => {
-    return permissions.value.includes(permissionName)
-  }
+    const hasPermission = (permissionName: string): boolean => {
+        return permissions.value.includes(permissionName);
+    };
 
-  const requireAuth = (redirectTo = '/login'): boolean => {
-    if (!isAuthenticated.value) {
-      toast.error('Akses ditolak', {
-        description: 'Silakan masuk terlebih dahulu untuk mengakses halaman ini.',
-      })
-      router.visit(redirectTo)
-      return false
-    }
-    return true
-  }
+    const requireAuth = (redirectTo = "/login"): boolean => {
+        if (!isAuthenticated.value) {
+            toast.error("Akses ditolak", {
+                description:
+                    "Silakan masuk terlebih dahulu untuk mengakses halaman ini.",
+            });
+            router.visit(redirectTo);
+            return false;
+        }
+        return true;
+    };
 
-  const requireRole = (requiredRoles: string[], redirectTo = '/login'): boolean => {
-    if (!requireAuth(redirectTo)) return false
+    const requireRole = (
+        requiredRoles: string[],
+        redirectTo = "/login",
+    ): boolean => {
+        if (!requireAuth(redirectTo)) return false;
 
-    const hasAnyRole = requiredRoles.some((r) => roles.value.includes(r))
-    if (!hasAnyRole) {
-      toast.error('Akses tidak diizinkan', {
-        description: 'Akun Anda tidak memiliki peran untuk mengakses modul ini.',
-      })
-      router.visit('/')
-      return false
-    }
-    return true
-  }
+        const hasAnyRole = requiredRoles.some((r) => roles.value.includes(r));
+        if (!hasAnyRole) {
+            toast.error("Akses tidak diizinkan", {
+                description:
+                    "Akun Anda tidak memiliki peran untuk mengakses modul ini.",
+            });
+            router.visit("/");
+            return false;
+        }
+        return true;
+    };
 
-  const logout = async (): Promise<void> => {
-    try {
-      await axios.post('/api/v1/auth/logout')
-    } catch {
-    } finally {
-      router.post('/logout')
-    }
-  }
+    const logout = async (): Promise<void> => {
+        try {
+            await axios.post("/api/v1/auth/logout");
+        } catch {
+        } finally {
+            router.post("/logout");
+        }
+    };
 
-  return {
-    user,
-    roles,
-    permissions,
-    isAuthenticated,
-    isSuperAdmin,
-    isStrictSuperAdmin,
-    isDistrictAdmin,
-    userRegion,
-    isFarmer,
-    hasRole,
-    hasPermission,
-    requireAuth,
-    requireRole,
-    logout,
-  }
+    return {
+        user,
+        roles,
+        permissions,
+        isAuthenticated,
+        isSuperAdmin,
+        isStrictSuperAdmin,
+        isDistrictAdmin,
+        userRegion,
+        isFarmer,
+        hasRole,
+        hasPermission,
+        requireAuth,
+        requireRole,
+        logout,
+    };
 }

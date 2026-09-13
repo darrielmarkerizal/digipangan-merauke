@@ -40,7 +40,9 @@ const hasActiveFilters = computed(
     () => !!selectedCategory.value || !!props.filters.q,
 );
 
-const applyFilters = (newFilters: Record<string, string | undefined | null>) => {
+const applyFilters = (
+    newFilters: Record<string, string | undefined | null>,
+) => {
     const merged = { ...props.filters, ...newFilters };
     const cleaned: Record<string, string> = {};
     Object.keys(merged).forEach((key) => {
@@ -99,9 +101,9 @@ const restPosts = computed(() =>
                     <p
                         class="mt-3 text-base leading-relaxed text-fg-muted sm:text-lg"
                     >
-                        Ikuti kabar panen, kegiatan kelompok tani, pelatihan, dan
-                        informasi harga pasar terkini dari kawasan transmigrasi
-                        Merauke.
+                        Ikuti kabar panen, kegiatan kelompok tani, pelatihan,
+                        dan informasi harga pasar terkini dari kawasan
+                        transmigrasi Merauke.
                     </p>
                 </div>
             </div>
@@ -173,17 +175,15 @@ const restPosts = computed(() =>
                         ]"
                     >
                         {{ category.name }}
-                        <span class="opacity-70">({{ category.posts_count }})</span>
+                        <span class="opacity-70"
+                            >({{ category.posts_count }})</span
+                        >
                     </button>
                 </div>
             </div>
 
             <div v-if="posts.data.length > 0" class="space-y-6">
-                <PostCard
-                    v-if="featured"
-                    :post="featured"
-                    variant="feature"
-                />
+                <PostCard v-if="featured" :post="featured" variant="feature" />
 
                 <div
                     v-if="restPosts.length > 0"

@@ -16,8 +16,7 @@ class PostService extends BaseService
     public function __construct(
         PostRepositoryInterface $repository,
         private readonly PostContentSanitizer $contentSanitizer,
-    )
-    {
+    ) {
         parent::__construct($repository);
     }
 

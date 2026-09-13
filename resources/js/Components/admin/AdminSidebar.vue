@@ -30,9 +30,10 @@ const navGroups = computed(() => {
             title: "Utama",
             items: [
                 {
-                    label: isDistrictAdmin.value && userRegion.value
-                        ? `Dashboard (${userRegion.value.name})`
-                        : "Dashboard & Dampak",
+                    label:
+                        isDistrictAdmin.value && userRegion.value
+                            ? `Dashboard (${userRegion.value.name})`
+                            : "Dashboard & Dampak",
                     href: "/admin/dashboard",
                     icon: LayoutDashboard,
                 },
@@ -46,23 +47,25 @@ const navGroups = computed(() => {
                     href: "/admin/produk",
                     icon: ShoppingBasket,
                 },
-                ...(!isDistrictAdmin.value ? [
-                    {
-                        label: "Kategori Produk",
-                        href: "/admin/kategori",
-                        icon: Tags,
-                    },
-                    {
-                        label: "Satuan & Berat",
-                        href: "/admin/satuan",
-                        icon: Scale,
-                    },
-                    {
-                        label: "Master Komoditas",
-                        href: "/admin/komoditas",
-                        icon: Sprout,
-                    },
-                ] : []),
+                ...(!isDistrictAdmin.value
+                    ? [
+                          {
+                              label: "Kategori Produk",
+                              href: "/admin/kategori",
+                              icon: Tags,
+                          },
+                          {
+                              label: "Satuan & Berat",
+                              href: "/admin/satuan",
+                              icon: Scale,
+                          },
+                          {
+                              label: "Master Komoditas",
+                              href: "/admin/komoditas",
+                              icon: Sprout,
+                          },
+                      ]
+                    : []),
             ],
         },
         {
@@ -79,12 +82,16 @@ const navGroups = computed(() => {
                     icon: UserCheck,
                 },
                 {
-                    label: isDistrictAdmin.value ? "Profil Distrik Saya" : "Kawasan Transmigrasi",
+                    label: isDistrictAdmin.value
+                        ? "Profil Distrik Saya"
+                        : "Kawasan Transmigrasi",
                     href: "/admin/wilayah",
                     icon: MapPin,
                 },
                 {
-                    label: isDistrictAdmin.value ? "Desa / Kampung" : "Master Desa",
+                    label: isDistrictAdmin.value
+                        ? "Desa / Kampung"
+                        : "Master Desa",
                     href: "/admin/desa",
                     icon: Home,
                 },
@@ -98,13 +105,15 @@ const navGroups = computed(() => {
                     href: "/admin/berita",
                     icon: Newspaper,
                 },
-                ...(isStrictSuperAdmin.value ? [
-                    {
-                        label: "Kategori Berita",
-                        href: "/admin/kategori-berita",
-                        icon: Tags,
-                    },
-                ] : []),
+                ...(isStrictSuperAdmin.value
+                    ? [
+                          {
+                              label: "Kategori Berita",
+                              href: "/admin/kategori-berita",
+                              icon: Tags,
+                          },
+                      ]
+                    : []),
                 {
                     label: "Pusat Bantuan / FAQ",
                     href: "/admin/faq",

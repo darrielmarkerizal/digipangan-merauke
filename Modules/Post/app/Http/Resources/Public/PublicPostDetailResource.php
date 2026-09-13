@@ -2,11 +2,11 @@
 
 namespace Modules\Post\Http\Resources\Public;
 
+use App\Support\PostContentSanitizer;
 use App\Support\PublicUrl;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Str;
-use App\Support\PostContentSanitizer;
 
 class PublicPostDetailResource extends JsonResource
 {

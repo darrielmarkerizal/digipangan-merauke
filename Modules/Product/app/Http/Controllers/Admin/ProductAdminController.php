@@ -3,18 +3,15 @@
 namespace Modules\Product\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use App\Support\InertiaQuery;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
-use Illuminate\Http\RedirectResponse;
-use App\Models\User;
-use Illuminate\Http\Request;
 use Modules\Farmer\Services\FarmerService;
-use Modules\Product\Http\Requests\StoreProductCategoryRequest;
 use Modules\Product\Http\Requests\StoreProductRequest;
-use Modules\Product\Http\Requests\UpdateProductCategoryRequest;
 use Modules\Product\Http\Requests\UpdateProductRequest;
-use Modules\Product\Http\Resources\ProductCategoryResource;
 use Modules\Product\Http\Resources\ProductResource;
 use Modules\Product\Services\ProductCategoryService;
 use Modules\Product\Services\ProductService;
@@ -51,7 +48,7 @@ class ProductAdminController extends Controller
             ProductResource::class,
             [
                 'categories' => $this->categoryService->list(),
-                'regions'    => $regions,
+                'regions' => $regions,
             ]
         );
     }
@@ -72,9 +69,9 @@ class ProductAdminController extends Controller
 
         return Inertia::render('Admin/Product/Create', [
             'categories' => $this->categoryService->list(),
-            'units'      => $this->unitService->list(),
-            'farmers'    => $farmers,
-            'regions'    => $regions,
+            'units' => $this->unitService->list(),
+            'farmers' => $farmers,
+            'regions' => $regions,
             'default_region_id' => $regionId,
         ]);
     }
@@ -122,11 +119,11 @@ class ProductAdminController extends Controller
             : $this->regionService->list();
 
         return Inertia::render('Admin/Product/Edit', [
-            'product'    => (new ProductResource($model))->resolve(),
+            'product' => (new ProductResource($model))->resolve(),
             'categories' => $this->categoryService->list(),
-            'units'      => $this->unitService->list(),
-            'farmers'    => $farmers,
-            'regions'    => $regions,
+            'units' => $this->unitService->list(),
+            'farmers' => $farmers,
+            'regions' => $regions,
             'default_region_id' => $regionId,
         ]);
     }

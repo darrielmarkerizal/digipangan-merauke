@@ -4,8 +4,8 @@ namespace Modules\Product\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Support\InertiaQuery;
-use Inertia\Response;
 use Illuminate\Http\RedirectResponse;
+use Inertia\Response;
 use Modules\Product\Http\Requests\StoreUnitRequest;
 use Modules\Product\Http\Requests\UpdateUnitRequest;
 use Modules\Product\Http\Resources\UnitResource;

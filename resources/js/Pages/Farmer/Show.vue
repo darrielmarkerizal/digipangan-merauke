@@ -44,9 +44,10 @@ const products = computed(() => props.farmer.products ?? []);
 const commodities = computed(() => props.farmer.commodities ?? []);
 
 const location = computed(() => {
-    const parts = [props.farmer.village?.name, props.farmer.region?.name].filter(
-        Boolean,
-    );
+    const parts = [
+        props.farmer.village?.name,
+        props.farmer.region?.name,
+    ].filter(Boolean);
     return parts.length ? parts.join(", ") : "Kabupaten Merauke";
 });
 
@@ -121,7 +122,9 @@ const waLink = computed(() => {
                         >
                             <img
                                 v-if="farmer.photo"
-                                :src="farmer.photo.card || farmer.photo.original"
+                                :src="
+                                    farmer.photo.card || farmer.photo.original
+                                "
                                 :alt="`Foto ${farmer.name}`"
                                 class="size-full object-cover"
                             />
@@ -135,7 +138,9 @@ const waLink = computed(() => {
                         </div>
 
                         <div class="flex-1">
-                            <div class="flex flex-wrap items-center gap-2 lg:flex-nowrap">
+                            <div
+                                class="flex flex-wrap items-center gap-2 lg:flex-nowrap"
+                            >
                                 <h1
                                     class="min-w-0 break-words text-2xl font-extrabold tracking-tight text-fg sm:text-3xl"
                                 >
@@ -151,7 +156,11 @@ const waLink = computed(() => {
                             <p
                                 class="mt-1.5 flex items-center gap-1.5 text-sm text-fg-muted"
                             >
-                                <Icon :icon="MapPin" :size="15" class="text-brand" />
+                                <Icon
+                                    :icon="MapPin"
+                                    :size="15"
+                                    class="text-brand"
+                                />
                                 {{ location }}
                             </p>
                         </div>
@@ -266,7 +275,9 @@ const waLink = computed(() => {
         </section>
 
         <section class="mx-auto max-w-[90rem] px-4 py-8 sm:px-6 lg:px-8">
-            <div class="mb-6 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div
+                class="mb-6 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between"
+            >
                 <div class="flex min-w-0 items-center gap-3">
                     <div
                         class="flex size-10 items-center justify-center rounded-lg bg-brand-weak text-brand"

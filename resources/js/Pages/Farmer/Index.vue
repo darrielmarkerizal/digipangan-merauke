@@ -1,14 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, watch } from "vue";
 import { Head, router } from "@inertiajs/vue3";
-import {
-    Users,
-    Search,
-    X,
-    MapPin,
-    ShieldCheck,
-    RotateCcw,
-} from "@lucide/vue";
+import { Users, Search, X, MapPin, ShieldCheck, RotateCcw } from "@lucide/vue";
 import PublicLayout from "@/Layouts/PublicLayout.vue";
 import FarmerCard from "@/Components/farmer/FarmerCard.vue";
 import { Icon, Pagination, EmptyState, Badge, Button } from "@/Components/ui";
@@ -47,7 +40,9 @@ const hasActiveFilters = computed(
     () => !!selectedRegion.value || !!props.filters.q,
 );
 
-const applyFilters = (newFilters: Record<string, string | undefined | null>) => {
+const applyFilters = (
+    newFilters: Record<string, string | undefined | null>,
+) => {
     const merged = { ...props.filters, ...newFilters };
     const cleaned: Record<string, string> = {};
     Object.keys(merged).forEach((key) => {

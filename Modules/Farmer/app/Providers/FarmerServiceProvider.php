@@ -2,13 +2,14 @@
 
 namespace Modules\Farmer\Providers;
 
-use Nwidart\Modules\Support\ModuleServiceProvider;
 use Illuminate\Console\Scheduling\Schedule;
-
-use Modules\Farmer\Repositories\Contracts\FarmerGroupRepositoryInterface;
-use Modules\Farmer\Repositories\FarmerGroupRepository;
-use Modules\Farmer\Repositories\Contracts\CommodityRepositoryInterface;
 use Modules\Farmer\Repositories\CommodityRepository;
+use Modules\Farmer\Repositories\Contracts\CommodityRepositoryInterface;
+use Modules\Farmer\Repositories\Contracts\FarmerGroupRepositoryInterface;
+use Modules\Farmer\Repositories\Contracts\FarmerRepositoryInterface;
+use Modules\Farmer\Repositories\FarmerGroupRepository;
+use Modules\Farmer\Repositories\FarmerRepository;
+use Nwidart\Modules\Support\ModuleServiceProvider;
 
 class FarmerServiceProvider extends ModuleServiceProvider
 {
@@ -41,19 +42,19 @@ class FarmerServiceProvider extends ModuleServiceProvider
 
     /**
      * Define module schedules.
-     * 
-     * @param $schedule
+     *
+     * @param  $schedule
      */
     // protected function configureSchedules(Schedule $schedule): void
     // {
     //     $schedule->command('inspire')->hourly();
-    // 
+    //
     public function register(): void
     {
         parent::register();
 
-        $this->app->bind(\Modules\Farmer\Repositories\Contracts\FarmerGroupRepositoryInterface::class, \Modules\Farmer\Repositories\FarmerGroupRepository::class);
-        $this->app->bind(\Modules\Farmer\Repositories\Contracts\CommodityRepositoryInterface::class, \Modules\Farmer\Repositories\CommodityRepository::class);
-        $this->app->bind(\Modules\Farmer\Repositories\Contracts\FarmerRepositoryInterface::class, \Modules\Farmer\Repositories\FarmerRepository::class);
+        $this->app->bind(FarmerGroupRepositoryInterface::class, FarmerGroupRepository::class);
+        $this->app->bind(CommodityRepositoryInterface::class, CommodityRepository::class);
+        $this->app->bind(FarmerRepositoryInterface::class, FarmerRepository::class);
     }
 }

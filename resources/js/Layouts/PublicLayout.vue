@@ -152,7 +152,11 @@ const isActive = (href: string) =>
                         class="mt-2 flex items-center justify-center gap-2 rounded-2xl bg-brand p-3 text-sm font-semibold text-on-brand shadow-sm shadow-brand/30"
                         @click="isMobileMenuOpen = false"
                     >
-                        {{ isAuthenticated ? dashboardLabel : "Daftar sebagai Petani" }}
+                        {{
+                            isAuthenticated
+                                ? dashboardLabel
+                                : "Daftar sebagai Petani"
+                        }}
                     </Link>
                 </div>
             </Transition>
@@ -215,15 +219,21 @@ const isActive = (href: string) =>
                         <div
                             class="flex w-full flex-col items-stretch gap-3 rounded-2xl border border-border/80 bg-white px-4 py-4 shadow-sm sm:flex-row sm:items-center sm:gap-6 sm:px-6 sm:py-4"
                         >
-                            <div class="flex min-w-0 flex-1 items-center justify-center sm:justify-start">
+                            <div
+                                class="flex min-w-0 flex-1 items-center justify-center sm:justify-start"
+                            >
                                 <img
                                     src="/images/logos/logo-ugm-horizontal.png"
                                     alt="Universitas Gadjah Mada"
                                     class="h-8 w-auto max-w-full object-contain sm:h-10"
                                 />
                             </div>
-                            <div class="h-px w-full shrink-0 bg-slate-200 sm:h-10 sm:w-px" />
-                            <div class="flex min-w-0 flex-1 items-center justify-center sm:justify-start">
+                            <div
+                                class="h-px w-full shrink-0 bg-slate-200 sm:h-10 sm:w-px"
+                            />
+                            <div
+                                class="flex min-w-0 flex-1 items-center justify-center sm:justify-start"
+                            >
                                 <img
                                     src="/images/logos/logotext-kementerian-transmigrasi.png"
                                     alt="Kementerian Transmigrasi RI"

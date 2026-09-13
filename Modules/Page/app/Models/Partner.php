@@ -5,20 +5,19 @@ namespace Modules\Page\Models;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Modules\Media\Traits\InteractsWithTemporaryMedia as TemporaryMediaTrait;
+use OwenIt\Auditing\Auditable;
+use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
-use Modules\Media\Traits\InteractsWithTemporaryMedia as TemporaryMediaTrait;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
-use OwenIt\Auditing\Auditable;
-use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
 
 #[Fillable(['name', 'website_url', 'description', 'sort_order', 'is_active'])]
-class Partner extends Model implements HasMedia
-, AuditableContract
+class Partner extends Model implements AuditableContract, HasMedia
 {
-    use Auditable, HasSlug, InteractsWithMedia, TemporaryMediaTrait, SoftDeletes;
+    use Auditable, HasSlug, InteractsWithMedia, SoftDeletes, TemporaryMediaTrait;
 
     protected function casts(): array
     {

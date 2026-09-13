@@ -4,6 +4,7 @@ namespace Modules\Product\Repositories;
 
 use App\Repositories\BaseRepository;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Collection as SupportCollection;
 use Modules\Product\Enums\ProductInteractionType;
@@ -32,7 +33,7 @@ class ProductInteractionRepository extends BaseRepository implements ProductInte
         $query = $this->model->newQuery()->where('type', $type);
 
         if ($regionId !== null) {
-            $query->whereHas('product', fn (\Illuminate\Database\Eloquent\Builder $q) => $q->where('region_id', $regionId));
+            $query->whereHas('product', fn (Builder $q) => $q->where('region_id', $regionId));
         }
 
         return $query->count();
@@ -49,7 +50,7 @@ class ProductInteractionRepository extends BaseRepository implements ProductInte
             ->where('occurred_at', '>=', $since);
 
         if ($regionId !== null) {
-            $query->whereHas('product', fn (\Illuminate\Database\Eloquent\Builder $q) => $q->where('region_id', $regionId));
+            $query->whereHas('product', fn (Builder $q) => $q->where('region_id', $regionId));
         }
 
         return $query
@@ -69,7 +70,7 @@ class ProductInteractionRepository extends BaseRepository implements ProductInte
             ->where('type', ProductInteractionType::Contact);
 
         if ($regionId !== null) {
-            $query->whereHas('product', fn (\Illuminate\Database\Eloquent\Builder $q) => $q->where('region_id', $regionId));
+            $query->whereHas('product', fn (Builder $q) => $q->where('region_id', $regionId));
         }
 
         return $query

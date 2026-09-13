@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Hash;
 use Modules\Farmer\Models\Farmer;
 use Modules\Farmer\Repositories\Contracts\FarmerRepositoryInterface;
 use Modules\User\Repositories\Contracts\UserRepositoryInterface;
-
 use Spatie\Permission\Models\Role;
 
 class FarmerRegistrationService
@@ -35,9 +34,9 @@ class FarmerRegistrationService
 
             $phone = preg_replace('/\D/', '', (string) ($data['phone'] ?? ''));
             if (str_starts_with($phone, '0')) {
-                $phone = '62' . substr($phone, 1);
-            } elseif (!str_starts_with($phone, '62') && !empty($phone)) {
-                $phone = '62' . $phone;
+                $phone = '62'.substr($phone, 1);
+            } elseif (! str_starts_with($phone, '62') && ! empty($phone)) {
+                $phone = '62'.$phone;
             }
 
             $farmer = $this->farmers->create([

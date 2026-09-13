@@ -2,11 +2,12 @@
 
 namespace Modules\Region\Providers;
 
-use Nwidart\Modules\Support\ModuleServiceProvider;
 use Illuminate\Console\Scheduling\Schedule;
-
+use Modules\Region\Repositories\Contracts\RegionRepositoryInterface;
 use Modules\Region\Repositories\Contracts\VillageRepositoryInterface;
+use Modules\Region\Repositories\RegionRepository;
 use Modules\Region\Repositories\VillageRepository;
+use Nwidart\Modules\Support\ModuleServiceProvider;
 
 class RegionServiceProvider extends ModuleServiceProvider
 {
@@ -39,18 +40,18 @@ class RegionServiceProvider extends ModuleServiceProvider
 
     /**
      * Define module schedules.
-     * 
-     * @param $schedule
+     *
+     * @param  $schedule
      */
     // protected function configureSchedules(Schedule $schedule): void
     // {
     //     $schedule->command('inspire')->hourly();
-    // 
+    //
     public function register(): void
     {
         parent::register();
 
-        $this->app->bind(\Modules\Region\Repositories\Contracts\VillageRepositoryInterface::class, \Modules\Region\Repositories\VillageRepository::class);
-        $this->app->bind(\Modules\Region\Repositories\Contracts\RegionRepositoryInterface::class, \Modules\Region\Repositories\RegionRepository::class);
+        $this->app->bind(VillageRepositoryInterface::class, VillageRepository::class);
+        $this->app->bind(RegionRepositoryInterface::class, RegionRepository::class);
     }
 }

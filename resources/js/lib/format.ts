@@ -42,11 +42,12 @@ export function formatTanggal(value: Date | string | null | undefined): string {
     return tanggalFormatter.format(date);
 }
 
-export function formatWaktuLengkap(value: Date | string | null | undefined): string {
+export function formatWaktuLengkap(
+    value: Date | string | null | undefined,
+): string {
     if (value === null || value === undefined || value === "") return "";
     const date = value instanceof Date ? value : new Date(value);
     if (Number.isNaN(date.getTime()))
         return typeof value === "string" ? value : "";
     return waktuLengkapFormatter.format(date);
 }
-

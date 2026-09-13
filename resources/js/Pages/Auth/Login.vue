@@ -17,5 +17,3 @@ useFlashToast();
         <AuthMainPanel />
     </div>
 </template>
-
-

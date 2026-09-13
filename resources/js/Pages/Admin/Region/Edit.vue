@@ -36,7 +36,7 @@ const handleSubmit = async () => {
         return;
     }
 
-    form.submit('put', `/admin/wilayah/${props.region.id}`, {
+    form.submit("put", `/admin/wilayah/${props.region.id}`, {
         preserveScroll: true,
         onFinish: () => {
             isSubmitting.value = false;
@@ -58,7 +58,9 @@ const handleSubmit = async () => {
             >
                 <Icon :icon="Save" :size="16" />
                 <span>{{
-                    isSubmitting ? "Mengunggah & Menyimpan..." : "Simpan Perubahan"
+                    isSubmitting
+                        ? "Mengunggah & Menyimpan..."
+                        : "Simpan Perubahan"
                 }}</span>
             </Button>
         </template>

@@ -3,8 +3,10 @@
 namespace Modules\Region\Services;
 
 use App\Services\BaseService;
-use Modules\Region\Repositories\Contracts\VillageRepositoryInterface;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\QueryException;
+use Modules\Region\Repositories\Contracts\VillageRepositoryInterface;
 
 class VillageService extends BaseService
 {
@@ -13,7 +15,7 @@ class VillageService extends BaseService
         parent::__construct($repository);
     }
 
-    public function listByRegion(int $regionId): \Illuminate\Database\Eloquent\Collection
+    public function listByRegion(int $regionId): Collection
     {
         return $this->repository->listByRegion($regionId);
     }
@@ -22,9 +24,9 @@ class VillageService extends BaseService
     {
         try {
             return parent::delete($model);
-        } catch (\Illuminate\Database\QueryException $e) {
-            if ($e->getCode() === "23000") {
-                abort(409, "Tidak dapat menghapus data karena masih memiliki relasi (sedang digunakan).");
+        } catch (QueryException $e) {
+            if ($e->getCode() === '23000') {
+                abort(409, 'Tidak dapat menghapus data karena masih memiliki relasi (sedang digunakan).');
             }
             throw $e;
         }

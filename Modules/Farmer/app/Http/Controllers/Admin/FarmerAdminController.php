@@ -3,12 +3,12 @@
 namespace Modules\Farmer\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use App\Support\InertiaQuery;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
-use Illuminate\Http\RedirectResponse;
-use App\Models\User;
-use Illuminate\Http\Request;
 use Modules\Farmer\Http\Requests\StoreFarmerRequest;
 use Modules\Farmer\Http\Requests\UpdateFarmerRequest;
 use Modules\Farmer\Http\Resources\FarmerResource;
@@ -55,8 +55,8 @@ class FarmerAdminController extends Controller
             $paginator,
             FarmerResource::class,
             [
-                'regions'      => $regions,
-                'villages'     => $villages,
+                'regions' => $regions,
+                'villages' => $villages,
                 'farmerGroups' => $farmerGroups,
             ],
             'farmers'
@@ -82,10 +82,10 @@ class FarmerAdminController extends Controller
             : $this->farmerGroupService->list();
 
         return Inertia::render('Admin/Farmer/Create', [
-            'regions'      => $regions,
-            'villages'     => $villages,
+            'regions' => $regions,
+            'villages' => $villages,
             'farmerGroups' => $farmerGroups,
-            'commodities'  => $this->commodityService->list(),
+            'commodities' => $this->commodityService->list(),
             'default_region_id' => $regionId,
         ]);
     }
@@ -137,11 +137,11 @@ class FarmerAdminController extends Controller
             : $this->farmerGroupService->list();
 
         return Inertia::render('Admin/Farmer/Edit', [
-            'farmer'       => (new FarmerResource($model))->resolve(),
-            'regions'      => $regions,
-            'villages'     => $villages,
+            'farmer' => (new FarmerResource($model))->resolve(),
+            'regions' => $regions,
+            'villages' => $villages,
             'farmerGroups' => $farmerGroups,
-            'commodities'  => $this->commodityService->list(),
+            'commodities' => $this->commodityService->list(),
             'default_region_id' => $regionId,
         ]);
     }

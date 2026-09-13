@@ -80,7 +80,13 @@ const props = defineProps<{
                                     </div>
                                     <div class="flex items-center gap-1.5">
                                         <Icon :icon="Calendar" :size="16" />
-                                        <span>{{ post.published_at ? formatTanggal(post.published_at) : 'Belum Dipublikasikan' }}</span>
+                                        <span>{{
+                                            post.published_at
+                                                ? formatTanggal(
+                                                      post.published_at,
+                                                  )
+                                                : "Belum Dipublikasikan"
+                                        }}</span>
                                     </div>
                                 </div>
                             </div>

@@ -1,6 +1,13 @@
 <script setup lang="ts">
 import { useForm, Link } from "@inertiajs/vue3";
-import { Button, Field, Input, Label, PhoneInput, Switch } from "@/Components/ui";
+import {
+    Button,
+    Field,
+    Input,
+    Label,
+    PhoneInput,
+    Switch,
+} from "@/Components/ui";
 import { Icon } from "@/Components/ui";
 import { Save, ArrowLeft, Loader2, Eye, EyeOff } from "@lucide/vue";
 import { computed, ref, watch } from "vue";
@@ -68,7 +75,7 @@ const filteredFarmerGroups = computed(() => {
 const selectRole = (role: string) => {
     form.roles = form.roles[0] === role ? [] : [role];
 
-    if (role !== 'admin_distrik' && role !== 'farmer') {
+    if (role !== "admin_distrik" && role !== "farmer") {
         form.region_id = null;
     }
 };
@@ -78,11 +85,19 @@ watch(
     (newRegionId, oldRegionId) => {
         if (oldRegionId === undefined || newRegionId === oldRegionId) return;
 
-        if (!filteredVillages.value.some((village) => Number(village.id) === Number(form.village_id))) {
+        if (
+            !filteredVillages.value.some(
+                (village) => Number(village.id) === Number(form.village_id),
+            )
+        ) {
             form.village_id = null;
         }
 
-        if (!filteredFarmerGroups.value.some((group) => Number(group.id) === Number(form.farmer_group_id))) {
+        if (
+            !filteredFarmerGroups.value.some(
+                (group) => Number(group.id) === Number(form.farmer_group_id),
+            )
+        ) {
             form.farmer_group_id = null;
         }
     },
@@ -98,7 +113,9 @@ const submit = () => {
     }));
 
     if (props.isEdit && props.user?.id) {
-        form.submit('put', `/admin/user/${props.user.id}`, { preserveScroll: true });
+        form.submit("put", `/admin/user/${props.user.id}`, {
+            preserveScroll: true,
+        });
     } else {
         form.post("/admin/user", { preserveScroll: true });
     }
@@ -113,7 +130,9 @@ const roleLabel: Record<string, string> = {
 
 <template>
     <form @submit.prevent="submit" class="space-y-6">
-        <div class="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div
+            class="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-between"
+        >
             <Link
                 href="/admin/user"
                 class="inline-flex items-center gap-2 text-sm font-medium text-fg-muted transition-colors hover:text-fg"
@@ -121,8 +140,17 @@ const roleLabel: Record<string, string> = {
                 <Icon :icon="ArrowLeft" :size="16" />
                 <span>Kembali ke Daftar User</span>
             </Link>
-            <Button type="submit" :disabled="form.processing" class="self-end gap-2 font-semibold sm:self-auto">
-                <Icon v-if="form.processing" :icon="Loader2" :size="15" class="animate-spin" />
+            <Button
+                type="submit"
+                :disabled="form.processing"
+                class="self-end gap-2 font-semibold sm:self-auto"
+            >
+                <Icon
+                    v-if="form.processing"
+                    :icon="Loader2"
+                    :size="15"
+                    class="animate-spin"
+                />
                 <Icon v-else :icon="Save" :size="15" />
                 {{ isEdit ? "Simpan Perubahan" : "Tambah Pengguna" }}
             </Button>
@@ -130,34 +158,72 @@ const roleLabel: Record<string, string> = {
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div class="lg:col-span-2 space-y-5">
-                <div class="rounded-xl border border-border/80 bg-white p-6 shadow-xs space-y-5">
-                    <h3 class="text-sm font-bold text-fg border-b border-border/60 pb-3">Informasi Pengguna</h3>
+                <div
+                    class="rounded-xl border border-border/80 bg-white p-6 shadow-xs space-y-5"
+                >
+                    <h3
+                        class="text-sm font-bold text-fg border-b border-border/60 pb-3"
+                    >
+                        Informasi Pengguna
+                    </h3>
 
                     <Field :error="form.errors.name">
                         <Label required>Nama Lengkap</Label>
-                        <Input v-model="form.name" placeholder="Masukkan nama lengkap..." class="w-full" />
-                        <p v-if="form.errors.name" class="text-xs text-danger mt-1">{{ form.errors.name }}</p>
+                        <Input
+                            v-model="form.name"
+                            placeholder="Masukkan nama lengkap..."
+                            class="w-full"
+                        />
+                        <p
+                            v-if="form.errors.name"
+                            class="text-xs text-danger mt-1"
+                        >
+                            {{ form.errors.name }}
+                        </p>
                     </Field>
 
                     <Field :error="form.errors.email">
                         <Label required>Alamat Email</Label>
-                        <Input v-model="form.email" type="email" placeholder="nama@email.com" class="w-full" />
-                        <p v-if="form.errors.email" class="text-xs text-danger mt-1">{{ form.errors.email }}</p>
+                        <Input
+                            v-model="form.email"
+                            type="email"
+                            placeholder="nama@email.com"
+                            class="w-full"
+                        />
+                        <p
+                            v-if="form.errors.email"
+                            class="text-xs text-danger mt-1"
+                        >
+                            {{ form.errors.email }}
+                        </p>
                     </Field>
 
                     <template v-if="isFarmer">
                         <div class="border-t border-border/60 pt-5">
-                            <h3 class="text-sm font-bold text-fg">Profil Petani</h3>
-                            <p class="mt-1 text-xs leading-relaxed text-fg-muted">
-                                Data ini diperlukan agar akun dapat membuka dashboard petani.
+                            <h3 class="text-sm font-bold text-fg">
+                                Profil Petani
+                            </h3>
+                            <p
+                                class="mt-1 text-xs leading-relaxed text-fg-muted"
+                            >
+                                Data ini diperlukan agar akun dapat membuka
+                                dashboard petani.
                             </p>
                         </div>
 
                         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                             <Field :error="form.errors.phone">
                                 <Label required>No. WhatsApp / Telepon</Label>
-                                <PhoneInput v-model="form.phone" placeholder="81234567890" />
-                                <p v-if="form.errors.phone" class="text-xs text-danger mt-1">{{ form.errors.phone }}</p>
+                                <PhoneInput
+                                    v-model="form.phone"
+                                    placeholder="81234567890"
+                                />
+                                <p
+                                    v-if="form.errors.phone"
+                                    class="text-xs text-danger mt-1"
+                                >
+                                    {{ form.errors.phone }}
+                                </p>
                             </Field>
 
                             <Field :error="form.errors.region_id">
@@ -166,12 +232,23 @@ const roleLabel: Record<string, string> = {
                                     v-model="form.region_id"
                                     class="flex h-10 w-full rounded-xl border border-border/80 bg-white px-3 py-2 text-sm ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
                                 >
-                                    <option :value="null" disabled>Pilih distrik</option>
-                                    <option v-for="region in (regions ?? [])" :key="region.id" :value="region.id">
+                                    <option :value="null" disabled>
+                                        Pilih distrik
+                                    </option>
+                                    <option
+                                        v-for="region in regions ?? []"
+                                        :key="region.id"
+                                        :value="region.id"
+                                    >
                                         {{ region.name }}
                                     </option>
                                 </select>
-                                <p v-if="form.errors.region_id" class="text-xs text-danger mt-1">{{ form.errors.region_id }}</p>
+                                <p
+                                    v-if="form.errors.region_id"
+                                    class="text-xs text-danger mt-1"
+                                >
+                                    {{ form.errors.region_id }}
+                                </p>
                             </Field>
                         </div>
 
@@ -182,12 +259,23 @@ const roleLabel: Record<string, string> = {
                                     v-model="form.village_id"
                                     class="flex h-10 w-full rounded-xl border border-border/80 bg-white px-3 py-2 text-sm ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
                                 >
-                                    <option :value="null">Pilih desa (opsional)</option>
-                                    <option v-for="village in filteredVillages" :key="village.id" :value="village.id">
+                                    <option :value="null">
+                                        Pilih desa (opsional)
+                                    </option>
+                                    <option
+                                        v-for="village in filteredVillages"
+                                        :key="village.id"
+                                        :value="village.id"
+                                    >
                                         {{ village.name }}
                                     </option>
                                 </select>
-                                <p v-if="form.errors.village_id" class="text-xs text-danger mt-1">{{ form.errors.village_id }}</p>
+                                <p
+                                    v-if="form.errors.village_id"
+                                    class="text-xs text-danger mt-1"
+                                >
+                                    {{ form.errors.village_id }}
+                                </p>
                             </Field>
 
                             <Field :error="form.errors.farmer_group_id">
@@ -196,28 +284,56 @@ const roleLabel: Record<string, string> = {
                                     v-model="form.farmer_group_id"
                                     class="flex h-10 w-full rounded-xl border border-border/80 bg-white px-3 py-2 text-sm ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
                                 >
-                                    <option :value="null">Mandiri / tanpa kelompok</option>
-                                    <option v-for="group in filteredFarmerGroups" :key="group.id" :value="group.id">
+                                    <option :value="null">
+                                        Mandiri / tanpa kelompok
+                                    </option>
+                                    <option
+                                        v-for="group in filteredFarmerGroups"
+                                        :key="group.id"
+                                        :value="group.id"
+                                    >
                                         {{ group.name }}
                                     </option>
                                 </select>
-                                <p v-if="form.errors.farmer_group_id" class="text-xs text-danger mt-1">{{ form.errors.farmer_group_id }}</p>
+                                <p
+                                    v-if="form.errors.farmer_group_id"
+                                    class="text-xs text-danger mt-1"
+                                >
+                                    {{ form.errors.farmer_group_id }}
+                                </p>
                             </Field>
                         </div>
 
                         <Field :error="form.errors.land_area_ha">
                             <Label>Luas Lahan (Ha)</Label>
-                            <Input v-model="form.land_area_ha" type="number" min="0" step="0.01" placeholder="Contoh: 2.5" />
-                            <p v-if="form.errors.land_area_ha" class="text-xs text-danger mt-1">{{ form.errors.land_area_ha }}</p>
+                            <Input
+                                v-model="form.land_area_ha"
+                                type="number"
+                                min="0"
+                                step="0.01"
+                                placeholder="Contoh: 2.5"
+                            />
+                            <p
+                                v-if="form.errors.land_area_ha"
+                                class="text-xs text-danger mt-1"
+                            >
+                                {{ form.errors.land_area_ha }}
+                            </p>
                         </Field>
                     </template>
                 </div>
 
-                <div class="rounded-xl border border-border/80 bg-white p-6 shadow-xs space-y-5">
-                    <h3 class="text-sm font-bold text-fg border-b border-border/60 pb-3">
+                <div
+                    class="rounded-xl border border-border/80 bg-white p-6 shadow-xs space-y-5"
+                >
+                    <h3
+                        class="text-sm font-bold text-fg border-b border-border/60 pb-3"
+                    >
                         {{ isEdit ? "Ubah Password (opsional)" : "Password" }}
                     </h3>
-                    <p v-if="isEdit" class="text-xs text-fg-muted -mt-2">Kosongkan jika tidak ingin mengubah password.</p>
+                    <p v-if="isEdit" class="text-xs text-fg-muted -mt-2">
+                        Kosongkan jika tidak ingin mengubah password.
+                    </p>
 
                     <Field :error="form.errors.password">
                         <Label :required="!isEdit">Password</Label>
@@ -233,10 +349,18 @@ const roleLabel: Record<string, string> = {
                                 class="absolute right-3 top-1/2 -translate-y-1/2 text-fg-muted hover:text-fg transition-colors"
                                 @click="showPassword = !showPassword"
                             >
-                                <Icon :icon="showPassword ? EyeOff : Eye" :size="16" />
+                                <Icon
+                                    :icon="showPassword ? EyeOff : Eye"
+                                    :size="16"
+                                />
                             </button>
                         </div>
-                        <p v-if="form.errors.password" class="text-xs text-danger mt-1">{{ form.errors.password }}</p>
+                        <p
+                            v-if="form.errors.password"
+                            class="text-xs text-danger mt-1"
+                        >
+                            {{ form.errors.password }}
+                        </p>
                     </Field>
 
                     <Field :error="form.errors.password_confirmation">
@@ -253,26 +377,46 @@ const roleLabel: Record<string, string> = {
                                 class="absolute right-3 top-1/2 -translate-y-1/2 text-fg-muted hover:text-fg transition-colors"
                                 @click="showConfirm = !showConfirm"
                             >
-                                <Icon :icon="showConfirm ? EyeOff : Eye" :size="16" />
+                                <Icon
+                                    :icon="showConfirm ? EyeOff : Eye"
+                                    :size="16"
+                                />
                             </button>
                         </div>
-                        <p v-if="form.errors.password_confirmation" class="text-xs text-danger mt-1">{{ form.errors.password_confirmation }}</p>
+                        <p
+                            v-if="form.errors.password_confirmation"
+                            class="text-xs text-danger mt-1"
+                        >
+                            {{ form.errors.password_confirmation }}
+                        </p>
                     </Field>
                 </div>
             </div>
 
             <div class="space-y-5">
-                <div class="rounded-xl border border-border/80 bg-white p-6 shadow-xs space-y-5">
-                    <h3 class="text-sm font-bold text-fg border-b border-border/60 pb-3">Peran & Status</h3>
+                <div
+                    class="rounded-xl border border-border/80 bg-white p-6 shadow-xs space-y-5"
+                >
+                    <h3
+                        class="text-sm font-bold text-fg border-b border-border/60 pb-3"
+                    >
+                        Peran & Status
+                    </h3>
 
                     <div>
-                        <p class="text-xs font-bold text-fg mb-2">Peran Pengguna</p>
+                        <p class="text-xs font-bold text-fg mb-2">
+                            Peran Pengguna
+                        </p>
                         <div class="space-y-2">
                             <label
                                 v-for="role in roles"
                                 :key="role"
                                 class="flex items-center gap-3 cursor-pointer group rounded-lg border border-border/60 px-3 py-2.5 transition-colors hover:bg-muted/40"
-                                :class="form.roles.includes(role) ? 'border-brand/40 bg-brand-weak/20' : ''"
+                                :class="
+                                    form.roles.includes(role)
+                                        ? 'border-brand/40 bg-brand-weak/20'
+                                        : ''
+                                "
                             >
                                 <input
                                     type="radio"
@@ -280,33 +424,63 @@ const roleLabel: Record<string, string> = {
                                     @change="selectRole(role)"
                                     class="border-border text-brand focus:ring-brand"
                                 />
-                                <span class="text-sm font-medium text-fg">{{ roleLabel[role] ?? role }}</span>
+                                <span class="text-sm font-medium text-fg">{{
+                                    roleLabel[role] ?? role
+                                }}</span>
                             </label>
                         </div>
-                        <p v-if="form.errors.roles" class="text-xs text-danger mt-1">{{ form.errors.roles }}</p>
+                        <p
+                            v-if="form.errors.roles"
+                            class="text-xs text-danger mt-1"
+                        >
+                            {{ form.errors.roles }}
+                        </p>
                     </div>
 
-                    <div v-if="form.roles.includes('admin_distrik')" class="pt-2 border-t border-border/60 space-y-2">
+                    <div
+                        v-if="form.roles.includes('admin_distrik')"
+                        class="pt-2 border-t border-border/60 space-y-2"
+                    >
                         <Field :error="form.errors.region_id">
                             <Label required>Distrik Penugasan</Label>
                             <select
                                 v-model="form.region_id"
                                 class="flex h-10 w-full rounded-xl border border-border/80 bg-white px-3 py-2 text-sm ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                             >
-                                <option :value="null" disabled>Pilih Distrik Penugasan</option>
-                                <option v-for="r in (regions ?? [])" :key="r.id" :value="r.id">
+                                <option :value="null" disabled>
+                                    Pilih Distrik Penugasan
+                                </option>
+                                <option
+                                    v-for="r in regions ?? []"
+                                    :key="r.id"
+                                    :value="r.id"
+                                >
                                     {{ r.name }}
                                 </option>
                             </select>
-                            <p class="text-[11px] text-fg-muted mt-1">Pengguna ini hanya dapat mengakses dan mengelola data pada distrik yang dipilih.</p>
-                            <p v-if="form.errors.region_id" class="text-xs text-danger mt-1">{{ form.errors.region_id }}</p>
+                            <p class="text-[11px] text-fg-muted mt-1">
+                                Pengguna ini hanya dapat mengakses dan mengelola
+                                data pada distrik yang dipilih.
+                            </p>
+                            <p
+                                v-if="form.errors.region_id"
+                                class="text-xs text-danger mt-1"
+                            >
+                                {{ form.errors.region_id }}
+                            </p>
                         </Field>
                     </div>
 
-                    <div class="flex items-center justify-between pt-2 border-t border-border/60">
+                    <div
+                        class="flex items-center justify-between pt-2 border-t border-border/60"
+                    >
                         <div>
-                            <p class="text-sm font-semibold text-fg">Status Aktif</p>
-                            <p class="text-xs text-fg-muted mt-0.5">Pengguna dapat login</p>
+                            <p class="text-sm font-semibold text-fg">
+                                Status Aktif
+                            </p>
+                            <p class="text-xs text-fg-muted mt-0.5">
+                                Pengguna dapat login
+                            </p>
                         </div>
                         <Switch v-model="form.is_active" />
                     </div>

@@ -58,7 +58,10 @@ const s = computed(() => card({ variant: props.variant }));
                     class="flex size-full items-center justify-center bg-brand-weak/30 text-brand/30"
                     aria-hidden="true"
                 >
-                    <Icon :icon="Newspaper" :size="variant === 'feature' ? 56 : 36" />
+                    <Icon
+                        :icon="Newspaper"
+                        :size="variant === 'feature' ? 56 : 36"
+                    />
                 </div>
 
                 <span

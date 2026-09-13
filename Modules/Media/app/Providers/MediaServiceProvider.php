@@ -2,8 +2,11 @@
 
 namespace Modules\Media\Providers;
 
-use Nwidart\Modules\Support\ModuleServiceProvider;
 use Illuminate\Console\Scheduling\Schedule;
+use Modules\Media\Console\ClearTemporaryMediaCommand;
+use Modules\Media\Repositories\TemporaryFileRepository;
+use Modules\Media\Repositories\TemporaryFileRepositoryInterface;
+use Nwidart\Modules\Support\ModuleServiceProvider;
 
 class MediaServiceProvider extends ModuleServiceProvider
 {
@@ -23,7 +26,7 @@ class MediaServiceProvider extends ModuleServiceProvider
      * @var string[]
      */
     protected array $commands = [
-        \Modules\Media\Console\ClearTemporaryMediaCommand::class,
+        ClearTemporaryMediaCommand::class,
     ];
 
     /**
@@ -45,17 +48,17 @@ class MediaServiceProvider extends ModuleServiceProvider
     {
         $this->app->register(EventServiceProvider::class);
         $this->app->register(RouteServiceProvider::class);
-        
+
         $this->app->bind(
-            \Modules\Media\Repositories\TemporaryFileRepositoryInterface::class,
-            \Modules\Media\Repositories\TemporaryFileRepository::class
+            TemporaryFileRepositoryInterface::class,
+            TemporaryFileRepository::class
         );
     }
 
     /**
      * Define module schedules.
-     * 
-     * @param $schedule
+     *
+     * @param  $schedule
      */
     // protected function configureSchedules(Schedule $schedule): void
     // {

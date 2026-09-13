@@ -4,9 +4,9 @@ namespace Modules\Post\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Support\InertiaQuery;
+use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
-use Illuminate\Http\RedirectResponse;
 use Modules\Post\Http\Requests\StorePostRequest;
 use Modules\Post\Http\Requests\UpdatePostRequest;
 use Modules\Post\Http\Resources\PostResource;
@@ -58,7 +58,7 @@ class PostAdminController extends Controller
     public function edit(int $id): Response
     {
         return Inertia::render('Admin/Post/Edit', [
-            'post'       => (new PostResource($this->service->findOrFail($id)))->resolve(),
+            'post' => (new PostResource($this->service->findOrFail($id)))->resolve(),
             'categories' => $this->categoryService->list(),
         ]);
     }

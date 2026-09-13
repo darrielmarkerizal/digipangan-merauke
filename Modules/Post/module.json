@@ -4,8 +4,6 @@
     "description": "",
     "keywords": [],
     "priority": 0,
-    "providers": [
-        "Modules\\Post\\Providers\\PostServiceProvider"
-    ],
+    "providers": ["Modules\\Post\\Providers\\PostServiceProvider"],
     "files": []
 }

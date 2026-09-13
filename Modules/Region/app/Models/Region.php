@@ -2,19 +2,20 @@
 
 namespace Modules\Region\Models;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\Farmer\Models\Farmer;
 use Modules\Farmer\Models\FarmerGroup;
+use Modules\Media\Traits\InteractsWithTemporaryMedia as TemporaryMediaTrait;
 use Modules\Product\Models\Product;
 use OwenIt\Auditing\Auditable;
 use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
 use Spatie\Image\Enums\Fit;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
-use Modules\Media\Traits\InteractsWithTemporaryMedia as TemporaryMediaTrait;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
@@ -29,7 +30,7 @@ use Spatie\Sluggable\SlugOptions;
 ])]
 class Region extends Model implements AuditableContract, HasMedia
 {
-    use Auditable, HasSlug, InteractsWithMedia, TemporaryMediaTrait, SoftDeletes;
+    use Auditable, HasSlug, InteractsWithMedia, SoftDeletes, TemporaryMediaTrait;
 
     protected function casts(): array
     {
@@ -86,6 +87,6 @@ class Region extends Model implements AuditableContract, HasMedia
 
     public function districtAdmins(): HasMany
     {
-        return $this->hasMany(\App\Models\User::class);
+        return $this->hasMany(User::class);
     }
 }

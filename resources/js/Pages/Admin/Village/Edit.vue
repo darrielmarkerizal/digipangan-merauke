@@ -17,7 +17,7 @@ const form = useForm({
 });
 
 const handleSubmit = () => {
-    form.submit('put', `/admin/desa/${props.village.id}`, {
+    form.submit("put", `/admin/desa/${props.village.id}`, {
         preserveScroll: true,
     });
 };
@@ -57,7 +57,10 @@ const handleSubmit = () => {
             >
                 <form @submit.prevent="handleSubmit" class="space-y-6">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div v-if="!is_district_admin" class="space-y-1.5 md:col-span-2">
+                        <div
+                            v-if="!is_district_admin"
+                            class="space-y-1.5 md:col-span-2"
+                        >
                             <Label
                                 for="region_id"
                                 class="text-sm font-semibold text-fg"

@@ -3,7 +3,15 @@ import { computed } from "vue";
 import { Link } from "@inertiajs/vue3";
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 import FilterPanel from "@/Components/admin/FilterPanel.vue";
-import { Search, Edit2, Home, CheckCircle2, XCircle, Eye, Plus } from "@lucide/vue";
+import {
+    Search,
+    Edit2,
+    Home,
+    CheckCircle2,
+    XCircle,
+    Eye,
+    Plus,
+} from "@lucide/vue";
 import {
     Icon,
     Input,
@@ -51,7 +59,9 @@ const villageList = computed(() => {
         </template>
 
         <div class="space-y-4">
-            <div class="flex flex-col sm:flex-row w-full sm:w-auto justify-between gap-3 items-center">
+            <div
+                class="flex flex-col sm:flex-row w-full sm:w-auto justify-between gap-3 items-center"
+            >
                 <div class="relative flex-1 max-w-md w-full">
                     <Icon
                         :icon="Search"
@@ -68,14 +78,18 @@ const villageList = computed(() => {
                 <FilterPanel module="village" :regions="regions" />
             </div>
 
-            <div class="overflow-hidden rounded-2xl border border-border/80 bg-white shadow-xs">
+            <div
+                class="overflow-hidden rounded-2xl border border-border/80 bg-white shadow-xs"
+            >
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-sm text-fg">
                         <thead
                             class="border-b border-border/60 bg-muted/30 text-xs font-bold text-fg-muted uppercase tracking-wider"
                         >
                             <tr>
-                                <th scope="col" class="px-5 py-3.5">Nama Desa</th>
+                                <th scope="col" class="px-5 py-3.5">
+                                    Nama Desa
+                                </th>
                                 <th scope="col" class="px-4 py-3.5">
                                     Kawasan / Distrik
                                 </th>
@@ -109,7 +123,9 @@ const villageList = computed(() => {
                                 <td class="px-4 py-4">
                                     <Badge
                                         :variant="
-                                            item.is_active ? 'success' : 'neutral'
+                                            item.is_active
+                                                ? 'success'
+                                                : 'neutral'
                                         "
                                         class="gap-1"
                                     >
@@ -122,7 +138,9 @@ const villageList = computed(() => {
                                             :size="12"
                                         />
                                         <span>{{
-                                            item.is_active ? "Aktif" : "Tidak Aktif"
+                                            item.is_active
+                                                ? "Aktif"
+                                                : "Tidak Aktif"
                                         }}</span>
                                     </Badge>
                                 </td>
@@ -140,14 +158,19 @@ const villageList = computed(() => {
                                                 <Icon :icon="Eye" :size="14" />
                                             </Button>
                                         </Link>
-                                        <Link :href="`/admin/desa/${item.id}/edit`">
+                                        <Link
+                                            :href="`/admin/desa/${item.id}/edit`"
+                                        >
                                             <Button
                                                 variant="secondary"
                                                 size="sm"
                                                 class="size-8 p-0"
                                                 title="Edit Desa"
                                             >
-                                                <Icon :icon="Edit2" :size="14" />
+                                                <Icon
+                                                    :icon="Edit2"
+                                                    :size="14"
+                                                />
                                             </Button>
                                         </Link>
                                     </div>

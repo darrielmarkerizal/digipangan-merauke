@@ -4,6 +4,7 @@ namespace Modules\User\Http\Requests;
 
 use App\Enums\UserRole;
 use App\Http\Requests\BaseFormRequest;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Validation\Rule;
 use Modules\Farmer\Http\Requests\Concerns\ValidatesFarmerLocation;
 
@@ -50,7 +51,7 @@ class UpdateUserRequest extends BaseFormRequest
         return in_array($role, (array) $this->input('roles', []), true);
     }
 
-    public function withValidator(\Illuminate\Contracts\Validation\Validator $validator): void
+    public function withValidator(Validator $validator): void
     {
         $this->validateFarmerLocationConsistency($validator);
     }

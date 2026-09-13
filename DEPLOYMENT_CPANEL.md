@@ -61,7 +61,7 @@ FILESYSTEM_PUBLIC_ROOT=/home/username_cpanel/digipangan_media
 FILESYSTEM_PUBLIC_URI=storage
 ```
 
-*(Ganti `username_cpanel` dengan *username* asli cPanel Anda).*
+_(Ganti `username_cpanel` dengan *username* asli cPanel Anda)._
 
 ### C. Install Dependencies & Database
 
@@ -145,6 +145,7 @@ Jika Anda membuat fitur baru di komputer lokal, cara meng-update-nya di cPanel k
     ```
 
 Script `deploy.sh` akan secara otomatis:
+
 - Menarik pembaruan terbaru dari Git (`git pull`)
 - Menginstal dependensi PHP via Composer
 - Menyalin folder `build` (aset frontend) ke `/public_html`

@@ -3,8 +3,9 @@
 namespace Modules\Farmer\Services;
 
 use App\Services\BaseService;
-use Modules\Farmer\Repositories\Contracts\CommodityRepositoryInterface;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\QueryException;
+use Modules\Farmer\Repositories\Contracts\CommodityRepositoryInterface;
 
 class CommodityService extends BaseService
 {
@@ -17,9 +18,9 @@ class CommodityService extends BaseService
     {
         try {
             return parent::delete($model);
-        } catch (\Illuminate\Database\QueryException $e) {
-            if ($e->getCode() === "23000") {
-                abort(409, "Tidak dapat menghapus data karena masih memiliki relasi (sedang digunakan).");
+        } catch (QueryException $e) {
+            if ($e->getCode() === '23000') {
+                abort(409, 'Tidak dapat menghapus data karena masih memiliki relasi (sedang digunakan).');
             }
             throw $e;
         }

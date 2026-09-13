@@ -3,6 +3,8 @@
 namespace Modules\Region\Repositories;
 
 use App\Repositories\BaseRepository;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Modules\Region\Models\Village;
 use Modules\Region\Repositories\Contracts\VillageRepositoryInterface;
 use Spatie\QueryBuilder\AllowedFilter;
@@ -14,7 +16,7 @@ class VillageRepository extends BaseRepository implements VillageRepositoryInter
         parent::__construct($model);
     }
 
-    public function query(): \Illuminate\Database\Eloquent\Builder
+    public function query(): Builder
     {
         return parent::query()->with('region');
     }
@@ -48,7 +50,7 @@ class VillageRepository extends BaseRepository implements VillageRepositoryInter
         return $this->model->newQuery()->where('region_id', $regionId)->count();
     }
 
-    public function listByRegion(int $regionId): \Illuminate\Database\Eloquent\Collection
+    public function listByRegion(int $regionId): Collection
     {
         return $this->model->newQuery()
             ->where('region_id', $regionId)

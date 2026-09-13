@@ -12,7 +12,6 @@ use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
 class Faq extends Model implements AuditableContract
 {
     use Auditable;
-
     use SoftDeletes;
 
     protected function casts(): array
