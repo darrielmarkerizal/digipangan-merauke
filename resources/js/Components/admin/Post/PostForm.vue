@@ -92,14 +92,21 @@ const insertUploadedMedia = async (event: Event, type: "image" | "video") => {
         const index = quill.getSelection(true)?.index ?? quill.getLength();
         const previewUrl = URL.createObjectURL(file);
         previewUrls.value.push(previewUrl);
-        const marker = type === "video"
-            ? `<p data-temp-media="${folder}"><video controls preload="metadata" class="post-content-video"></video></p>`
-            : `<p data-temp-media="${folder}"><img loading="lazy" class="post-content-image" alt="Media berita"></p>`;
-
-        quill.clipboard.dangerouslyPasteHTML(index, marker, "user");
         const mediaTag = type === "video" ? "video" : "img";
-        const mediaElement = quill.root.querySelector(`[data-temp-media="${folder}"] ${mediaTag}`)
-            || quill.root.querySelectorAll(mediaTag).item(quill.root.querySelectorAll(mediaTag).length - 1);
+        let mediaElement: HTMLElement | null = null;
+
+        if (type === "image") {
+            const embedIndex = Math.min(index, Math.max(0, quill.getLength() - 1));
+            quill.insertEmbed(embedIndex, "image", previewUrl, "user");
+            const [leaf] = quill.getLeaf(embedIndex);
+            mediaElement = (leaf?.domNode as HTMLElement | undefined) ?? null;
+        } else {
+            const marker = `<p data-temp-media="${folder}"><video controls preload="metadata" class="post-content-video"></video></p>`;
+            quill.clipboard.dangerouslyPasteHTML(index, marker, "user");
+            mediaElement = quill.root.querySelector(`[data-temp-media="${folder}"] ${mediaTag}`)
+                || quill.root.querySelectorAll(mediaTag).item(quill.root.querySelectorAll(mediaTag).length - 1) as HTMLElement | null;
+        }
+
         const mediaNode = mediaElement?.closest("p") || mediaElement?.parentElement;
         if (!mediaNode || !mediaElement) {
             throw new Error("Media tidak dapat disisipkan ke editor.");

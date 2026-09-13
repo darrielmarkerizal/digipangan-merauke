@@ -77,18 +77,17 @@ class PostService extends BaseService
                 continue;
             }
 
-            $marker = '<p data-temp-media="'.e($folder).'">'
-                .'<video controls preload="metadata" class="post-content-video"></video>'
-                .'</p>';
-            $imageMarker = '<p data-temp-media="'.e($folder).'">'
-                .'<img loading="lazy" class="post-content-image" src="about:blank" alt="Media berita">'
-                .'</p>';
             $url = e($media->getUrl());
             $replacement = str_starts_with((string) $media->mime_type, 'video/')
                 ? '<video controls preload="metadata" class="post-content-video" src="'.$url.'"></video>'
                 : '<img loading="lazy" class="post-content-image" src="'.$url.'" alt="Media berita">';
 
-            $body = str_replace([$marker, $imageMarker], $replacement, $body);
+            $folderPattern = preg_quote($folder, '~');
+            $body = preg_replace(
+                '~<p\b[^>]*data-temp-media=["\']'.$folderPattern.'["\'][^>]*>.*?</p>~is',
+                $replacement,
+                $body
+            ) ?? $body;
         }
 
         return $body;
