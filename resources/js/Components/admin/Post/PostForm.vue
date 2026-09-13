@@ -93,19 +93,32 @@ const insertUploadedMedia = async (event: Event, type: "image" | "video") => {
         const previewUrl = URL.createObjectURL(file);
         previewUrls.value.push(previewUrl);
         const marker = type === "video"
-            ? `<p data-temp-media="${folder}"><video controls preload="metadata" class="post-content-video" src="${previewUrl}"></video></p>`
-            : `<p data-temp-media="${folder}"><img loading="lazy" class="post-content-image" src="${previewUrl}" alt="Media berita"></p>`;
+            ? `<p data-temp-media="${folder}"><video controls preload="metadata" class="post-content-video"></video></p>`
+            : `<p data-temp-media="${folder}"><img loading="lazy" class="post-content-image" alt="Media berita"></p>`;
 
         quill.clipboard.dangerouslyPasteHTML(index, marker, "user");
+        const mediaTag = type === "video" ? "video" : "img";
+        const mediaElement = quill.root.querySelector(`[data-temp-media="${folder}"] ${mediaTag}`)
+            || quill.root.querySelectorAll(mediaTag).item(quill.root.querySelectorAll(mediaTag).length - 1);
+        const mediaNode = mediaElement?.closest("p") || mediaElement?.parentElement;
+        if (!mediaNode || !mediaElement) {
+            throw new Error("Media tidak dapat disisipkan ke editor.");
+        }
+
+        mediaNode.setAttribute("data-temp-media", folder);
+        mediaElement.setAttribute("src", previewUrl);
+        quill.update("api");
         props.form.content_media = [...(props.form.content_media || []), folder];
     } catch (error: any) {
         if (uploadedFolder) {
             await axios.delete("/admin/media/upload", { data: { folder: uploadedFolder } }).catch(() => undefined);
         }
         const message = error.response?.data?.message || error.message;
-        toast.error(message === "Editor berita belum siap."
+                toast.error(message === "Editor berita belum siap."
             ? "Editor berita belum siap. Silakan tunggu sebentar lalu coba lagi."
-            : message || "Gagal mengunggah media berita.");
+                        : message === "Media tidak dapat disisipkan ke editor."
+                            ? "Gambar berhasil diunggah, tetapi gagal ditampilkan di isi berita."
+                            : message || "Gagal mengunggah media berita.");
     } finally {
         isUploading.value = false;
     }
@@ -211,7 +224,7 @@ const handleSubmit = async () => {
                                     <span class="text-danger">*</span></Label
                                 >
                                                                 <div class="rounded-md border border-border/80" :class="{'border-danger': form.errors.body}">
-                                                                    <div class="flex items-center gap-2 border-b border-border/60 bg-muted/20 px-3 py-2">
+                                                                    <div class="post-media-toolbar flex items-center gap-2 border-b border-border/60 bg-white px-3 py-2">
                                                                         <button type="button" class="inline-flex items-center gap-1.5 rounded-lg border border-border bg-white px-2.5 py-1.5 text-xs font-semibold text-fg hover:border-brand hover:text-brand" @click="imageInput?.click()">
                                                                             <Icon :icon="ImageIcon" :size="14" /> Gambar
                                                                         </button>
@@ -437,10 +450,17 @@ const handleSubmit = async () => {
 
 .ql-toolbar.ql-snow {
     position: sticky;
-    top: 3.5rem;
+    top: 6.5rem;
     z-index: 20;
     background: rgba(255, 255, 255, 0.98);
     box-shadow: 0 1px 0 rgba(220, 231, 225, 0.9), 0 4px 12px rgba(20, 40, 31, 0.06);
+}
+
+.post-media-toolbar {
+    position: sticky;
+    top: 3.5rem;
+    z-index: 21;
+    box-shadow: 0 1px 0 rgba(220, 231, 225, 0.9);
 }
 
 .ql-editor {
