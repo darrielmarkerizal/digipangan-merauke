@@ -16,6 +16,7 @@ class PostResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'slug' => $this->slug,
+            'post_category_id' => $this->post_category_id,
             'body' => app(PostContentSanitizer::class)->sanitize((string) $this->body),
             'status' => $this->status,
             'published_at' => $this->published_at,
