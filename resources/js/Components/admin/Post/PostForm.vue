@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import { onBeforeUnmount, ref } from "vue";
 import { Link } from "@inertiajs/vue3";
-import { ArrowLeft, Save, FileText, Image as ImageIcon, Upload, Film } from "@lucide/vue";
 import {
-    Icon,
-    Input,
-    Button,
-    Label,
-    Select,
-} from "@/Components/ui";
+    ArrowLeft,
+    Save,
+    FileText,
+    Image as ImageIcon,
+    Upload,
+    Film,
+} from "@lucide/vue";
+import { Icon, Input, Button, Label, Select } from "@/Components/ui";
 import { toast } from "vue-sonner";
 import { QuillEditor } from "@vueup/vue-quill";
 import "@vueup/vue-quill/dist/vue-quill.snow.css";
@@ -61,11 +62,16 @@ const insertUploadedMedia = async (event: Event, type: "image" | "video") => {
 
     if (!file) return;
 
-    const allowedTypes = type === "video"
-        ? ["video/mp4", "video/webm", "video/quicktime"]
-        : ["image/jpeg", "image/png", "image/webp", "image/gif"];
+    const allowedTypes =
+        type === "video"
+            ? ["video/mp4", "video/webm", "video/quicktime"]
+            : ["image/jpeg", "image/png", "image/webp", "image/gif"];
     if (!allowedTypes.includes(file.type)) {
-        toast.error(type === "video" ? "Format video tidak didukung." : "Format gambar tidak didukung.");
+        toast.error(
+            type === "video"
+                ? "Format video tidak didukung."
+                : "Format gambar tidak didukung.",
+        );
         return;
     }
     if (file.size > 50 * 1024 * 1024) {
@@ -96,18 +102,29 @@ const insertUploadedMedia = async (event: Event, type: "image" | "video") => {
         let mediaElement: HTMLElement | null = null;
 
         if (type === "image") {
-            const embedIndex = Math.min(index, Math.max(0, quill.getLength() - 1));
+            const embedIndex = Math.min(
+                index,
+                Math.max(0, quill.getLength() - 1),
+            );
             quill.insertEmbed(embedIndex, "image", previewUrl, "user");
             const [leaf] = quill.getLeaf(embedIndex);
             mediaElement = (leaf?.domNode as HTMLElement | undefined) ?? null;
         } else {
             const marker = `<p data-temp-media="${folder}"><video controls preload="metadata" class="post-content-video"></video></p>`;
             quill.clipboard.dangerouslyPasteHTML(index, marker, "user");
-            mediaElement = quill.root.querySelector(`[data-temp-media="${folder}"] ${mediaTag}`)
-                || quill.root.querySelectorAll(mediaTag).item(quill.root.querySelectorAll(mediaTag).length - 1) as HTMLElement | null;
+            mediaElement =
+                quill.root.querySelector(
+                    `[data-temp-media="${folder}"] ${mediaTag}`,
+                ) ||
+                (quill.root
+                    .querySelectorAll(mediaTag)
+                    .item(
+                        quill.root.querySelectorAll(mediaTag).length - 1,
+                    ) as HTMLElement | null);
         }
 
-        const mediaNode = mediaElement?.closest("p") || mediaElement?.parentElement;
+        const mediaNode =
+            mediaElement?.closest("p") || mediaElement?.parentElement;
         if (!mediaNode || !mediaElement) {
             throw new Error("Media tidak dapat disisipkan ke editor.");
         }
@@ -115,17 +132,26 @@ const insertUploadedMedia = async (event: Event, type: "image" | "video") => {
         mediaNode.setAttribute("data-temp-media", folder);
         mediaElement.setAttribute("src", previewUrl);
         quill.update("api");
-        props.form.content_media = [...(props.form.content_media || []), folder];
+        props.form.content_media = [
+            ...(props.form.content_media || []),
+            folder,
+        ];
     } catch (error: any) {
         if (uploadedFolder) {
-            await axios.delete("/admin/media/upload", { data: { folder: uploadedFolder } }).catch(() => undefined);
+            await axios
+                .delete("/admin/media/upload", {
+                    data: { folder: uploadedFolder },
+                })
+                .catch(() => undefined);
         }
         const message = error.response?.data?.message || error.message;
-                toast.error(message === "Editor berita belum siap."
-            ? "Editor berita belum siap. Silakan tunggu sebentar lalu coba lagi."
-                        : message === "Media tidak dapat disisipkan ke editor."
-                            ? "Gambar berhasil diunggah, tetapi gagal ditampilkan di isi berita."
-                            : message || "Gagal mengunggah media berita.");
+        toast.error(
+            message === "Editor berita belum siap."
+                ? "Editor berita belum siap. Silakan tunggu sebentar lalu coba lagi."
+                : message === "Media tidak dapat disisipkan ke editor."
+                  ? "Gambar berhasil diunggah, tetapi gagal ditampilkan di isi berita."
+                  : message || "Gagal mengunggah media berita.",
+        );
     } finally {
         isUploading.value = false;
     }
@@ -153,7 +179,9 @@ const handleSubmit = async () => {
 
 <template>
     <div class="space-y-6">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div
+            class="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+        >
             <Link
                 href="/admin/berita"
                 class="inline-flex items-center gap-2 text-sm font-medium text-fg-muted transition-colors hover:text-fg"
@@ -162,19 +190,31 @@ const handleSubmit = async () => {
                 <span>Kembali ke Daftar Berita</span>
             </Link>
 
-            <div class="inline-flex self-start rounded-lg border border-border bg-muted/30 p-1 sm:self-auto">
-                <button 
-                    type="button" 
-                    @click="isPreviewMode = false" 
-                    :class="['px-4 py-1.5 text-sm font-semibold rounded-md transition-all flex items-center gap-2', !isPreviewMode ? 'bg-white text-brand shadow-sm border border-border/50' : 'text-fg-muted hover:text-fg']"
+            <div
+                class="inline-flex self-start rounded-lg border border-border bg-muted/30 p-1 sm:self-auto"
+            >
+                <button
+                    type="button"
+                    @click="isPreviewMode = false"
+                    :class="[
+                        'px-4 py-1.5 text-sm font-semibold rounded-md transition-all flex items-center gap-2',
+                        !isPreviewMode
+                            ? 'bg-white text-brand shadow-sm border border-border/50'
+                            : 'text-fg-muted hover:text-fg',
+                    ]"
                 >
                     <Icon :icon="FileText" :size="14" />
                     Mode Tulis
                 </button>
-                <button 
-                    type="button" 
-                    @click="isPreviewMode = true" 
-                    :class="['px-4 py-1.5 text-sm font-semibold rounded-md transition-all flex items-center gap-2', isPreviewMode ? 'bg-white text-brand shadow-sm border border-border/50' : 'text-fg-muted hover:text-fg']"
+                <button
+                    type="button"
+                    @click="isPreviewMode = true"
+                    :class="[
+                        'px-4 py-1.5 text-sm font-semibold rounded-md transition-all flex items-center gap-2',
+                        isPreviewMode
+                            ? 'bg-white text-brand shadow-sm border border-border/50'
+                            : 'text-fg-muted hover:text-fg',
+                    ]"
                 >
                     <Icon :icon="ImageIcon" :size="14" />
                     Pratinjau
@@ -230,26 +270,68 @@ const handleSubmit = async () => {
                                     >Isi Berita
                                     <span class="text-danger">*</span></Label
                                 >
-                                                                <div class="rounded-md border border-border/80" :class="{'border-danger': form.errors.body}">
-                                                                    <div class="post-media-toolbar flex items-center gap-2 border-b border-border/60 bg-white px-3 py-2">
-                                                                        <button type="button" class="inline-flex items-center gap-1.5 rounded-lg border border-border bg-white px-2.5 py-1.5 text-xs font-semibold text-fg hover:border-brand hover:text-brand" @click="imageInput?.click()">
-                                                                            <Icon :icon="ImageIcon" :size="14" /> Gambar
-                                                                        </button>
-                                                                        <button type="button" class="inline-flex items-center gap-1.5 rounded-lg border border-border bg-white px-2.5 py-1.5 text-xs font-semibold text-fg hover:border-brand hover:text-brand" @click="videoInput?.click()">
-                                                                            <Icon :icon="Film" :size="14" /> Video
-                                                                        </button>
-                                                                        <input ref="imageInput" type="file" accept="image/jpeg,image/png,image/webp,image/gif" class="hidden" @change="insertUploadedMedia($event, 'image')" />
-                                                                        <input ref="videoInput" type="file" accept="video/mp4,video/webm,video/quicktime" class="hidden" @change="insertUploadedMedia($event, 'video')" />
-                                                                    </div>
-                                  <QuillEditor
-                                                                        ref="editor"
-                                    theme="snow"
-                                    v-model:content="form.body"
-                                    contentType="html"
-                                                                        @ready="onEditorReady"
-                                    placeholder="Tulis konten berita atau artikel di sini..."
-                                    style="min-height: 300px;"
-                                  />
+                                <div
+                                    class="post-editor rounded-md border border-border/80"
+                                    :class="{
+                                        'border-danger': form.errors.body,
+                                    }"
+                                >
+                                    <div
+                                        class="post-media-toolbar flex items-center gap-2 border-b border-border/60 bg-white px-3 py-2"
+                                    >
+                                        <button
+                                            type="button"
+                                            class="inline-flex items-center gap-1.5 rounded-lg border border-border bg-white px-2.5 py-1.5 text-xs font-semibold text-fg hover:border-brand hover:text-brand"
+                                            @click="imageInput?.click()"
+                                        >
+                                            <Icon
+                                                :icon="ImageIcon"
+                                                :size="14"
+                                            />
+                                            Gambar
+                                        </button>
+                                        <button
+                                            type="button"
+                                            class="inline-flex items-center gap-1.5 rounded-lg border border-border bg-white px-2.5 py-1.5 text-xs font-semibold text-fg hover:border-brand hover:text-brand"
+                                            @click="videoInput?.click()"
+                                        >
+                                            <Icon :icon="Film" :size="14" />
+                                            Video
+                                        </button>
+                                        <input
+                                            ref="imageInput"
+                                            type="file"
+                                            accept="image/jpeg,image/png,image/webp,image/gif"
+                                            class="hidden"
+                                            @change="
+                                                insertUploadedMedia(
+                                                    $event,
+                                                    'image',
+                                                )
+                                            "
+                                        />
+                                        <input
+                                            ref="videoInput"
+                                            type="file"
+                                            accept="video/mp4,video/webm,video/quicktime"
+                                            class="hidden"
+                                            @change="
+                                                insertUploadedMedia(
+                                                    $event,
+                                                    'video',
+                                                )
+                                            "
+                                        />
+                                    </div>
+                                    <QuillEditor
+                                        ref="editor"
+                                        theme="snow"
+                                        v-model:content="form.body"
+                                        contentType="html"
+                                        @ready="onEditorReady"
+                                        placeholder="Tulis konten berita atau artikel di sini..."
+                                        style="min-height: 300px"
+                                    />
                                 </div>
                                 <span
                                     v-if="form.errors.body"
@@ -282,13 +364,18 @@ const handleSubmit = async () => {
                                 <div
                                     class="relative flex aspect-4/3 w-full flex-col items-center justify-center overflow-hidden rounded-xl border-2 border-dashed border-border/90 bg-muted/20 transition-colors hover:border-brand/50 hover:bg-brand-weak/10"
                                 >
-                                    <div v-if="coverPreview" class="relative h-full w-full group">
+                                    <div
+                                        v-if="coverPreview"
+                                        class="relative h-full w-full group"
+                                    >
                                         <img
                                             :src="coverPreview"
                                             alt="Cover Preview"
                                             class="absolute inset-0 h-full w-full object-cover"
                                         />
-                                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                        <div
+                                            class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
+                                        >
                                             <button
                                                 type="button"
                                                 @click.prevent="removeCover"
@@ -403,9 +490,13 @@ const handleSubmit = async () => {
                                     class="w-full gap-1.5 font-semibold"
                                 >
                                     <Icon :icon="Save" :size="16" />
-                                    <span
-                                        >{{ form.processing || isUploading ? "Menyimpan..." : (isEdit ? "Simpan Perubahan" : "Simpan Berita") }}</span
-                                    >
+                                    <span>{{
+                                        form.processing || isUploading
+                                            ? "Menyimpan..."
+                                            : isEdit
+                                              ? "Simpan Perubahan"
+                                              : "Simpan Berita"
+                                    }}</span>
                                 </Button>
                             </div>
                         </div>
@@ -414,34 +505,54 @@ const handleSubmit = async () => {
             </div>
         </form>
 
-        <div v-if="isPreviewMode" class="max-w-4xl mx-auto pb-12 animate-in fade-in slide-in-from-bottom-4 duration-300">
-            <div class="bg-white rounded-2xl border border-border/80 shadow-xs overflow-hidden">
-                <div class="relative aspect-21/9 w-full overflow-hidden bg-muted/20">
-                    <img 
+        <div
+            v-if="isPreviewMode"
+            class="max-w-4xl mx-auto pb-12 animate-in fade-in slide-in-from-bottom-4 duration-300"
+        >
+            <div
+                class="bg-white rounded-2xl border border-border/80 shadow-xs overflow-hidden"
+            >
+                <div
+                    class="relative aspect-21/9 w-full overflow-hidden bg-muted/20"
+                >
+                    <img
                         v-if="coverPreview"
-                        :src="coverPreview" 
+                        :src="coverPreview"
                         alt="Cover Berita"
                         class="w-full h-full object-cover"
                     />
-                    <div v-else class="absolute inset-0 flex flex-col items-center justify-center text-fg-muted">
-                        <Icon :icon="ImageIcon" :size="48" class="opacity-20 mb-2" />
-                        <span class="text-sm font-medium">Belum ada cover gambar</span>
+                    <div
+                        v-else
+                        class="absolute inset-0 flex flex-col items-center justify-center text-fg-muted"
+                    >
+                        <Icon
+                            :icon="ImageIcon"
+                            :size="48"
+                            class="opacity-20 mb-2"
+                        />
+                        <span class="text-sm font-medium"
+                            >Belum ada cover gambar</span
+                        >
                     </div>
                 </div>
 
                 <div class="p-6 md:p-10 lg:p-12">
                     <div class="max-w-3xl mx-auto space-y-8">
                         <div class="space-y-4 border-b border-border/60 pb-8">
-                            <h1 class="text-3xl md:text-4xl font-extrabold text-fg leading-tight">
-                                {{ form.title || 'Judul Berita Belum Diisi' }}
+                            <h1
+                                class="text-3xl md:text-4xl font-extrabold text-fg leading-tight"
+                            >
+                                {{ form.title || "Judul Berita Belum Diisi" }}
                             </h1>
                         </div>
-                        
-                        <div 
+
+                        <div
                             class="prose max-w-none text-fg-muted leading-relaxed whitespace-pre-wrap"
-                            v-html="form.body || '<p class=\'text-center italic opacity-50 py-10\'>Konten berita masih kosong...</p>'"
-                        >
-                        </div>
+                            v-html="
+                                form.body ||
+                                '<p class=\'text-center italic opacity-50 py-10\'>Konten berita masih kosong...</p>'
+                            "
+                        ></div>
                     </div>
                 </div>
             </div>
@@ -450,20 +561,22 @@ const handleSubmit = async () => {
 </template>
 
 <style>
-.ql-container {
+.post-editor .ql-container {
     font-family: inherit !important;
     font-size: 14px !important;
 }
 
-.ql-toolbar.ql-snow {
+.post-editor .ql-toolbar.ql-snow {
     position: sticky;
     top: 6.5rem;
     z-index: 20;
     background: rgba(255, 255, 255, 0.98);
-    box-shadow: 0 1px 0 rgba(220, 231, 225, 0.9), 0 4px 12px rgba(20, 40, 31, 0.06);
+    box-shadow:
+        0 1px 0 rgba(220, 231, 225, 0.9),
+        0 4px 12px rgba(20, 40, 31, 0.06);
 }
 
-.post-media-toolbar {
+.post-editor .post-media-toolbar {
     position: sticky;
     top: 3.5rem;
     z-index: 21;
