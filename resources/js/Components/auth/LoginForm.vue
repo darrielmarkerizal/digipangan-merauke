@@ -80,7 +80,7 @@ const submit = () => {
             </label>
 
             <a
-                href="#"
+                href="/lupa-kata-sandi"
                 class="text-sm font-medium text-brand transition-colors hover:text-brand-strong"
             >
                 Lupa kata sandi?

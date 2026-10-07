@@ -27,6 +27,7 @@ use Modules\Region\Http\Controllers\Admin\RegionAdminController;
 use Modules\Region\Http\Controllers\Admin\VillageAdminController;
 use Modules\Region\Http\Controllers\Public\RegionPageController;
 use Modules\User\Http\Controllers\Admin\AuthAdminController;
+use Modules\User\Http\Controllers\Admin\PasswordResetController;
 use Modules\User\Http\Controllers\Admin\UserAdminController;
 
 Route::get('/', [HomePageController::class, 'index'])->name('home');
@@ -63,6 +64,10 @@ Route::get('/tentang', [AboutPageController::class, 'show'])->name('about.public
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthAdminController::class, 'showLogin'])->name('login');
     Route::post('/login', [AuthAdminController::class, 'login'])->name('login.store');
+    Route::get('/lupa-kata-sandi', [PasswordResetController::class, 'create'])->name('password.request');
+    Route::post('/lupa-kata-sandi', [PasswordResetController::class, 'sendResetLink'])->middleware('throttle:password-reset-request')->name('password.email');
+    Route::get('/reset-password/{token}', [PasswordResetController::class, 'edit'])->name('password.reset');
+    Route::post('/reset-password', [PasswordResetController::class, 'update'])->middleware('throttle:password-reset-update')->name('password.update');
     Route::get('/daftar', [FarmerRegisterController::class, 'create'])->name('farmer.register');
     Route::post('/daftar', [FarmerRegisterController::class, 'store'])->name('farmer.register.store');
 });
