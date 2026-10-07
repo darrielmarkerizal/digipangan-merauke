@@ -31,7 +31,8 @@ const editor = ref<any>(null);
 const imageInput = ref<HTMLInputElement | null>(null);
 const videoInput = ref<HTMLInputElement | null>(null);
 const previewUrls = ref<string[]>([]);
-const MAX_POST_MEDIA_SIZE = 50 * 1024 * 1024;
+const MAX_POST_IMAGE_SIZE = 2 * 1024 * 1024;
+const MAX_POST_VIDEO_SIZE = 50 * 1024 * 1024;
 
 const onEditorReady = (quill: any) => {
     editor.value = quill;
@@ -75,8 +76,13 @@ const insertUploadedMedia = async (event: Event, type: "image" | "video") => {
         );
         return;
     }
-    if (file.size > MAX_POST_MEDIA_SIZE) {
-        toast.error("Ukuran media maksimal 50 MB.");
+    const maxSize = type === "video" ? MAX_POST_VIDEO_SIZE : MAX_POST_IMAGE_SIZE;
+    if (file.size > maxSize) {
+        toast.error(
+            type === "video"
+                ? "Ukuran video maksimal 50 MB."
+                : "Ukuran gambar inline maksimal 2 MB.",
+        );
         return;
     }
 
@@ -302,7 +308,7 @@ const handleSubmit = async () => {
                                         <span
                                             class="ml-auto text-right text-xs text-fg-muted"
                                         >
-                                            Gambar/video: maks. 50 MB per file
+                                            Gambar maks. 2 MB · Video maks. 50 MB (per file)
                                         </span>
                                         <input
                                             ref="imageInput"

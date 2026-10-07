@@ -11,12 +11,14 @@ class StoreMediaUploadRequest extends BaseFormRequest
     public function rules(): array
     {
         if ($this->input('purpose') === 'post_content') {
+            $maxFileSizeKb = $this->isPostContentImage() ? 2048 : 51200;
+
             return [
                 'purpose' => ['required', 'in:post_content'],
                 'file' => [
                     'required', 'file',
                     'mimes:jpeg,jpg,png,webp,gif,mp4,webm,mov',
-                    'max:51200',
+                    'max:'.$maxFileSizeKb,
                 ],
             ];
         }
@@ -40,9 +42,16 @@ class StoreMediaUploadRequest extends BaseFormRequest
                 ? 'Format media harus JPG, PNG, WEBP, GIF, MP4, WEBM, atau MOV.'
                 : 'Format gambar harus JPG, PNG, WEBP, atau GIF.',
             'file.max' => $this->input('purpose') === 'post_content'
-                ? 'Ukuran media maksimal 50 MB.'
+                ? ($this->isPostContentImage()
+                    ? 'Ukuran gambar inline maksimal 2 MB.'
+                    : 'Ukuran video maksimal 50 MB.')
                 : 'Ukuran gambar maksimal 8 MB.',
         ];
+    }
+
+    private function isPostContentImage(): bool
+    {
+        return str_starts_with((string) $this->file('file')?->getMimeType(), 'image/');
     }
 
     /**
