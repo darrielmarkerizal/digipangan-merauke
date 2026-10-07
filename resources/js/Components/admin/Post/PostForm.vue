@@ -31,34 +31,7 @@ const editor = ref<any>(null);
 const imageInput = ref<HTMLInputElement | null>(null);
 const videoInput = ref<HTMLInputElement | null>(null);
 const previewUrls = ref<string[]>([]);
-const MAX_POST_MEDIA_SIZE = 256 * 1024 * 1024;
-const MAX_VIDEO_DURATION_SECONDS = 5 * 60;
-
-const readVideoDuration = (file: File): Promise<number> =>
-    new Promise((resolve, reject) => {
-        const url = URL.createObjectURL(file);
-        const video = document.createElement("video");
-        video.preload = "metadata";
-
-        const cleanup = () => {
-            URL.revokeObjectURL(url);
-            video.onloadedmetadata = null;
-            video.onerror = null;
-        };
-
-        video.onloadedmetadata = () => {
-            const duration = video.duration;
-            cleanup();
-            Number.isFinite(duration)
-                ? resolve(duration)
-                : reject(new Error("Durasi video tidak dapat dibaca."));
-        };
-        video.onerror = () => {
-            cleanup();
-            reject(new Error("Durasi video tidak dapat dibaca."));
-        };
-        video.src = url;
-    });
+const MAX_POST_MEDIA_SIZE = 50 * 1024 * 1024;
 
 const onEditorReady = (quill: any) => {
     editor.value = quill;
@@ -103,20 +76,8 @@ const insertUploadedMedia = async (event: Event, type: "image" | "video") => {
         return;
     }
     if (file.size > MAX_POST_MEDIA_SIZE) {
-        toast.error("Ukuran media maksimal 256 MB.");
+        toast.error("Ukuran media maksimal 50 MB.");
         return;
-    }
-    if (type === "video") {
-        try {
-            const duration = await readVideoDuration(file);
-            if (duration > MAX_VIDEO_DURATION_SECONDS) {
-                toast.error("Durasi video berita maksimal 5 menit.");
-                return;
-            }
-        } catch {
-            toast.error("Durasi video tidak dapat dibaca. Coba format MP4 atau WEBM.");
-            return;
-        }
     }
 
     isUploading.value = true;
@@ -339,7 +300,7 @@ const handleSubmit = async () => {
                                             Video
                                         </button>
                                         <span class="ml-auto text-xs text-fg-muted">
-                                            Maks. 5 menit / 256 MB
+                                            Maks. 50 MB
                                         </span>
                                         <input
                                             ref="imageInput"

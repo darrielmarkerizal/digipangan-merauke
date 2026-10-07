@@ -16,7 +16,7 @@ class StoreMediaUploadRequest extends BaseFormRequest
                 'file' => [
                     'required', 'file',
                     'mimes:jpeg,jpg,png,webp,gif,mp4,webm,mov',
-                    'max:262144',
+                    'max:51200',
                 ],
             ];
         }
@@ -40,7 +40,7 @@ class StoreMediaUploadRequest extends BaseFormRequest
                 ? 'Format media harus JPG, PNG, WEBP, GIF, MP4, WEBM, atau MOV.'
                 : 'Format gambar harus JPG, PNG, WEBP, atau GIF.',
             'file.max' => $this->input('purpose') === 'post_content'
-                ? 'Ukuran media maksimal 256 MB.'
+                ? 'Ukuran media maksimal 50 MB.'
                 : 'Ukuran gambar maksimal 8 MB.',
         ];
     }
