@@ -20,6 +20,10 @@ echo "Menyalin aset frontend (build & images)..."
 rm -rf $DOC_ROOT/build
 cp -R public/build $DOC_ROOT/build
 
+if [ -f public/.user.ini ]; then
+    cp public/.user.ini $DOC_ROOT/.user.ini
+fi
+
 if [ -d "public/images" ]; then
     rm -rf $DOC_ROOT/images
     cp -R public/images $DOC_ROOT/images

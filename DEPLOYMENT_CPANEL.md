@@ -149,6 +149,7 @@ Script `deploy.sh` akan secara otomatis:
 - Menarik pembaruan terbaru dari Git (`git pull`)
 - Menginstal dependensi PHP via Composer
 - Menyalin folder `build` (aset frontend) ke `/public_html`
+- Menyalin konfigurasi `.user.ini` untuk mendukung unggahan video berita hingga 256 MB
 - Menjalankan migrasi database
 - Membersihkan cache aplikasi
 
