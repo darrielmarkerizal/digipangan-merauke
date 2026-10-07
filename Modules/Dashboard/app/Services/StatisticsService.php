@@ -88,9 +88,10 @@ class StatisticsService
     private function zeroFilledSeries(Collection $countsByMonth): array
     {
         $series = [];
+        $startMonth = $this->windowStart();
 
-        for ($i = 11; $i >= 0; $i--) {
-            $ym = now()->subMonths($i)->format('Y-m');
+        for ($i = 0; $i < 12; $i++) {
+            $ym = $startMonth->copy()->addMonths($i)->format('Y-m');
             $series[] = ['month' => $ym, 'count' => (int) ($countsByMonth[$ym] ?? 0)];
         }
 

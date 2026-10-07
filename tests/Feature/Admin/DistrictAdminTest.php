@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\User;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Modules\Farmer\Database\Seeders\FarmerDatabaseSeeder;
 use Modules\Farmer\Models\Farmer;
@@ -278,5 +279,18 @@ describe('District Scoped Data Access', function () {
 
         $response = $this->actingAs($districtAdmin)->get(route('admin.dashboard.index'));
         $response->assertOk();
+    });
+
+    it('menampilkan 12 bulan berurutan pada grafik dashboard di akhir bulan', function () {
+        $this->travelTo(Carbon::parse('2026-08-31 12:00:00'));
+
+        $this->actingAs(createSuperAdmin())
+            ->get(route('admin.dashboard.index'))
+            ->assertOk()
+            ->assertInertia(fn ($page) => $page
+                ->component('Admin/Dashboard')
+                ->where('trend_data.0.x', 'Sep 2025')
+                ->where('trend_data.5.x', 'Feb 2026')
+                ->where('trend_data.11.x', 'Agt 2026'));
     });
 });

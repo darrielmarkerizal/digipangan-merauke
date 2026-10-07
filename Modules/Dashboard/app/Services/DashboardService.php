@@ -91,12 +91,13 @@ class DashboardService
 
     public function getTrendData(?int $regionId = null): array
     {
-        $counts = $this->interactions->monthlyCountsByType(ProductInteractionType::Contact, $this->windowStart(), $regionId);
+        $startMonth = $this->windowStart();
+        $counts = $this->interactions->monthlyCountsByType(ProductInteractionType::Contact, $startMonth, $regionId);
 
         $trendData = [];
 
-        for ($i = 11; $i >= 0; $i--) {
-            $month = Carbon::now()->subMonths($i);
+        for ($i = 0; $i < 12; $i++) {
+            $month = $startMonth->copy()->addMonths($i);
             $key = $month->format('Y-m');
             $trendData[] = [
                 'x' => $month->locale('id')->translatedFormat('M Y'),
@@ -152,7 +153,7 @@ class DashboardService
 
     private function windowStart(): Carbon
     {
-        return Carbon::now()->subMonths(11)->startOfMonth();
+        return Carbon::now()->startOfMonth()->subMonths(11);
     }
 
     /**

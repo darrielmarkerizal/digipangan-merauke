@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\User;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Modules\Farmer\Models\Farmer;
 use Modules\Product\Models\Product;
@@ -103,6 +104,23 @@ describe('Dashboard statistics', function () {
 
         expect(end($contactsMonthly)['count'])->toBe(1)
             ->and(end($auditsMonthly)['count'])->toBe(1);
+    });
+
+    it('menghasilkan 12 bulan berurutan untuk kontak dan audit pada akhir bulan', function () {
+        $this->travelTo(Carbon::parse('2026-08-31 12:00:00'));
+
+        $response = $this->actingAs(actor_stats())
+            ->getJson(route('api.statistics.summary'))
+            ->assertOk();
+
+        foreach (['contacts_monthly', 'audits_monthly'] as $seriesKey) {
+            $series = $response->json("data.{$seriesKey}");
+
+            expect($series)->toHaveCount(12)
+                ->and($series[0]['month'])->toBe('2025-09')
+                ->and($series[5]['month'])->toBe('2026-02')
+                ->and($series[11]['month'])->toBe('2026-08');
+        }
     });
 
     it('mendaftar produk aktif yang belum pernah dikontak', function () {
