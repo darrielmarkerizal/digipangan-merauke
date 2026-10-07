@@ -88,11 +88,27 @@ const isActive = (href: string) =>
                     </Link>
                 </nav>
 
+                <div v-if="!isAuthenticated" class="hidden shrink-0 items-center gap-3 lg:flex">
+                    <Link
+                        href="/login"
+                        class="rounded-full px-2 py-1.5 text-sm font-semibold text-brand transition-colors hover:bg-brand-weak"
+                    >
+                        Masuk di sini
+                    </Link>
+                    <Link
+                        href="/daftar"
+                        class="inline-flex items-center gap-1.5 rounded-full bg-brand px-4 py-1.5 text-sm font-semibold text-on-brand shadow-sm shadow-brand/30 transition-colors hover:bg-brand-strong"
+                    >
+                        Daftar Petani
+                    </Link>
+                </div>
+
                 <Link
-                    :href="isAuthenticated ? dashboardHref : '/daftar'"
+                    v-else
+                    :href="dashboardHref"
                     class="hidden shrink-0 items-center gap-1.5 rounded-full bg-brand px-4 py-1.5 text-sm font-semibold text-on-brand shadow-sm shadow-brand/30 transition-colors hover:bg-brand-strong lg:inline-flex"
                 >
-                    {{ isAuthenticated ? dashboardLabel : "Daftar Petani" }}
+                    {{ dashboardLabel }}
                 </Link>
 
                 <div class="flex items-center gap-1 lg:hidden">
@@ -147,16 +163,29 @@ const isActive = (href: string) =>
                             {{ item.label }}
                         </Link>
                     </div>
+                    <div v-if="!isAuthenticated" class="mt-2 grid grid-cols-2 gap-2">
+                        <Link
+                            href="/login"
+                            class="flex items-center justify-center rounded-2xl border border-border bg-white p-3 text-sm font-semibold text-brand transition-colors hover:bg-brand-weak"
+                            @click="isMobileMenuOpen = false"
+                        >
+                            Masuk di sini
+                        </Link>
+                        <Link
+                            href="/daftar"
+                            class="flex items-center justify-center rounded-2xl bg-brand p-3 text-sm font-semibold text-on-brand shadow-sm shadow-brand/30 transition-colors hover:bg-brand-strong"
+                            @click="isMobileMenuOpen = false"
+                        >
+                            Daftar Petani
+                        </Link>
+                    </div>
                     <Link
-                        :href="isAuthenticated ? dashboardHref : '/daftar'"
+                        v-else
+                        :href="dashboardHref"
                         class="mt-2 flex items-center justify-center gap-2 rounded-2xl bg-brand p-3 text-sm font-semibold text-on-brand shadow-sm shadow-brand/30"
                         @click="isMobileMenuOpen = false"
                     >
-                        {{
-                            isAuthenticated
-                                ? dashboardLabel
-                                : "Daftar sebagai Petani"
-                        }}
+                        {{ dashboardLabel }}
                     </Link>
                 </div>
             </Transition>
