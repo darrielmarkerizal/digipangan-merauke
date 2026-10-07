@@ -20,7 +20,7 @@ class UpdateUserRequest extends BaseFormRequest
                 'sometimes',
                 'email',
                 'max:150',
-                Rule::unique('users', 'email')->ignore($this->route('user')),
+                Rule::unique('users', 'email')->ignore($this->route('user') ?? $this->route('id')),
             ],
             'password' => ['sometimes', 'nullable', 'string', 'min:8', 'confirmed'],
             'is_active' => ['sometimes', 'boolean'],
