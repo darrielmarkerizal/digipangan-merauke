@@ -299,8 +299,10 @@ const handleSubmit = async () => {
                                             <Icon :icon="Film" :size="14" />
                                             Video
                                         </button>
-                                        <span class="ml-auto text-xs text-fg-muted">
-                                            Maks. 50 MB
+                                        <span
+                                            class="ml-auto text-right text-xs text-fg-muted"
+                                        >
+                                            Gambar/video: maks. 50 MB per file
                                         </span>
                                         <input
                                             ref="imageInput"
@@ -418,6 +420,9 @@ const handleSubmit = async () => {
                                         @change="handleCoverChange"
                                     />
                                 </div>
+                                <p class="text-xs text-fg-muted">
+                                    Ukuran gambar cover maksimal 8 MB.
+                                </p>
                                 <span
                                     v-if="form.errors.cover"
                                     class="text-xs text-danger block"
