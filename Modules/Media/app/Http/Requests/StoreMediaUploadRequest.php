@@ -43,7 +43,7 @@ class StoreMediaUploadRequest extends BaseFormRequest
                 : 'Format gambar harus JPG, PNG, WEBP, atau GIF.',
             'file.max' => $this->input('purpose') === 'post_content'
                 ? ($this->isPostContentImage()
-                    ? 'Ukuran gambar inline maksimal 2 MB.'
+                    ? 'Ukuran gambar di dalam berita maksimal 2 MB.'
                     : 'Ukuran video maksimal 50 MB.')
                 : 'Ukuran gambar maksimal 8 MB.',
         ];

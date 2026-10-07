@@ -81,7 +81,7 @@ const insertUploadedMedia = async (event: Event, type: "image" | "video") => {
         toast.error(
             type === "video"
                 ? "Ukuran video maksimal 50 MB."
-                : "Ukuran gambar inline maksimal 2 MB.",
+                : "Ukuran gambar di dalam berita maksimal 2 MB.",
         );
         return;
     }
@@ -308,7 +308,7 @@ const handleSubmit = async () => {
                                         <span
                                             class="ml-auto text-right text-xs text-fg-muted"
                                         >
-                                            Gambar maks. 2 MB · Video maks. 50 MB (per file)
+                                            Isi berita: gambar maks. 2 MB · video maks. 50 MB per file
                                         </span>
                                         <input
                                             ref="imageInput"
