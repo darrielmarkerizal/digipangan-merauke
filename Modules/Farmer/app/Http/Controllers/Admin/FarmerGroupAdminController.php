@@ -37,6 +37,8 @@ class FarmerGroupAdminController extends Controller
             ? $this->service->paginateFilteredForDistrict($regionId)
             : $this->service->paginateFiltered();
 
+        $paginator->getCollection()->loadCount('farmers');
+
         $regions = $isDistrictAdmin && $user?->region
             ? collect([['id' => $user->region->id, 'name' => $user->region->name]])
             : $this->regionService->list();

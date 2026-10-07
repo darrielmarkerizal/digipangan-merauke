@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\User;
+use Modules\Farmer\Models\Farmer;
 use Modules\Farmer\Models\FarmerGroup;
 use Modules\Region\Models\Region;
 use Modules\User\Database\Seeders\UserDatabaseSeeder;
@@ -32,6 +33,28 @@ describe('FarmerGroup CRUD', function () {
 
     it('mengizinkan Super Admin mengakses daftar', function () {
         $this->actingAs(actor_farmer_group('super_admin'))->getJson(route('api.farmer_group.index'))->assertOk();
+    });
+
+    it('menampilkan jumlah petani yang tergabung pada daftar admin', function () {
+        $region = farmer_group_region();
+        $group = FarmerGroup::create([
+            'name' => 'Kelompok Beranggota',
+            'region_id' => $region->id,
+        ]);
+        Farmer::create([
+            'name' => 'Petani Anggota',
+            'phone' => '+6281000000099',
+            'region_id' => $region->id,
+            'farmer_group_id' => $group->id,
+        ]);
+
+        $this->actingAs(actor_farmer_group('super_admin'))
+            ->get(route('admin.farmer-group.index'))
+            ->assertOk()
+            ->assertInertia(fn ($page) => $page
+                ->component('Admin/FarmerGroup/Index')
+                ->where('farmerGroups.data.0.id', $group->id)
+                ->where('farmerGroups.data.0.farmers_count', 1));
     });
 
     it('menolak pengguna tanpa izin kelola master data dengan 403', function () {
