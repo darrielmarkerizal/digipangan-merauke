@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { onBeforeUnmount, ref, computed } from "vue";
 import { Link, useForm } from "@inertiajs/vue3";
 import axios from "axios";
 import {
@@ -18,6 +18,10 @@ import {
 import { toast } from "vue-sonner";
 import { Button, Field, Input, Select, Textarea, Icon } from "@/Components/ui";
 import { formatRupiah } from "@/lib/format";
+import {
+    prepareImageForUpload,
+    revokePreviewUrl,
+} from "@/lib/prepareImageUpload";
 
 export interface ProductFormData {
     id?: number | string;
@@ -109,20 +113,37 @@ const galleryImages = ref<GalleryImage[]>(
 );
 
 const isSubmitting = ref(false);
+const isPreparingImages = ref(false);
 
-const handleMultipleImageUpload = (e: Event) => {
+onBeforeUnmount(() => {
+    galleryImages.value.forEach((image) => revokePreviewUrl(image.url));
+});
+
+const handleMultipleImageUpload = async (e: Event) => {
     const target = e.target as HTMLInputElement;
     const filesArray = target.files ? Array.from(target.files) : [];
     target.value = "";
     if (filesArray.length > 0) {
-        filesArray.forEach((file) => {
-            galleryImages.value.push({
-                id: Math.random().toString(36).substring(2, 9),
-                url: URL.createObjectURL(file),
-                file: file,
-                isExisting: false,
+        if (isSubmitting.value) return;
+        isPreparingImages.value = true;
+        try {
+            for (const selectedFile of filesArray) {
+                const file = await prepareImageForUpload(selectedFile);
+                galleryImages.value.push({
+                    id: Math.random().toString(36).substring(2, 9),
+                    url: URL.createObjectURL(file),
+                    file: file,
+                    isExisting: false,
+                });
+            }
+        } catch {
+            toast.error("Foto belum bisa dibuka di perangkat ini", {
+                description: "Pilih foto JPG, PNG, atau WebP lalu coba lagi.",
             });
-        });
+            return;
+        } finally {
+            isPreparingImages.value = false;
+        }
         toast.success(`${filesArray.length} foto baru ditambahkan ke galeri!`);
     }
 };
@@ -135,7 +156,8 @@ const setAsCover = (index: number) => {
 };
 
 const removeImage = (index: number) => {
-    galleryImages.value.splice(index, 1);
+    const [removedImage] = galleryImages.value.splice(index, 1);
+    if (removedImage) revokePreviewUrl(removedImage.url);
     toast.success("Foto dihapus dari galeri.");
 };
 
@@ -175,6 +197,13 @@ async function uploadFileToTemp(file: File): Promise<string> {
 }
 
 const handleSubmit = async () => {
+    if (isPreparingImages.value) {
+        toast.info("Foto masih diproses", {
+            description: "Tunggu sebentar sampai foto selesai disiapkan.",
+        });
+        return;
+    }
+
     if (!form.name || !form.price) {
         toast.error("Gagal menyimpan", {
             description: "Mohon lengkapi Nama Produk dan Harga Produk.",
@@ -282,7 +311,9 @@ const handleSubmit = async () => {
                 <Button
                     size="sm"
                     type="submit"
-                    :disabled="form.processing || isSubmitting"
+                    :disabled="
+                        form.processing || isSubmitting || isPreparingImages
+                    "
                 >
                     <Icon :icon="Save" :size="15" />
                     <span>{{

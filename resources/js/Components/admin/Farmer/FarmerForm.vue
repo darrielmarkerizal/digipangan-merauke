@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch } from "vue";
+import { onBeforeUnmount, ref, computed, watch } from "vue";
 import { Link, useForm } from "@inertiajs/vue3";
 import axios from "axios";
 import {
@@ -21,6 +21,10 @@ import {
     Switch,
     Icon,
 } from "@/Components/ui";
+import {
+    prepareImageForUpload,
+    revokePreviewUrl,
+} from "@/lib/prepareImageUpload";
 
 const props = defineProps<{
     initialData?: any;
@@ -55,6 +59,8 @@ const photoPreviewUrl = ref(
     props.initialData?.photo?.thumb || props.initialData?.photo?.original || "",
 );
 const fileInputRef = ref<HTMLInputElement | null>(null);
+
+onBeforeUnmount(() => revokePreviewUrl(photoPreviewUrl.value));
 
 const filteredVillages = computed(() => {
     if (!form.region_id) return props.villages || [];
@@ -101,11 +107,15 @@ const triggerFileInput = () => {
 
 const handlePhotoChange = async (event: Event) => {
     const input = event.target as HTMLInputElement;
-    if (!input.files || input.files.length === 0) return;
-    const file = input.files[0];
+    const selectedFile = input.files?.[0];
+    if (!selectedFile) {
+        input.value = "";
+        return;
+    }
 
     isUploadingPhoto.value = true;
     try {
+        const file = await prepareImageForUpload(selectedFile);
         const formData = new FormData();
         formData.append("file", file);
         const res = await axios.post("/admin/media/upload", formData, {
@@ -113,6 +123,7 @@ const handlePhotoChange = async (event: Event) => {
         });
         form.photo = res.data.folder;
         form.remove_photo = false;
+        revokePreviewUrl(photoPreviewUrl.value);
         photoPreviewUrl.value = URL.createObjectURL(file);
         toast.success("Foto profil berhasil diunggah.");
     } catch (error: any) {
@@ -128,6 +139,7 @@ const handlePhotoChange = async (event: Event) => {
 };
 
 const removePhoto = () => {
+    revokePreviewUrl(photoPreviewUrl.value);
     form.photo = null;
     form.remove_photo = true;
     photoPreviewUrl.value = "";
@@ -137,6 +149,13 @@ const removePhoto = () => {
 };
 
 const handleSubmit = () => {
+    if (isUploadingPhoto.value) {
+        toast.info("Foto masih diunggah", {
+            description: "Tunggu sampai foto profil selesai diunggah.",
+        });
+        return;
+    }
+
     form.transform((data) => ({
         ...data,
         village_id: data.village_id === "" ? null : data.village_id,
@@ -214,6 +233,7 @@ const handleSubmit = () => {
                 <Button
                     type="submit"
                     size="sm"
+                    :disabled="form.processing || isUploadingPhoto"
                     :loading="form.processing || isUploadingPhoto"
                     class="gap-1.5 font-semibold"
                 >

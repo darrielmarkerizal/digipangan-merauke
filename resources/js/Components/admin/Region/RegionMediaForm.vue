@@ -4,6 +4,7 @@ import axios from "axios";
 import { Image as ImageIcon, Plus, Star, Trash2, Upload } from "@lucide/vue";
 import { toast } from "vue-sonner";
 import { Icon } from "@/Components/ui";
+import { prepareImageForUpload } from "@/lib/prepareImageUpload";
 
 interface ExistingImage {
     id: number | string;
@@ -57,6 +58,7 @@ const galleryImages = ref<ImageItem[]>(
 );
 
 const isUploading = ref(false);
+const isPreparingImages = ref(false);
 
 const revokePreview = (url: string) => {
     if (url.startsWith("blob:")) {
@@ -82,30 +84,60 @@ const validateFile = (file: File): boolean => {
     return true;
 };
 
-const handleCoverChange = (event: Event) => {
+const handleCoverChange = async (event: Event) => {
     const input = event.target as HTMLInputElement;
-    const file = input.files?.[0];
+    const selectedFile = input.files?.[0];
 
-    if (!file || !validateFile(file)) {
+    if (!selectedFile) {
         input.value = "";
         return;
     }
 
-    if (coverImage.value) {
-        revokePreview(coverImage.value.url);
-    }
+    isPreparingImages.value = true;
+    try {
+        const file = await prepareImageForUpload(selectedFile);
+        if (!validateFile(file)) return;
 
-    coverImage.value = {
-        id: `cover-new-${Date.now()}`,
-        url: URL.createObjectURL(file),
-        file,
-    };
-    input.value = "";
+        if (coverImage.value) {
+            revokePreview(coverImage.value.url);
+        }
+
+        coverImage.value = {
+            id: `cover-new-${Date.now()}`,
+            url: URL.createObjectURL(file),
+            file,
+        };
+    } catch {
+        toast.error("Foto belum bisa diproses", {
+            description: "Pilih foto JPG, PNG, WebP, atau GIF lalu coba lagi.",
+        });
+    } finally {
+        input.value = "";
+        isPreparingImages.value = false;
+    }
 };
 
-const handleGalleryChange = (event: Event) => {
+const handleGalleryChange = async (event: Event) => {
     const input = event.target as HTMLInputElement;
-    const files = Array.from(input.files || []).filter(validateFile);
+    const selectedFiles = Array.from(input.files || []);
+    input.value = "";
+    const files: File[] = [];
+    if (selectedFiles.length === 0) return;
+
+    isPreparingImages.value = true;
+    try {
+        for (const selectedFile of selectedFiles) {
+            const file = await prepareImageForUpload(selectedFile);
+            if (validateFile(file)) files.push(file);
+        }
+    } catch {
+        toast.error("Foto belum bisa diproses", {
+            description: "Pilih foto JPG, PNG, WebP, atau GIF lalu coba lagi.",
+        });
+        return;
+    } finally {
+        isPreparingImages.value = false;
+    }
 
     files.forEach((file) => {
         galleryImages.value.push({
@@ -118,8 +150,6 @@ const handleGalleryChange = (event: Event) => {
     if (files.length > 0) {
         toast.success(`${files.length} foto galeri ditambahkan.`);
     }
-
-    input.value = "";
 };
 
 const removeGalleryImage = (index: number) => {
@@ -142,7 +172,12 @@ const uploadFile = async (file: File): Promise<string> => {
 };
 
 const prepareUpload = async (): Promise<boolean> => {
-    if (isUploading.value) return false;
+    if (isUploading.value || isPreparingImages.value) {
+        toast.info("Foto masih diproses", {
+            description: "Tunggu sebentar sampai foto selesai disiapkan.",
+        });
+        return false;
+    }
 
     isUploading.value = true;
     const uploadedFolders: string[] = [];

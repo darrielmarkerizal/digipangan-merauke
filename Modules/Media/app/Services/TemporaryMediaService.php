@@ -7,9 +7,12 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Modules\Media\Models\TemporaryFile;
 use Modules\Media\Repositories\TemporaryFileRepositoryInterface;
+use Spatie\Image\Image;
 
 class TemporaryMediaService
 {
+    private const MAX_IMAGE_DIMENSION = 2048;
+
     public function __construct(
         private TemporaryFileRepositoryInterface $repository
     ) {}
@@ -19,7 +22,21 @@ class TemporaryMediaService
         $filename = $file->hashName();
         $folder = (string) Str::uuid();
 
-        $file->storeAs('temp/'.$folder, $filename);
+        $storedPath = $file->storeAs('temp/'.$folder, $filename, 'local');
+
+        if ($storedPath === false) {
+            throw new \RuntimeException('Berkas sementara gagal disimpan.');
+        }
+
+        $absolutePath = Storage::disk('local')->path($storedPath);
+
+        try {
+            $this->resizeLargeImage($absolutePath, $file->getMimeType());
+        } catch (\Throwable $exception) {
+            Storage::disk('local')->deleteDirectory('temp/'.$folder);
+
+            throw $exception;
+        }
 
         return $this->repository->create([
             'folder' => $folder,
@@ -27,12 +44,46 @@ class TemporaryMediaService
         ]);
     }
 
+    /**
+     * Phone photos can be several thousand pixels wide even when their
+     * compressed file size is small. Downscale them before Media Library
+     * creates its synchronous thumbnails to avoid memory spikes on cPanel.
+     */
+    private function resizeLargeImage(string $path, ?string $mimeType): void
+    {
+        if (! $mimeType || ! str_starts_with($mimeType, 'image/') || $mimeType === 'image/gif') {
+            return;
+        }
+
+        $dimensions = @getimagesize($path);
+
+        if (! $dimensions) {
+            return;
+        }
+
+        [$width, $height] = $dimensions;
+
+        if (max($width, $height) <= self::MAX_IMAGE_DIMENSION) {
+            return;
+        }
+
+        $image = Image::load($path);
+
+        if ($width >= $height) {
+            $image->width(self::MAX_IMAGE_DIMENSION);
+        } else {
+            $image->height(self::MAX_IMAGE_DIMENSION);
+        }
+
+        $image->save($path);
+    }
+
     public function deleteByFolder(string $folder): bool
     {
         $temporaryFile = $this->repository->findByFolder($folder);
 
         if ($temporaryFile) {
-            Storage::deleteDirectory('temp/'.$temporaryFile->folder);
+            Storage::disk('local')->deleteDirectory('temp/'.$temporaryFile->folder);
 
             return $this->repository->delete($temporaryFile);
         }
@@ -45,12 +96,14 @@ class TemporaryMediaService
         $temporaryFile = $this->repository->findByFolder($folderUuid);
 
         if ($temporaryFile) {
-            $path = Storage::disk('local')->path('temp/'.$temporaryFile->folder.'/'.$temporaryFile->filename);
+            $disk = Storage::disk('local');
+            $relativePath = 'temp/'.$temporaryFile->folder.'/'.$temporaryFile->filename;
+            $path = $disk->path($relativePath);
 
-            if (file_exists($path)) {
+            if ($disk->exists($relativePath) && is_file($path)) {
                 $media = $model->addMedia($path)->toMediaCollection($collectionName);
 
-                Storage::deleteDirectory('temp/'.$temporaryFile->folder);
+                $disk->deleteDirectory('temp/'.$temporaryFile->folder);
                 $this->repository->delete($temporaryFile);
 
                 return $media;
@@ -66,7 +119,7 @@ class TemporaryMediaService
         $count = 0;
 
         foreach ($files as $file) {
-            Storage::deleteDirectory('temp/'.$file->folder);
+            Storage::disk('local')->deleteDirectory('temp/'.$file->folder);
             $this->repository->delete($file);
             $count++;
         }

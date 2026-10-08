@@ -77,7 +77,10 @@ class PostService extends BaseService
             }
 
             $url = e($media->getUrl());
-            $replacement = str_starts_with((string) $media->mime_type, 'video/')
+            $extension = strtolower(pathinfo((string) $media->file_name, PATHINFO_EXTENSION));
+            $isVideo = str_starts_with((string) $media->mime_type, 'video/')
+                || in_array($extension, ['mp4', 'webm', 'mov'], true);
+            $replacement = $isVideo
                 ? '<video controls preload="metadata" class="post-content-video" src="'.$url.'"></video>'
                 : '<img loading="lazy" class="post-content-image" src="'.$url.'" alt="Media berita">';
 

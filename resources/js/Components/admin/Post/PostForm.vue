@@ -14,6 +14,7 @@ import { toast } from "vue-sonner";
 import { QuillEditor } from "@vueup/vue-quill";
 import "@vueup/vue-quill/dist/vue-quill.snow.css";
 import axios from "axios";
+import { prepareImageForUpload } from "@/lib/prepareImageUpload";
 
 const props = defineProps<{
     form: any;
@@ -31,6 +32,7 @@ const editor = ref<any>(null);
 const imageInput = ref<HTMLInputElement | null>(null);
 const videoInput = ref<HTMLInputElement | null>(null);
 const previewUrls = ref<string[]>([]);
+const MAX_POST_COVER_SIZE = 8 * 1024 * 1024;
 const MAX_POST_IMAGE_SIZE = 2 * 1024 * 1024;
 const MAX_POST_VIDEO_SIZE = 50 * 1024 * 1024;
 
@@ -42,19 +44,60 @@ onBeforeUnmount(() => {
     previewUrls.value.forEach((url) => URL.revokeObjectURL(url));
 });
 
-const handleCoverChange = (e: Event) => {
+const handleCoverChange = async (e: Event) => {
     const target = e.target as HTMLInputElement;
-    if (target.files && target.files.length > 0) {
-        const file = target.files[0];
+    const selectedFile = target.files?.[0];
+    if (!selectedFile) {
+        target.value = "";
+        return;
+    }
+
+    target.value = "";
+    isUploading.value = true;
+    try {
+        const file = await prepareImageForUpload(selectedFile);
+        const allowedTypes = [
+            "image/jpeg",
+            "image/png",
+            "image/webp",
+            "image/gif",
+        ];
+        if (file.type && !allowedTypes.includes(file.type)) {
+            const message = "Format cover harus JPG, PNG, WebP, atau GIF.";
+            props.form.setError?.("cover", message);
+            toast.error(message);
+            return;
+        }
+        if (file.size > MAX_POST_COVER_SIZE) {
+            const message = "Ukuran gambar cover maksimal 8 MB.";
+            props.form.setError?.("cover", message);
+            toast.error(message);
+            return;
+        }
+
+        if (coverPreview.value?.startsWith("blob:")) {
+            URL.revokeObjectURL(coverPreview.value);
+        }
+        props.form.clearErrors?.("cover");
         coverFile.value = file;
         coverPreview.value = URL.createObjectURL(file);
+    } catch {
+        toast.error("Foto cover belum bisa diproses", {
+            description: "Pilih foto JPG, PNG, WebP, atau GIF lalu coba lagi.",
+        });
+    } finally {
+        isUploading.value = false;
     }
 };
 
 const removeCover = () => {
+    if (coverPreview.value?.startsWith("blob:")) {
+        URL.revokeObjectURL(coverPreview.value);
+    }
     coverFile.value = null;
     coverPreview.value = null;
     props.form.cover = null;
+    props.form.clearErrors?.("cover");
 };
 
 const insertUploadedMedia = async (event: Event, type: "image" | "video") => {
@@ -76,8 +119,25 @@ const insertUploadedMedia = async (event: Event, type: "image" | "video") => {
         );
         return;
     }
-    const maxSize = type === "video" ? MAX_POST_VIDEO_SIZE : MAX_POST_IMAGE_SIZE;
-    if (file.size > maxSize) {
+    let uploadFile = file;
+    if (type === "image") {
+        isUploading.value = true;
+        try {
+            uploadFile = await prepareImageForUpload(file);
+        } catch {
+            isUploading.value = false;
+            toast.error("Gambar belum bisa diproses", {
+                description:
+                    "Pilih gambar JPG, PNG, WebP, atau GIF lalu coba lagi.",
+            });
+            return;
+        }
+    }
+
+    const maxSize =
+        type === "video" ? MAX_POST_VIDEO_SIZE : MAX_POST_IMAGE_SIZE;
+    if (uploadFile.size > maxSize) {
+        isUploading.value = false;
         toast.error(
             type === "video"
                 ? "Ukuran video maksimal 50 MB."
@@ -90,7 +150,7 @@ const insertUploadedMedia = async (event: Event, type: "image" | "video") => {
     let uploadedFolder: string | null = null;
     try {
         const formData = new FormData();
-        formData.append("file", file);
+        formData.append("file", uploadFile);
         formData.append("purpose", "post_content");
         const response = await axios.post("/admin/media/upload", formData, {
             headers: { Accept: "application/json" },
@@ -103,7 +163,7 @@ const insertUploadedMedia = async (event: Event, type: "image" | "video") => {
         }
 
         const index = quill.getSelection(true)?.index ?? quill.getLength();
-        const previewUrl = URL.createObjectURL(file);
+        const previewUrl = URL.createObjectURL(uploadFile);
         previewUrls.value.push(previewUrl);
         const mediaTag = type === "video" ? "video" : "img";
         let mediaElement: HTMLElement | null = null;
@@ -165,6 +225,14 @@ const insertUploadedMedia = async (event: Event, type: "image" | "video") => {
 };
 
 const handleSubmit = async () => {
+    if (isUploading.value) {
+        toast.info("Media masih diproses", {
+            description:
+                "Tunggu sampai unggahan selesai sebelum menyimpan berita.",
+        });
+        return;
+    }
+
     if (coverFile.value) {
         isUploading.value = true;
         try {
@@ -174,8 +242,13 @@ const handleSubmit = async () => {
                 headers: { Accept: "application/json" },
             });
             props.form.cover = res.data.folder;
-        } catch (e) {
-            toast.error("Gagal mengunggah gambar cover.");
+        } catch (error: any) {
+            const message =
+                error.response?.data?.message ||
+                error.response?.data?.errors?.file?.[0] ||
+                "Cover gagal diunggah. Periksa format, ukuran file, dan koneksi lalu coba lagi.";
+            props.form.setError?.("cover", message);
+            toast.error(message);
             isUploading.value = false;
             return;
         }
@@ -308,7 +381,8 @@ const handleSubmit = async () => {
                                         <span
                                             class="ml-auto text-right text-xs text-fg-muted"
                                         >
-                                            Isi berita: gambar maks. 2 MB · video maks. 50 MB per file
+                                            Isi berita: gambar maks. 2 MB ·
+                                            video maks. 50 MB per file
                                         </span>
                                         <input
                                             ref="imageInput"

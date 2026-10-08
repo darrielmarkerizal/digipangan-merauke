@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Modules\Farmer\Models\Farmer;
 use Modules\Farmer\Models\FarmerGroup;
+use Modules\Media\Models\TemporaryFile;
 use Modules\Product\Models\Product;
 use Modules\Product\Models\ProductCategory;
 use Modules\Product\Models\Unit;
@@ -281,6 +282,40 @@ describe('validasi unggah media', function () {
         $this->post('/admin/media/upload', [
             'file' => UploadedFile::fake()->image('foto.jpg'),
         ])->assertRedirect('/login');
+    });
+
+    it('menerima unggahan untuk admin distrik dan super admin', function () {
+        foreach (['admin_distrik', 'super_admin'] as $role) {
+            $admin = User::create([
+                'name' => 'Admin '.$role,
+                'email' => $role.'-'.uniqid().'@contoh.test',
+                'password' => Hash::make('rahasia123'),
+                'is_active' => true,
+            ]);
+            $admin->assignRole($role);
+
+            $this->actingAs($admin)
+                ->post('/admin/media/upload', [
+                    'file' => UploadedFile::fake()->image('foto-'.$role.'.jpg'),
+                ])
+                ->assertOk()
+                ->assertJsonStructure(['folder', 'filename']);
+        }
+    });
+
+    it('menurunkan resolusi foto kamera sebelum disimpan sebagai media sementara', function () {
+        $response = $this->actingAs(fssAdminUser())
+            ->post('/admin/media/upload', [
+                'file' => UploadedFile::fake()->image('foto-kamera.jpg', 3200, 2400),
+            ])
+            ->assertOk();
+
+        $temporaryFile = TemporaryFile::where('folder', $response->json('folder'))->firstOrFail();
+        $path = Storage::disk('local')->path('temp/'.$temporaryFile->folder.'/'.$temporaryFile->filename);
+        [$width, $height] = getimagesize($path);
+
+        expect(max($width, $height))->toBeLessThanOrEqual(2048)
+            ->and($temporaryFile->folder)->toBe($response->json('folder'));
     });
 });
 
